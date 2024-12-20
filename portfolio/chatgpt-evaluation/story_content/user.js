@@ -15,6 +15,7 @@ fetch("https://www.sayidozcan.com/resources/chatgpt/backend.php", {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
+        "X-SECRET-KEY": "MY_SECRET_KEY_IS_VERY_SECRET" // Secret Key
     },
     body: JSON.stringify({
         answer: userAnswer // Kullanıcı cevabı
