@@ -9,13 +9,68 @@ window.Script1 = function()
 {
   // Storyline değişkenlerini al
 var player = GetPlayer();
+
+// Token almak için istek gönder
+fetch("https://www.sayidozcan.com/resources/chatgpt/token.php", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    }
+})
+.then(response => response.json())
+.then(result => {
+    if (result.status === "success") {
+        // Token'ı bir değişkene kaydedin
+        player.SetVar("AuthToken", result.token);
+        console.log("Token başarıyla alındı:", result.token);
+
+        // Token ile backend'e veri gönder
+        var userAnswer = player.GetVar("UserAnswer");
+        var authToken = player.GetVar("AuthToken");
+
+        fetch("https://www.sayidozcan.com/resources/chatgpt/backend.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + authToken
+            },
+            body: JSON.stringify({ answer: userAnswer })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Değerlendirme Sonucu:", data);
+            player.SetVar("Accuracy", data.accuracy || 0);
+            player.SetVar("Coverage", data.coverage || 0);
+            player.SetVar("LanguageUse", data.language_use || 0);
+            player.SetVar("GeneralComment", data.general_comment || "Bir hata oluştu.");
+        })
+        .catch(error => {
+            console.error("Değerlendirme hatası:", error);
+            player.SetVar("GeneralComment", "Sunucuya bağlanırken bir hata oluştu.");
+        });
+    } else {
+        console.error("Token alınamadı:", result.error);
+        player.SetVar("GeneralComment", "Doğrulama başarısız oldu.");
+    }
+})
+.catch(error => {
+    console.error("Token hatası:", error);
+    player.SetVar("GeneralComment", "Token alınırken bir hata oluştu.");
+});
+
+}
+
+window.Script2 = function()
+{
+  // Storyline değişkenlerini al
+var player = GetPlayer();
 var userAnswer = player.GetVar("UserAnswer"); // Kullanıcının yazdığı cevap
 
 fetch("https://www.sayidozcan.com/resources/chatgpt/backend.php", {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
-        "X-SECRET-KEY": "MY_SECRET_KEY_IS_VERY_SECRET" // Secret Key
+        "X-SECRET-KEY": "IlNMQ7qPG_e-uqTB_bkq-s4X8uNk_doG4MHjCfUjEcg" // Secret Key
     },
     body: JSON.stringify({
         answer: userAnswer // Kullanıcı cevabı
@@ -34,7 +89,7 @@ fetch("https://www.sayidozcan.com/resources/chatgpt/backend.php", {
 });
 }
 
-window.Script2 = function()
+window.Script3 = function()
 {
   // Storyline değişkenlerini al
 var player = GetPlayer();
