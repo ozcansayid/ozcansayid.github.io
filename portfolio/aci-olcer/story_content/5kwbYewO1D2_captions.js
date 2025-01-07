@@ -1,0 +1,1 @@
+window.globalProvideData('caption', '{"data":"WEBVTT%0D%0AKind:%20captions%0D%0ASource:%20Articulate%20Closed%20Captions%20Editor%0D%0ASource%20Version:%203.92.33225.0%0D%0A%0D%0A00:00:00.075%20--%3E%2000:00:04.105%0D%0A%C4%B0letki%20%C3%BCzerindeki%20a%C3%A7%C4%B1%20de%C4%9Ferini%20g%C3%B6zlemleyerek%20a%C3%A7%C4%B1%20de%C4%9Feri%20form%20alan%C4%B1na%20giriniz.%0D%0A%0D%0A"}')
