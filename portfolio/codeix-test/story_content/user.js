@@ -138,12 +138,22 @@ fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sorular!A
         if (data.values && data.values[0]) {
             // Soruyu ve şıkları Storyline değişkenlerine atama
             player.SetVar("questionText", data.values[0][0]);
-            player.SetVar("image", data.values[0][1]);
+            
+            let imageUrl = data.values[0][1];
+            
+            if (imageUrl && imageUrl.trim() !== "") {
+                player.SetVar("image", imageUrl);
+            } else {
+                player.SetVar("image", "empty");  // Boş olarak ayarla
+            }
+            
             player.SetVar("option1", data.values[0][2]);
             player.SetVar("option2", data.values[0][3]);
             player.SetVar("option3", data.values[0][4]);
             player.SetVar("option4", data.values[0][5]);
             player.SetVar("correctAnswer", data.values[0][6]);
+			
+			
 			
 			// addPointValue'i kontrol et ve gerçekten boşsa hiç set etme veya boş ata
             let addPointValue = data.values[0][9];
