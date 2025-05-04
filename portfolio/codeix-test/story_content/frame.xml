@@ -1460,6 +1460,7 @@
       <string id="close">Kapat</string>
       <string id="closed_captions">Altyazılar</string>
       <string id="closedcaptions_shortcut">Başlıkları değiştir</string>
+      <string id="comma_key">Virgül</string>
       <string id="continueresponsive">Devam Et</string>
       <string id="ctrl_key">Ctrl</string>
       <string id="desktop_start">Kursu Başlat</string>
@@ -1482,6 +1483,7 @@
       <string id="next">İLERİ</string>
       <string id="next_shortcut">Sonraki</string>
       <string id="outline">MENÜ</string>
+      <string id="period_key">Dönem</string>
       <string id="playback_speed_normal">Normal</string>
       <string id="playback_speed_title">Geri oynatım Hızı</string>
       <string id="playpause_shortcut">Oynat / durdur</string>
@@ -1493,6 +1495,7 @@
       <string id="progress_minutes">dakika</string>
       <string id="progress_second">saniye</string>
       <string id="progress_seconds">saniye</string>
+      <string id="question_mark_key">Soru işareti</string>
       <string id="replay_shortcut">Tekrar Oynat</string>
       <string id="resources">Kaynaklar</string>
       <string id="restart">Yeniden Başlat</string>
@@ -1548,10 +1551,7 @@
       <string id="video_transcript_select_track">Parça seç</string>
       <string id="video_transcript_title">Yazılar</string>
       <string id="zoom_to_fit">Sığacak şekilde yakınlaştır</string>
-      <string id="comma_key">Virgül</string>
       <string id="continue">Devam Et</string>
-      <string id="period_key">Dönem</string>
-      <string id="question_mark_key">Soru işareti</string>
     </string_table>
   </string_tables>
   <fonts>
