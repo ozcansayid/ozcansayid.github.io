@@ -1031,6 +1031,27 @@ let cevap = player.GetVar("cevap");
 
 player.SetVar("user_entry", userInput.toLocaleLowerCase("tr-TR"));
 player.SetVar("cevap", cevap.toLocaleLowerCase("tr-TR"));
+
+if(userInput === "boşluk")
+{
+	player.SetVar("user_entry","boşluğa");
+}
+}
+
+window.Script33 = function()
+{
+  // Storyline'dan bir değişken al (örnek: ExitURL)
+var player = GetPlayer();
+var targetURL = player.GetVar("ExitURL"); 
+
+// Eğer değişken boşsa fallback olarak boş sayfa aç
+if(!targetURL) {
+  targetURL = "https://www.derslig.com";
+}
+
+// Geçerli sekmede yönlendir
+window.location.href = targetURL;
+
 }
 
 };
