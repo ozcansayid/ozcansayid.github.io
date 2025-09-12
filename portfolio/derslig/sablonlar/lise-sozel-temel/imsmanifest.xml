@@ -6,7 +6,7 @@
     <lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
       <general>
         <title>
-          <langstring xml:lang="x-none">Lise Sözel Temel Adımlar</langstring>
+          <langstring xml:lang="x-none">Lise Sayısal Temel Adımlar</langstring>
         </title>
       </general>
       <lifecycle>
@@ -50,11 +50,11 @@
       </rights>
     </lom>
   </metadata>
-  <organizations default="Lise_Sözel_Temel_Adımlar_ORG">
-    <organization identifier="Lise_Sözel_Temel_Adımlar_ORG">
-      <title>Lise Sözel Temel Adımlar</title>
+  <organizations default="Lise_Sayısal_Temel_Adımlar_ORG">
+    <organization identifier="Lise_Sayısal_Temel_Adımlar_ORG">
+      <title>Lise Sayısal Temel Adımlar</title>
       <item identifier="Ortaokul_Kavram_Yürüyüşü_SCO" isvisible="true" identifierref="__6OqiOr0ePRr_RES">
-        <title>Lise Sözel Temel Adımlar</title>
+        <title>Lise Sayısal Temel Adımlar</title>
       </item>
     </organization>
   </organizations>
@@ -64,7 +64,7 @@
       <file href="story_content/6Ud73rHQHU7_44100_48_0.mp3" />
       <file href="story_content/WebObjects/5q6JvKUqqSc/index.html" />
       <file href="mobile/5q6JvKUqqSc6hPAx39uKfk{Width=1996.792, Height=1114}Light.png" />
-      <file href="mobile/5itpLiA6fMo.png" />
+      <file href="story_content/5kPq2mNNpHQ.js" />
       <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
       <file href="story_content/WebObjects/67vf2y6If0a/tabela.html" />
       <file href="mobile/67vf2y6If0a61R6xhR2aEn{Width=538, Height=386}Light.png" />
@@ -78,19 +78,9 @@
       <file href="story_content/65ek9bogZTL_44100_48_0.mp3" />
       <file href="mobile/60iSeYogfPd.png" />
       <file href="story_content/6AaLDlRrTpy_44100_48_0.mp3" />
-      <file href="mobile/6o7wa3jIGTp.png" />
-      <file href="mobile/6o7wa3jIGTp_RG.png" />
-      <file href="mobile/6K8xcoaEY2j.png" />
-      <file href="mobile/6K8xcoaEY2j_RG.png" />
-      <file href="mobile/5vrxRNXTVgH.png" />
-      <file href="mobile/5vrxRNXTVgH_RG.png" />
-      <file href="mobile/5c4SDF4KPAt.png" />
-      <file href="mobile/5c4SDF4KPAt_RG.png" />
-      <file href="mobile/6dEWYabJu3P.png" />
-      <file href="mobile/6dEWYabJu3P_RG.png" />
       <file href="mobile/6NaCe3q2Ytj.png" />
-      <file href="story_content/WebObjects/5fjJ8gGGtPm/index.html" />
-      <file href="mobile/5fjJ8gGGtPm5krY3BYKuje{Width=736.6981, Height=583.0721}Light.png" />
+      <file href="story_content/WebObjects/6lyOcCowVzL/index.html" />
+      <file href="mobile/6lyOcCowVzL6eUMXGJBAZu{Width=736.6981, Height=583.0721}Light.png" />
       <file href="meta.xml" />
       <file href="story_content/triggers.js" />
       <file href="story_content/user.js" />
@@ -101,12 +91,12 @@
       <file href="html5/data/js/5s11nDOklay.js" />
       <file href="html5/data/js/5vO0UaTo0p1.js" />
       <file href="html5/data/js/5wfiK3Birim.js" />
-      <file href="html5/data/js/5wvqP1jo57R.js" />
       <file href="html5/data/js/5yd9iXlgOkv.js" />
-      <file href="html5/data/js/6eIwH7yKa4L.js" />
+      <file href="html5/data/js/5Z4Ll8Jzdlt.js" />
+      <file href="html5/data/js/67Mic9NJR0a.js" />
       <file href="html5/data/js/6iI0xnIwQ2d.js" />
       <file href="html5/data/js/6lsSZ96Lecv.js" />
-      <file href="html5/data/js/6lzT0r5CYqM.js" />
+      <file href="html5/data/js/6TPjPYmhdzQ.js" />
       <file href="html5/data/js/6UIvR5dbFiJ.js" />
       <file href="html5/data/js/data.js" />
       <file href="html5/data/js/frame.js" />
