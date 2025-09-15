@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest identifier="_6OqiOr0ePRr" version="1.0" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
+      <general>
+        <title>
+          <langstring xml:lang="x-none">Ortaokul Temel Adımlar</langstring>
+        </title>
+      </general>
+      <lifecycle>
+        <version>
+          <langstring xml:lang="x-none">1</langstring>
+        </version>
+        <status>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">Final</langstring>
+          </value>
+        </status>
+      </lifecycle>
+      <metametadata>
+        <metadatascheme>ADL SCORM 1.2</metadatascheme>
+      </metametadata>
+      <educational>
+        <typicallearningtime>
+          <datetime>PT0H0M0S</datetime>
+        </typicallearningtime>
+      </educational>
+      <rights>
+        <cost>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </cost>
+        <copyrightandotherrestrictions>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </copyrightandotherrestrictions>
+      </rights>
+    </lom>
+  </metadata>
+  <organizations default="Ortaokul_Temel_Adımlar_ORG">
+    <organization identifier="Ortaokul_Temel_Adımlar_ORG">
+      <title>Ortaokul Temel Adımlar</title>
+      <item identifier="Ortaokul_Kavram_Yürüyüşü_SCO" isvisible="true" identifierref="__6OqiOr0ePRr_RES">
+        <title>Ortaokul Temel Adımlar</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="__6OqiOr0ePRr_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
+      <file href="story_content/thumbnail.jpg" />
+      <file href="story_content/6Ud73rHQHU7_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/5q6JvKUqqSc/index.html" />
+      <file href="mobile/5q6JvKUqqSc6bU7GMeFUTj{Width=1996.792, Height=1114}Light.png" />
+      <file href="story_content/6YIlwjKT52G.js" />
+      <file href="story_content/WebObjects/6QNKg6zptAu/büyük projektör.html" />
+      <file href="mobile/6QNKg6zptAu5kcOMiNkD6z{Width=606, Height=876}Light.png" />
+      <file href="story_content/WebObjects/61BCgaa0Kyl/büyük projektör.html" />
+      <file href="mobile/61BCgaa0Kyl6o5GtRmePqV{Width=606, Height=876}Light.png" />
+      <file href="story_content/WebObjects/5fgqz4sJd4e/büyük projektör.html" />
+      <file href="mobile/5fgqz4sJd4e61RqBMJpIoB{Width=606, Height=876}Light.png" />
+      <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/67vf2y6If0a/index.html" />
+      <file href="mobile/67vf2y6If0a5nWX3odd4tl{Width=646, Height=466}Light.png" />
+      <file href="mobile/5bboaDZEg63.png" />
+      <file href="mobile/69KwGuSIlGZ.png" />
+      <file href="story_content/5uM7VqoJ4JF.js" />
+      <file href="mobile/6XObTW6NPFg.png" />
+      <file href="story_content/5idbs0xll7U.js" />
+      <file href="story_content/6ojXeRuWLaM.js" />
+      <file href="mobile/6qDtvYKmMdO.png" />
+      <file href="story_content/65ek9bogZTL_44100_48_0.mp3" />
+      <file href="mobile/60iSeYogfPd.png" />
+      <file href="story_content/6AaLDlRrTpy_44100_48_0.mp3" />
+      <file href="mobile/6o7wa3jIGTp.png" />
+      <file href="mobile/6o7wa3jIGTp_RG.png" />
+      <file href="mobile/6K8xcoaEY2j.png" />
+      <file href="mobile/6K8xcoaEY2j_RG.png" />
+      <file href="mobile/5vrxRNXTVgH.png" />
+      <file href="mobile/5vrxRNXTVgH_RG.png" />
+      <file href="mobile/5c4SDF4KPAt.png" />
+      <file href="mobile/5c4SDF4KPAt_RG.png" />
+      <file href="mobile/6NaCe3q2Ytj.png" />
+      <file href="story_content/WebObjects/5fjJ8gGGtPm/index.html" />
+      <file href="mobile/5fjJ8gGGtPm5krY3BYKuje{Width=736.6981, Height=583.0721}Light.png" />
+      <file href="meta.xml" />
+      <file href="story_content/triggers.js" />
+      <file href="story_content/user.js" />
+      <file href="mobile/txt__default_5cTvhyJNkOl.png" />
+      <file href="mobile/txt__default_6SuzjnG7hay.png" />
+      <file href="mobile/txt__default_5ZlPDp2aBol.png" />
+      <file href="mobile/Shape692ICsAvYKQ.png" />
+      <file href="mobile/Shape6qpakNakXl9.png" />
+      <file href="html5/data/css/output.min.css" />
+      <file href="html5/data/js/5cq57PIkeTa.js" />
+      <file href="html5/data/js/5hTXv3WI7SU.js" />
+      <file href="html5/data/js/5vO0UaTo0p1.js" />
+      <file href="html5/data/js/5wfiK3Birim.js" />
+      <file href="html5/data/js/5wvqP1jo57R.js" />
+      <file href="html5/data/js/69F3FmffXy4.js" />
+      <file href="html5/data/js/6iI0xnIwQ2d.js" />
+      <file href="html5/data/js/6LdncsokSY7.js" />
+      <file href="html5/data/js/6lsSZ96Lecv.js" />
+      <file href="html5/data/js/6lzT0r5CYqM.js" />
+      <file href="html5/data/js/6oPHNpadSZP.js" />
+      <file href="html5/data/js/6S2khlsIJOv.js" />
+      <file href="html5/data/js/6UIvR5dbFiJ.js" />
+      <file href="html5/data/js/6UlkgdcCN7L.js" />
+      <file href="html5/data/js/data.js" />
+      <file href="html5/data/js/frame.js" />
+      <file href="html5/data/js/paths.js" />
+      <file href="html5/lib/scripts/bootstrapper.min.js" />
+      <file href="html5/lib/scripts/frame.desktop.min.js" />
+      <file href="html5/lib/scripts/frame.mobile.min.js" />
+      <file href="html5/lib/scripts/slides.min.js" />
+      <file href="html5/lib/stylesheets/desktop.min.css" />
+      <file href="html5/lib/stylesheets/mobile.min.css" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-bold.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-light.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-regular.woff" />
+      <file href="analytics-frame.html" />
+      <file href="story.html" />
+      <file href="index_lms.html" />
+      <file href="lms/AICCComm.html" />
+      <file href="lms/blank.html" />
+      <file href="lms/browsersniff.js" />
+      <file href="lms/goodbye.html" />
+      <file href="lms/scormdriver.js" />
+    </resource>
+  </resources>
+</manifest>
