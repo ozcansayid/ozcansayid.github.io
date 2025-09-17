@@ -1071,4 +1071,20 @@ xhr.onreadystatechange = function () {
 xhr.send(JSON.stringify(statement));
 }
 
+window.Script34 = function()
+{
+  // Storyline'dan bir değişken al (örnek: ExitURL)
+var player = GetPlayer();
+var targetURL = player.GetVar("ExitURL"); 
+
+// Eğer değişken boşsa fallback olarak boş sayfa aç
+if(!targetURL) {
+  targetURL = "https://www.derslig.com";
+}
+
+// Geçerli sekmede yönlendir
+window.location.href = targetURL;
+
+}
+
 };
