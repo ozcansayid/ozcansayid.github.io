@@ -90,7 +90,7 @@ window.Script2 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -191,7 +191,7 @@ window.Script5 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -292,7 +292,7 @@ window.Script8 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -425,7 +425,7 @@ window.Script13 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -453,9 +453,9 @@ window.Script15 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5ztBnwrZ6Mp');
-const drag_2 = object('6SirDDntZOM');
-const drag_3 = object('6rHs4F2z2zJ');
+const drag_1 = object('5jFri07VSVd');
+const drag_2 = object('67VfHG1Uhzm');
+const drag_3 = object('6jxC75a2HC9');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -469,9 +469,9 @@ window.Script16 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5ztBnwrZ6Mp');
-const drag_2 = object('6SirDDntZOM');
-const drag_3 = object('6rHs4F2z2zJ');
+const drag_1 = object('5jFri07VSVd');
+const drag_2 = object('67VfHG1Uhzm');
+const drag_3 = object('6jxC75a2HC9');
 
 drag_1.x = player.GetVar("drag_x_1");
 drag_2.x = player.GetVar("drag_x_2");
@@ -558,7 +558,7 @@ window.Script18 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -703,7 +703,7 @@ window.Script23 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -732,11 +732,11 @@ window.Script25 = function()
   let player = GetPlayer();
 
 
-const drag_1 = object('6pJib6Gv8tR');
-const drag_2 = object('6f4pnOETBCB');
-const drag_3 = object('6gTzoWAt6pK');
-const drag_4 = object('6kyCwdq1iQB');
-const drag_5 = object('5aZ0Dn4f2eP');
+const drag_1 = object('5a78G7Z7yqZ');
+const drag_2 = object('67M6q8UOW9j');
+const drag_3 = object('6pXlezAPHjB');
+const drag_4 = object('6OqNLLh1qpA');
+const drag_5 = object('5hwI5R5AUqn');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -753,11 +753,11 @@ player.SetVar("drag_y_5",drag_5.y);
 window.Script26 = function()
 {
   let player = GetPlayer();
-const drag_1 = object('6pJib6Gv8tR');
-const drag_2 = object('6f4pnOETBCB');
-const drag_3 = object('6gTzoWAt6pK');
-const drag_4 = object('6kyCwdq1iQB');
-const drag_5 = object('5aZ0Dn4f2eP');
+const drag_1 = object('5a78G7Z7yqZ');
+const drag_2 = object('67M6q8UOW9j');
+const drag_3 = object('6pXlezAPHjB');
+const drag_4 = object('6OqNLLh1qpA');
+const drag_5 = object('5hwI5R5AUqn');
 
 drag_1.x = player.GetVar("drag_x_1");
 drag_2.x = player.GetVar("drag_x_2");
@@ -848,7 +848,7 @@ window.Script28 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -949,7 +949,7 @@ window.Script31 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -1050,7 +1050,7 @@ window.Script34 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
+window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
 
 }
 
@@ -1155,17 +1155,20 @@ xhr.send(JSON.stringify(statement));
 
 window.Script38 = function()
 {
-  // Storyline'dan bir değişken al (örnek: ExitURL)
-var player = GetPlayer();
+  var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
 
-// Eğer değişken boşsa fallback olarak boş sayfa aç
 if(!targetURL) {
   targetURL = "https://www.derslig.com";
 }
 
-// Geçerli sekmede yönlendir
-window.location.href = targetURL;
+// iframe içindeyse üst frame’den yönlendir
+try {
+  window.top.location.href = targetURL; 
+} catch (e) {
+  // güvenlik engeli varsa fallback
+  window.location.href = targetURL; 
+}
 
 }
 

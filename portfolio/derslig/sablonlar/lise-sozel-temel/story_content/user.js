@@ -453,9 +453,9 @@ window.Script15 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('61fbVNCCpjr');
-const drag_2 = object('6C2ZsmWRWqw');
-const drag_3 = object('5vVH0Y61bSL');
+const drag_1 = object('5Xp9jqJ0FL6');
+const drag_2 = object('5njsgWkzD1F');
+const drag_3 = object('5ajZPmk9yb1');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -469,9 +469,9 @@ window.Script16 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('61fbVNCCpjr');
-const drag_2 = object('6C2ZsmWRWqw');
-const drag_3 = object('5vVH0Y61bSL');
+const drag_1 = object('5Xp9jqJ0FL6');
+const drag_2 = object('5njsgWkzD1F');
+const drag_3 = object('5ajZPmk9yb1');
 
 drag_1.x = player.GetVar("drag_x_1");
 drag_2.x = player.GetVar("drag_x_2");
@@ -1099,17 +1099,20 @@ xhr.send(JSON.stringify(statement));
 
 window.Script36 = function()
 {
-  // Storyline'dan bir değişken al (örnek: ExitURL)
-var player = GetPlayer();
+  var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
 
-// Eğer değişken boşsa fallback olarak boş sayfa aç
 if(!targetURL) {
   targetURL = "https://www.derslig.com";
 }
 
-// Geçerli sekmede yönlendir
-window.location.href = targetURL;
+// iframe içindeyse üst frame’den yönlendir
+try {
+  window.top.location.href = targetURL; 
+} catch (e) {
+  // güvenlik engeli varsa fallback
+  window.location.href = targetURL; 
+}
 
 }
 
