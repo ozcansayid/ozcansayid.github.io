@@ -90,7 +90,7 @@ window.Script2 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -191,7 +191,7 @@ window.Script5 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -292,7 +292,7 @@ window.Script8 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -425,7 +425,7 @@ window.Script13 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -453,9 +453,9 @@ window.Script15 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5jFri07VSVd');
-const drag_2 = object('67VfHG1Uhzm');
-const drag_3 = object('6jxC75a2HC9');
+const drag_1 = object('5ztBnwrZ6Mp');
+const drag_2 = object('6SirDDntZOM');
+const drag_3 = object('6rHs4F2z2zJ');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -469,9 +469,9 @@ window.Script16 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5jFri07VSVd');
-const drag_2 = object('67VfHG1Uhzm');
-const drag_3 = object('6jxC75a2HC9');
+const drag_1 = object('5ztBnwrZ6Mp');
+const drag_2 = object('6SirDDntZOM');
+const drag_3 = object('6rHs4F2z2zJ');
 
 drag_1.x = player.GetVar("drag_x_1");
 drag_2.x = player.GetVar("drag_x_2");
@@ -558,7 +558,7 @@ window.Script18 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -703,7 +703,7 @@ window.Script23 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -732,11 +732,11 @@ window.Script25 = function()
   let player = GetPlayer();
 
 
-const drag_1 = object('5a78G7Z7yqZ');
-const drag_2 = object('67M6q8UOW9j');
-const drag_3 = object('6pXlezAPHjB');
-const drag_4 = object('6OqNLLh1qpA');
-const drag_5 = object('5hwI5R5AUqn');
+const drag_1 = object('6pJib6Gv8tR');
+const drag_2 = object('6f4pnOETBCB');
+const drag_3 = object('6gTzoWAt6pK');
+const drag_4 = object('6kyCwdq1iQB');
+const drag_5 = object('5aZ0Dn4f2eP');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -753,11 +753,11 @@ player.SetVar("drag_y_5",drag_5.y);
 window.Script26 = function()
 {
   let player = GetPlayer();
-const drag_1 = object('5a78G7Z7yqZ');
-const drag_2 = object('67M6q8UOW9j');
-const drag_3 = object('6pXlezAPHjB');
-const drag_4 = object('6OqNLLh1qpA');
-const drag_5 = object('5hwI5R5AUqn');
+const drag_1 = object('6pJib6Gv8tR');
+const drag_2 = object('6f4pnOETBCB');
+const drag_3 = object('6gTzoWAt6pK');
+const drag_4 = object('6kyCwdq1iQB');
+const drag_5 = object('5aZ0Dn4f2eP');
 
 drag_1.x = player.GetVar("drag_x_1");
 drag_2.x = player.GetVar("drag_x_2");
@@ -848,7 +848,7 @@ window.Script28 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -949,7 +949,7 @@ window.Script31 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -1050,7 +1050,7 @@ window.Script34 = function()
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
 
-window.createProgressBar(8, progressValue, "#fcd639", "progress-container");
+window.createProgressBar(8, progressValue, "#FCC626", "progress-container");
 
 }
 
@@ -1087,89 +1087,6 @@ if(userInput === "boşluk")
 {
 	player.SetVar("user_entry","boşluğa");
 }
-}
-
-window.Script37 = function()
-{
-  var player = GetPlayer();
-var puan = player.GetVar("puan"); // Storyline değişkenini al
-var maxpuan = player.GetVar("maxPuan"); // Storyline değişkenini al
-
-// SCORM Cloud LRS bilgileri (kendi bilgilerinizle değiştirin)
-// Bu bilgiler SCORM Cloud Activity Provider ayarlarınızda bulunur.
-var endpoint = "https://cloud.scorm.com/lrs/1RWFILBDU2/statements"; // Endpoint'in sonuna '/statements' ekleyin
-var username = "PAV1LTI-0BHgITOByUs"; // Activity Provider Key
-var password = "sHRJ1DinbBxgExdU7tI"; // Activity Provider Secret
-
-// Basic Auth başlığı oluşturma
-// 'username:password' stringini Base64 olarak encode edin.
-var auth = "Basic " + btoa(username + ":" + password);
-
-// xAPI statement (puan gönderimi)
-var statement = {
-  "actor": {
-    "name": "Kullanici", // Dinamik bir isim veya Storyline değişkeni kullanabilirsiniz
-    "mbox": "mailto:anon@example.com" // Dinamik bir e-posta veya Storyline değişkeni kullanabilirsiniz
-  },
-  "verb": {
-    "id": "http://adlnet.gov/expapi/verbs/experienced",
-    "display": { "en-US": "experienced" }
-  },
-  "object": {
-    "id": "http://example.com/puan", // Benzersiz bir ID, kursunuz veya puanlama aktivitenizle ilgili olabilir
-    "definition": {
-      "name": { "en-US": "Kullanici Puani" } // Objenin adı
-    }
-  },
-  "result": {
-    "score": {
-      "raw": puan // Storyline'dan alınan değişken değeri
-    }
-  }
-};
-
-// Gönderim işlemi
-var xhr = new XMLHttpRequest();
-
-xhr.open("POST", endpoint, true); // endpoint'e "/statements" zaten ekledik
-
-xhr.setRequestHeader("Authorization", auth);
-xhr.setRequestHeader("Content-Type", "application/json");
-xhr.setRequestHeader("X-Experience-API-Version", "1.0.3"); // xAPI Versiyonu
-
-xhr.onreadystatechange = function () {
-  if (xhr.readyState === 4) {
-    if (xhr.status === 200 || xhr.status === 204) {
-      console.log("puan:" + puan);
-      console.log("maxscore:" + maxpuan );
-      // Storyline'da başarılı olduğunu gösterecek bir işlem yapabilirsiniz (örn: bir değişkeni True yapmak)
-    } else {
-      console.error("❌ Gönderim Hatası:", xhr.status, xhr.responseText);
-      // Storyline'da hata olduğunu gösterecek bir işlem yapabilirsiniz
-    }
-  }
-};
-
-xhr.send(JSON.stringify(statement));
-}
-
-window.Script38 = function()
-{
-  var player = GetPlayer();
-var targetURL = player.GetVar("ExitURL"); 
-
-if(!targetURL) {
-  targetURL = "https://www.derslig.com";
-}
-
-// iframe içindeyse üst frame’den yönlendir
-try {
-  window.top.location.href = targetURL; 
-} catch (e) {
-  // güvenlik engeli varsa fallback
-  window.location.href = targetURL; 
-}
-
 }
 
 };
