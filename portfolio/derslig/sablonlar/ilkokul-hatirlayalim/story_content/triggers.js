@@ -2,70 +2,70 @@ function ExecuteScript(strId)
 {
   switch (strId)
   {
-      case "6GZ5ImHuizM":
+      case "6MyA4rx0UuS":
         Script1();
         break;
-      case "5VvGlzXc1ip":
+      case "6SGn8W0qN7K":
         Script2();
         break;
-      case "6ScvxMyNfVi":
+      case "5kBB2FrqSzG":
         Script3();
         break;
-      case "69o2BMGjMwv":
+      case "6cImuCbEmjZ":
         Script4();
         break;
-      case "5gqzKvfVAm3":
+      case "6jcnfZXzWKP":
         Script5();
         break;
-      case "6GAw9KUqoPd":
+      case "6bgDst6dKfp":
         Script6();
         break;
-      case "6JfoRCHFJlH":
+      case "6jXpMZkHUy0":
         Script7();
         break;
-      case "6ZdiJTB3len":
+      case "696tW8kqx2g":
         Script8();
         break;
-      case "6pVHo6WHnzw":
+      case "5z1Z1C5bubO":
         Script9();
         break;
-      case "6h1MXmboYok":
+      case "5eT83ShmhHS":
         Script10();
         break;
-      case "6mJ1yz57lBt":
+      case "6NF1DQoDkdb":
         Script11();
         break;
-      case "6F1TUfBBJWH":
+      case "6FzHrdWkxWT":
         Script12();
         break;
-      case "6jBKTzQMNfs":
+      case "5eAH8LBkDZ3":
         Script13();
         break;
-      case "6kNt5P3y9I4":
+      case "6ZNelYy9YXA":
         Script14();
         break;
-      case "5l71eHhNyFL":
+      case "5tC5w8rXX76":
         Script15();
         break;
-      case "6fdy82iuAiF":
+      case "5xGsCzxdbbu":
         Script16();
         break;
-      case "6PPUNFerLOQ":
+      case "6YPFHzJA5vt":
         Script17();
         break;
-      case "6rE6DM2ai61":
+      case "6YsOp6QeHN4":
         Script18();
         break;
-      case "5ks6ErlSB3l":
+      case "5iJHYDAjXiv":
         Script19();
         break;
-      case "5VMN2spJpsM":
+      case "6eUblzK4VH7":
         Script20();
         break;
-      case "5w2vGvqSVxv":
+      case "61Hv46KvXHU":
         Script21();
         break;
-      case "6ktguQwyvPw":
+      case "5ngyjIGsxGS":
         Script22();
         break;
   }
