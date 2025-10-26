@@ -13,283 +13,29 @@ var showPointer = player.showPointer;
 var hidePointer = player.hidePointer;
 var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
-window.Script16 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('68YuLz7gc3H');
-const drag_2 = object('60mWyqGV83z');
-const drag_3 = object('6ZXMcH5WGnb');
-const drag_4 = object('5tMNwDlo2Ar');
-const drag_5 = object('6l35NqQeq53');
-const drag_6 = object('5rgv7iuSpA8');
-
-player.SetVar("drag_x_1",drag_1.x);
-player.SetVar("drag_x_2",drag_2.x);
-player.SetVar("drag_x_3",drag_3.x);
-player.SetVar("drag_x_4",drag_4.x);
-player.SetVar("drag_x_5",drag_5.x);
-player.SetVar("drag_x_6",drag_6.x);
-player.SetVar("drag_y_1",drag_1.y);
-player.SetVar("drag_y_2",drag_2.y);
-player.SetVar("drag_y_3",drag_3.y);
-player.SetVar("drag_y_4",drag_4.y);
-player.SetVar("drag_y_5",drag_5.y);
-player.SetVar("drag_y_6",drag_6.y);
-}
-
-window.Script17 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script18 = function()
-{
-  let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
-
-const drag_1 = object('68YuLz7gc3H');
-const drag_2 = object('60mWyqGV83z');
-const drag_3 = object('6ZXMcH5WGnb');
-const drag_4 = object('5tMNwDlo2Ar');
-const drag_5 = object('6l35NqQeq53');
-const drag_6 = object('5rgv7iuSpA8');
-
-if(drag_cevap_1===true)
-{
-	drag_1.x = 1187;
-	drag_1.y = 258;
-}
-
-if(drag_cevap_2===true)
-{
-	drag_2.x = 1420;
-	drag_2.y = 258;
-}
-
-if(drag_cevap_3===true)
-{
-	drag_3.x = 1654;
-	drag_3.y = 258;
-}
-
-if(drag_cevap_4===true)
-{
-	drag_4.x = 1187;
-	drag_4.y = 501;
-}
-
-if(drag_cevap_5===true)
-{
-	drag_5.x = 1420;
-	drag_5.y = 501;
-}
-
-if(drag_cevap_6===true)
-{
-	drag_6.x = 1654;
-	drag_6.y = 501;
-}
-}
-
-window.Script19 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script20 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'block';
-}
-}
-
-window.Script21 = function()
-{
-  let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
-let drag_var_1 = player.GetVar("drag_var_1");
-let drag_var_2 = player.GetVar("drag_var_2");
-let drag_var_3 = player.GetVar("drag_var_3");
-let drag_var_4 = player.GetVar("drag_var_4");
-let drag_var_5 = player.GetVar("drag_var_5");
-let drag_var_6 = player.GetVar("drag_var_6");
-
-
-const drag_1 = object('68YuLz7gc3H');
-const drag_2 = object('60mWyqGV83z');
-const drag_3 = object('6ZXMcH5WGnb');
-const drag_4 = object('5tMNwDlo2Ar');
-const drag_5 = object('6l35NqQeq53');
-const drag_6 = object('5rgv7iuSpA8');
-
-if(drag_var_1 !== drag_cevap_1)
-{
-	drag_1.x = player.GetVar("drag_x_1");
-	drag_1.y = player.GetVar("drag_y_1");
-}
-
-if(drag_var_2 !== drag_cevap_2)
-{
-	drag_2.x = player.GetVar("drag_x_2");
-	drag_2.y = player.GetVar("drag_y_2");
-}
-
-if(drag_var_3 !== drag_cevap_3)
-{
-	drag_3.x = player.GetVar("drag_x_3");
-	drag_3.y = player.GetVar("drag_y_3");
-}
-
-if(drag_var_4 !== drag_cevap_4)
-{
-	drag_4.x = player.GetVar("drag_x_4");
-	drag_4.y = player.GetVar("drag_y_4");
-}
-
-if(drag_var_5 !== drag_cevap_5)
-{
-	drag_5.x = player.GetVar("drag_x_5");
-	drag_5.y = player.GetVar("drag_y_5");
-}
-
-if(drag_var_6 !== drag_cevap_6)
-{
-	drag_6.x = player.GetVar("drag_x_6");
-	drag_6.y = player.GetVar("drag_y_6");
-}
-}
-
-window.Script22 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script23 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6kTu3vmnZOh');
-const drag_2 = object('5n3k7BtIr9B');
-const drag_3 = object('6OM4GzYdI6m');
-const drag_4 = object('6RfmpG9BZVz');
-const drag_5 = object('5cdjbzC9A0Y');
-const drag_6 = object('5r31pIqtHVx');
-
-player.SetVar("drag_x_1",drag_1.x);
-player.SetVar("drag_x_2",drag_2.x);
-player.SetVar("drag_x_3",drag_3.x);
-player.SetVar("drag_x_4",drag_4.x);
-player.SetVar("drag_x_5",drag_5.x);
-player.SetVar("drag_x_6",drag_6.x);
-player.SetVar("drag_y_1",drag_1.y);
-player.SetVar("drag_y_2",drag_2.y);
-player.SetVar("drag_y_3",drag_3.y);
-player.SetVar("drag_y_4",drag_4.y);
-player.SetVar("drag_y_5",drag_5.y);
-player.SetVar("drag_y_6",drag_6.y);
-}
-
-window.Script24 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
 window.Script25 = function()
 {
   let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
 
-const drag_1 = object('6kTu3vmnZOh');
-const drag_2 = object('5n3k7BtIr9B');
-const drag_3 = object('6OM4GzYdI6m');
-const drag_4 = object('6RfmpG9BZVz');
-const drag_5 = object('5cdjbzC9A0Y');
-const drag_6 = object('5r31pIqtHVx');
+const drag_1 = object('68YuLz7gc3H');
+const drag_2 = object('60mWyqGV83z');
+const drag_3 = object('6ZXMcH5WGnb');
+const drag_4 = object('5tMNwDlo2Ar');
+const drag_5 = object('6l35NqQeq53');
+const drag_6 = object('5rgv7iuSpA8');
 
-if(drag_cevap_1===true)
-{
-	drag_1.x = 1187;
-	drag_1.y = 258;
-}
-
-if(drag_cevap_2===true)
-{
-	drag_2.x = 1420;
-	drag_2.y = 258;
-}
-
-if(drag_cevap_3===true)
-{
-	drag_3.x = 1654;
-	drag_3.y = 258;
-}
-
-if(drag_cevap_4===true)
-{
-	drag_4.x = 1187;
-	drag_4.y = 501;
-}
-
-if(drag_cevap_5===true)
-{
-	drag_5.x = 1420;
-	drag_5.y = 501;
-}
-
-if(drag_cevap_6===true)
-{
-	drag_6.x = 1654;
-	drag_6.y = 501;
-}
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
 }
 
 window.Script26 = function()
@@ -306,6 +52,72 @@ if (webObject) {
 
 window.Script27 = function()
 {
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('68YuLz7gc3H');
+const drag_2 = object('60mWyqGV83z');
+const drag_3 = object('6ZXMcH5WGnb');
+const drag_4 = object('5tMNwDlo2Ar');
+const drag_5 = object('6l35NqQeq53');
+const drag_6 = object('5rgv7iuSpA8');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1187;
+	drag_1.y = 258;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1420;
+	drag_2.y = 258;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1654;
+	drag_3.y = 258;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1187;
+	drag_4.y = 501;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1420;
+	drag_5.y = 501;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1654;
+	drag_6.y = 501;
+}
+}
+
+window.Script28 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script29 = function()
+{
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
 var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
@@ -316,7 +128,7 @@ if (webObject) {
 }
 }
 
-window.Script28 = function()
+window.Script30 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -332,12 +144,13 @@ let drag_var_4 = player.GetVar("drag_var_4");
 let drag_var_5 = player.GetVar("drag_var_5");
 let drag_var_6 = player.GetVar("drag_var_6");
 
-const drag_1 = object('6kTu3vmnZOh');
-const drag_2 = object('5n3k7BtIr9B');
-const drag_3 = object('6OM4GzYdI6m');
-const drag_4 = object('6RfmpG9BZVz');
-const drag_5 = object('5cdjbzC9A0Y');
-const drag_6 = object('5r31pIqtHVx');
+
+const drag_1 = object('68YuLz7gc3H');
+const drag_2 = object('60mWyqGV83z');
+const drag_3 = object('6ZXMcH5WGnb');
+const drag_4 = object('5tMNwDlo2Ar');
+const drag_5 = object('6l35NqQeq53');
+const drag_6 = object('5rgv7iuSpA8');
 
 if(drag_var_1 !== drag_cevap_1)
 {
@@ -374,43 +187,6 @@ if(drag_var_6 !== drag_cevap_6)
 	drag_6.x = player.GetVar("drag_x_6");
 	drag_6.y = player.GetVar("drag_y_6");
 }
-}
-
-window.Script29 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script30 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6mPqqFUobtg');
-const drag_2 = object('69nCOK75usx');
-const drag_3 = object('5XZ4B14sLVK');
-const drag_4 = object('6Q3BfgjrT3y');
-const drag_5 = object('6YUj9mLuIIf');
-const drag_6 = object('6Hvg3dEBf9n');
-
-player.SetVar("drag_x_1",drag_1.x);
-player.SetVar("drag_x_2",drag_2.x);
-player.SetVar("drag_x_3",drag_3.x);
-player.SetVar("drag_x_4",drag_4.x);
-player.SetVar("drag_x_5",drag_5.x);
-player.SetVar("drag_x_6",drag_6.x);
-player.SetVar("drag_y_1",drag_1.y);
-player.SetVar("drag_y_2",drag_2.y);
-player.SetVar("drag_y_3",drag_3.y);
-player.SetVar("drag_y_4",drag_4.y);
-player.SetVar("drag_y_5",drag_5.y);
-player.SetVar("drag_y_6",drag_6.y);
 }
 
 window.Script31 = function()
@@ -428,6 +204,230 @@ if (webObject) {
 window.Script32 = function()
 {
   let player = GetPlayer();
+
+const drag_1 = object('6kTu3vmnZOh');
+const drag_2 = object('5n3k7BtIr9B');
+const drag_3 = object('6OM4GzYdI6m');
+const drag_4 = object('6RfmpG9BZVz');
+const drag_5 = object('5cdjbzC9A0Y');
+const drag_6 = object('5r31pIqtHVx');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script33 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script34 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('6kTu3vmnZOh');
+const drag_2 = object('5n3k7BtIr9B');
+const drag_3 = object('6OM4GzYdI6m');
+const drag_4 = object('6RfmpG9BZVz');
+const drag_5 = object('5cdjbzC9A0Y');
+const drag_6 = object('5r31pIqtHVx');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1187;
+	drag_1.y = 258;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1420;
+	drag_2.y = 258;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1654;
+	drag_3.y = 258;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1187;
+	drag_4.y = 501;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1420;
+	drag_5.y = 501;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1654;
+	drag_6.y = 501;
+}
+}
+
+window.Script35 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script36 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script37 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+const drag_1 = object('6kTu3vmnZOh');
+const drag_2 = object('5n3k7BtIr9B');
+const drag_3 = object('6OM4GzYdI6m');
+const drag_4 = object('6RfmpG9BZVz');
+const drag_5 = object('5cdjbzC9A0Y');
+const drag_6 = object('5r31pIqtHVx');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script38 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script39 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6mPqqFUobtg');
+const drag_2 = object('69nCOK75usx');
+const drag_3 = object('5XZ4B14sLVK');
+const drag_4 = object('6Q3BfgjrT3y');
+const drag_5 = object('6YUj9mLuIIf');
+const drag_6 = object('6Hvg3dEBf9n');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script40 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script41 = function()
+{
+  let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
 let drag_cevap_2 = player.GetVar("drag_cevap_2");
 let drag_cevap_3 = player.GetVar("drag_cevap_3");
@@ -476,162 +476,6 @@ if(drag_cevap_6===true)
 {
 	drag_6.x = 1654;
 	drag_6.y = 501;
-}
-}
-
-window.Script33 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script34 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'block';
-}
-}
-
-window.Script35 = function()
-{
-  let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
-let drag_var_1 = player.GetVar("drag_var_1");
-let drag_var_2 = player.GetVar("drag_var_2");
-let drag_var_3 = player.GetVar("drag_var_3");
-let drag_var_4 = player.GetVar("drag_var_4");
-let drag_var_5 = player.GetVar("drag_var_5");
-let drag_var_6 = player.GetVar("drag_var_6");
-
-const drag_1 = object('6mPqqFUobtg');
-const drag_2 = object('69nCOK75usx');
-const drag_3 = object('5XZ4B14sLVK');
-const drag_4 = object('6Q3BfgjrT3y');
-const drag_5 = object('6YUj9mLuIIf');
-const drag_6 = object('6Hvg3dEBf9n');
-
-if(drag_var_1 !== drag_cevap_1)
-{
-	drag_1.x = player.GetVar("drag_x_1");
-	drag_1.y = player.GetVar("drag_y_1");
-}
-
-if(drag_var_2 !== drag_cevap_2)
-{
-	drag_2.x = player.GetVar("drag_x_2");
-	drag_2.y = player.GetVar("drag_y_2");
-}
-
-if(drag_var_3 !== drag_cevap_3)
-{
-	drag_3.x = player.GetVar("drag_x_3");
-	drag_3.y = player.GetVar("drag_y_3");
-}
-
-if(drag_var_4 !== drag_cevap_4)
-{
-	drag_4.x = player.GetVar("drag_x_4");
-	drag_4.y = player.GetVar("drag_y_4");
-}
-
-if(drag_var_5 !== drag_cevap_5)
-{
-	drag_5.x = player.GetVar("drag_x_5");
-	drag_5.y = player.GetVar("drag_y_5");
-}
-
-if(drag_var_6 !== drag_cevap_6)
-{
-	drag_6.x = player.GetVar("drag_x_6");
-	drag_6.y = player.GetVar("drag_y_6");
-}
-}
-
-window.Script36 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script37 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script38 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script39 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'block';
-}
-}
-
-window.Script40 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
-}
-}
-
-window.Script41 = function()
-{
-  // GÜVENİLİR YÖNTEM
-// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
-var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
-
-// Nesne bulunduysa stilini değiştirerek gizle.
-if (webObject) {
-  webObject.style.display = 'none';
 }
 }
 
@@ -661,6 +505,66 @@ if (webObject) {
 
 window.Script44 = function()
 {
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+const drag_1 = object('6mPqqFUobtg');
+const drag_2 = object('69nCOK75usx');
+const drag_3 = object('5XZ4B14sLVK');
+const drag_4 = object('6Q3BfgjrT3y');
+const drag_5 = object('6YUj9mLuIIf');
+const drag_6 = object('6Hvg3dEBf9n');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script45 = function()
+{
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
 var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
@@ -671,7 +575,103 @@ if (webObject) {
 }
 }
 
-window.Script45 = function()
+window.Script46 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script47 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script48 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script49 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script50 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script51 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script52 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script53 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script54 = function()
 {
   var player = GetPlayer();
 var puan = player.GetVar("puan"); // Storyline değişkenini al
@@ -735,7 +735,7 @@ xhr.onreadystatechange = function () {
 xhr.send(JSON.stringify(statement));
 }
 
-window.Script46 = function()
+window.Script55 = function()
 {
   var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
@@ -752,6 +752,570 @@ try {
   window.location.href = targetURL; 
 }
 
+}
+
+window.Script56 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6cRnVMvDMvs');
+const drag_2 = object('6DdRByF9P2F');
+const drag_3 = object('6JByrwTwNq0');
+const drag_4 = object('6hoaPcZVRow');
+const drag_5 = object('6L0AhVLdqfN');
+const drag_6 = object('69JzTZm31Ei');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script57 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script58 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('6cRnVMvDMvs');
+const drag_2 = object('6DdRByF9P2F');
+const drag_3 = object('6JByrwTwNq0');
+const drag_4 = object('6hoaPcZVRow');
+const drag_5 = object('6L0AhVLdqfN');
+const drag_6 = object('69JzTZm31Ei');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1090;
+	drag_1.y = 258;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1348;
+	drag_2.y = 258;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1605;
+	drag_3.y = 258;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1090;
+	drag_4.y = 501;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1348;
+	drag_5.y = 501;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1605;
+	drag_6.y = 501;
+}
+}
+
+window.Script59 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script60 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script61 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+
+const drag_1 = object('6cRnVMvDMvs');
+const drag_2 = object('6DdRByF9P2F');
+const drag_3 = object('6JByrwTwNq0');
+const drag_4 = object('6hoaPcZVRow');
+const drag_5 = object('6L0AhVLdqfN');
+const drag_6 = object('69JzTZm31Ei');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script62 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script63 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('5VBtJJNvqkQ');
+const drag_2 = object('5wGPTKcNMNK');
+const drag_3 = object('5cFXMGwCmoq');
+const drag_4 = object('5qMkhsO7BR3');
+const drag_5 = object('6fNYXrccqCc');
+const drag_6 = object('6lr6zacarj0');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script64 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script65 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('5VBtJJNvqkQ');
+const drag_2 = object('5wGPTKcNMNK');
+const drag_3 = object('5cFXMGwCmoq');
+const drag_4 = object('5qMkhsO7BR3');
+const drag_5 = object('6fNYXrccqCc');
+const drag_6 = object('6lr6zacarj0');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1090;
+	drag_1.y = 258;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1348;
+	drag_2.y = 258;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1605;
+	drag_3.y = 258;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1090;
+	drag_4.y = 501;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1348;
+	drag_5.y = 501;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1605;
+	drag_6.y = 501;
+}
+}
+
+window.Script66 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script67 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script68 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+
+const drag_1 = object('5VBtJJNvqkQ');
+const drag_2 = object('5wGPTKcNMNK');
+const drag_3 = object('5cFXMGwCmoq');
+const drag_4 = object('5qMkhsO7BR3');
+const drag_5 = object('6fNYXrccqCc');
+const drag_6 = object('6lr6zacarj0');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script69 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script70 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6fEjdzMyzC5');
+const drag_2 = object('6f5kiZk39jV');
+const drag_3 = object('6aenKUQWlUx');
+const drag_4 = object('67CnjizoPUW');
+const drag_5 = object('6VXqAlXwcnv');
+const drag_6 = object('5kj1NhbLCAK');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script71 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script72 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('6fEjdzMyzC5');
+const drag_2 = object('6f5kiZk39jV');
+const drag_3 = object('6aenKUQWlUx');
+const drag_4 = object('67CnjizoPUW');
+const drag_5 = object('6VXqAlXwcnv');
+const drag_6 = object('5kj1NhbLCAK');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1090;
+	drag_1.y = 258;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1348;
+	drag_2.y = 258;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1605;
+	drag_3.y = 258;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1090;
+	drag_4.y = 501;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1348;
+	drag_5.y = 501;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1605;
+	drag_6.y = 501;
+}
+}
+
+window.Script73 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
+}
+
+window.Script74 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'block';
+}
+}
+
+window.Script75 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+
+const drag_1 = object('6fEjdzMyzC5');
+const drag_2 = object('6f5kiZk39jV');
+const drag_3 = object('6aenKUQWlUx');
+const drag_4 = object('67CnjizoPUW');
+const drag_5 = object('6VXqAlXwcnv');
+const drag_6 = object('5kj1NhbLCAK');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script76 = function()
+{
+  // GÜVENİLİR YÖNTEM
+// '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
+var webObject = document.querySelector('[data-model-id="5xx0Pt0AXRa"]');
+
+// Nesne bulunduysa stilini değiştirerek gizle.
+if (webObject) {
+  webObject.style.display = 'none';
+}
 }
 
 };

@@ -61,6 +61,8 @@
   <resources>
     <resource identifier="__6DWYMJJ8P9I_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
       <file href="story_content/thumbnail.jpg" />
+      <file href="story_content/5naF5eDa7JC_44100_48_0.mp3" />
+      <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
       <file href="story_content/WebObjects/6CnAYknasjP/zubulig_koltukta_stabil.html" />
       <file href="mobile/6CnAYknasjP5haHau6YNsX{Width=555, Height=480}Light.png" />
       <file href="story_content/5WV2TV3kHWG.js" />
@@ -90,11 +92,13 @@
       <file href="story_content/user.js" />
       <file href="mobile/Shape5aW4vGbX4Xx.png" />
       <file href="html5/data/css/output.min.css" />
-      <file href="html5/data/js/5hRJ7ccpQjB.js" />
+      <file href="html5/data/js/5xRvWeefUvh.js" />
       <file href="html5/data/js/5Y6CEH7nfwQ.js" />
+      <file href="html5/data/js/5ymYx0LMi9m.js" />
       <file href="html5/data/js/6AOi3D7G8FK.js" />
       <file href="html5/data/js/6cvuzaQUfee.js" />
       <file href="html5/data/js/6eCvs6yHkEG.js" />
+      <file href="html5/data/js/6gL5JZzH4Iq.js" />
       <file href="html5/data/js/data.js" />
       <file href="html5/data/js/frame.js" />
       <file href="html5/data/js/paths.js" />

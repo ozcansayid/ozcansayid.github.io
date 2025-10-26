@@ -1582,6 +1582,13 @@
             <slidelink slideid="_player.65423nzkafp.6gVs2TLjsLZ" displaytext="Sonuç" expand="false" type="slide" />
           </links>
         </slidelink>
+        <slidelink slideid="_player.6ONsu2byDJc" displaytext="Metinli Şablon" expand="true" type="slide">
+          <links>
+            <slidelink slideid="_player.6ONsu2byDJc.6jmduA3OcZ9" displaytext="Görev 1" expand="false" type="slide" />
+            <slidelink slideid="_player.6ONsu2byDJc.6WZALXU2nph" displaytext="Görev 2" expand="false" type="slide" />
+            <slidelink slideid="_player.6ONsu2byDJc.5r6wMGdikR2" displaytext="Görev 3" expand="false" type="slide" />
+          </links>
+        </slidelink>
       </links>
     </outline>
   </nav_data>
