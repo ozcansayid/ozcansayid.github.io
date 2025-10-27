@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest identifier="_5gZNtUEdgAz" version="1.0" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
+      <general>
+        <title>
+          <langstring xml:lang="x-none">İlkokul Görev Macerası</langstring>
+        </title>
+      </general>
+      <lifecycle>
+        <version>
+          <langstring xml:lang="x-none">1</langstring>
+        </version>
+        <status>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">Final</langstring>
+          </value>
+        </status>
+      </lifecycle>
+      <metametadata>
+        <metadatascheme>ADL SCORM 1.2</metadatascheme>
+      </metametadata>
+      <educational>
+        <typicallearningtime>
+          <datetime>PT0H0M0S</datetime>
+        </typicallearningtime>
+      </educational>
+      <rights>
+        <cost>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </cost>
+        <copyrightandotherrestrictions>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </copyrightandotherrestrictions>
+      </rights>
+    </lom>
+  </metadata>
+  <organizations default="İlkokul_Görev_Macerası_ORG">
+    <organization identifier="İlkokul_Görev_Macerası_ORG">
+      <title>İlkokul Görev Macerası</title>
+      <item identifier="İlkokul_Görev_Macerası_SCO" isvisible="true" identifierref="__5gZNtUEdgAz_RES">
+        <title>İlkokul Görev Macerası</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="__5gZNtUEdgAz_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
+      <file href="story_content/thumbnail.jpg" />
+      <file href="story_content/WebObjects/6XfxOrEAa24/Uçan Kuşlar animasyonu.html" />
+      <file href="mobile/6XfxOrEAa245wrFqIEgi0U{Width=520, Height=520}Light.png" />
+      <file href="story_content/5WCUEWX9ejX.js" />
+      <file href="story_content/WebObjects/6c1bhhVJP95/Zubulig Merhaba Animasyonu.html" />
+      <file href="mobile/6c1bhhVJP955eKiBV33SBS{Width=520, Height=520}Light.png" />
+      <file href="mobile/6DjHKMKzJdh.png" />
+      <file href="story_content/5nTUInqgyer_44100_48_0.mp3" />
+      <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/6CIb0sjVTEs/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6CIb0sjVTEs6AVAvKduF2M{Width=520, Height=520}Light.png" />
+      <file href="story_content/5bwn8xtP6Tw_44100_48_0.mp3" />
+      <file href="story_content/5k3HJhWbx1b.js" />
+      <file href="mobile/5h2MLMjNuYs.png" />
+      <file href="mobile/6Dt1Pi7E3Jn.png" />
+      <file href="mobile/6GczSZmcr9K.png" />
+      <file href="mobile/6hW1bBLwiWs.png" />
+      <file href="mobile/6QuK2QxB9c1.png" />
+      <file href="mobile/6IHSud6ll4r.png" />
+      <file href="mobile/6gd60b6JfCe.png" />
+      <file href="mobile/6cqpJFLx0yg.png" />
+      <file href="mobile/65qfm3DUGKE.png" />
+      <file href="mobile/6rK0dnw0FZa.png" />
+      <file href="mobile/6XIhy3kr7TS.png" />
+      <file href="mobile/5dLjLBOmIbj.png" />
+      <file href="story_content/WebObjects/5xx0Pt0AXRa/Stabil Zubulig animasyonu.html" />
+      <file href="mobile/5xx0Pt0AXRa6p0yV0zBY9a{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6nCXAS3uAsf/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6nCXAS3uAsf6RuXPYqdeSk{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/61ygx5JsJ19/Stabil Zubulig animasyonu.html" />
+      <file href="mobile/61ygx5JsJ196HptpY7Imco{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6a9rwOvDXbN/Yanlışa Tepki Zubulig animasyonu.html" />
+      <file href="mobile/6a9rwOvDXbN63j2eIH8gMw{Width=520, Height=520}Light.png" />
+      <file href="mobile/67DG7JeGLqn.png" />
+      <file href="story_content/6AaLDlRrTpy_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/6mLDT8JaDn3/Doğruya Tepki Zubulig animasyonu.html" />
+      <file href="mobile/6mLDT8JaDn35idy3c5H0dp{Width=520, Height=520}Light.png" />
+      <file href="story_content/68pRAkSTWVD_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/6BE7EcMcOfd/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6BE7EcMcOfd63tOmlcrmMX{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6P6NpVs2ods/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6P6NpVs2ods5uSXiFAAdGO{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6B9Mc5VhdlF/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6B9Mc5VhdlF6TG7ZcgtJoX{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6YLTc7ENKJE/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/6YLTc7ENKJE6Rf2iP2bQZ4{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6C7qW3TLXWj/Finalde Gelen sancak Animasyonu.html" />
+      <file href="mobile/6C7qW3TLXWj6VQFu5SfOku{Width=520, Height=520}Light.png" />
+      <file href="story_content/6oBwQBZ9v2D_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/6PUxCtGaBzx/Final Zubulig animasyonu.html" />
+      <file href="mobile/6PUxCtGaBzx5iJvLPj9smk{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/5afBeFWbcvU/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/5afBeFWbcvU5VM188Hf7rr{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/5xIt6r23jxT/Yürüyen Zubulig animasyonu.html" />
+      <file href="mobile/5xIt6r23jxT60WcH9QJlFu{Width=520, Height=520}Light.png" />
+      <file href="meta.xml" />
+      <file href="story_content/triggers.js" />
+      <file href="story_content/user.js" />
+      <file href="mobile/Slide6WrNHtwpo2s.jpg" />
+      <file href="mobile/Shape6fSF79737fQ.png" />
+      <file href="mobile/Slide6c2tWl3EqaY.jpg" />
+      <file href="mobile/txt__default_6XgEdsMhemL.png" />
+      <file href="mobile/txt_Correct_6XgEdsMhemL.png" />
+      <file href="mobile/txt_Wrong_6XgEdsMhemL.png" />
+      <file href="mobile/Slide5u4gOgVvESu.jpg" />
+      <file href="mobile/txt__default_5k0EHAsKDV7.png" />
+      <file href="mobile/txt_Correct_5k0EHAsKDV7.png" />
+      <file href="mobile/txt_Wrong_5k0EHAsKDV7.png" />
+      <file href="mobile/Slide6huKnP58WZG.jpg" />
+      <file href="mobile/txt__default_5n0rSJg2QOv.png" />
+      <file href="mobile/txt_Correct_5n0rSJg2QOv.png" />
+      <file href="mobile/txt_Wrong_5n0rSJg2QOv.png" />
+      <file href="mobile/Slide5Ush3DePzul.jpg" />
+      <file href="mobile/Slide6GqjjD1xH0j.jpg" />
+      <file href="mobile/Slide69SQP6iPvFv.jpg" />
+      <file href="mobile/Slide6Ncn8PHhD9p.jpg" />
+      <file href="mobile/txt__default_5VbfudIUJjm.png" />
+      <file href="mobile/txt_Correct_5VbfudIUJjm.png" />
+      <file href="mobile/txt_Wrong_5VbfudIUJjm.png" />
+      <file href="mobile/txt__default_6OMnogON3CF.png" />
+      <file href="mobile/txt_Correct_6OMnogON3CF.png" />
+      <file href="mobile/txt_Wrong_6OMnogON3CF.png" />
+      <file href="html5/data/css/output.min.css" />
+      <file href="html5/data/js/5r6wMGdikR2.js" />
+      <file href="html5/data/js/5sMUhPF7mEu.js" />
+      <file href="html5/data/js/61N041lj8oO.js" />
+      <file href="html5/data/js/6BmxiRvz4CJ.js" />
+      <file href="html5/data/js/6gVs2TLjsLZ.js" />
+      <file href="html5/data/js/6jmduA3OcZ9.js" />
+      <file href="html5/data/js/6mch78Uz3Tb.js" />
+      <file href="html5/data/js/6V0cvP0BEib.js" />
+      <file href="html5/data/js/6WZALXU2nph.js" />
+      <file href="html5/data/js/data.js" />
+      <file href="html5/data/js/frame.js" />
+      <file href="html5/data/js/paths.js" />
+      <file href="html5/lib/scripts/bootstrapper.min.js" />
+      <file href="html5/lib/scripts/frame.desktop.min.js" />
+      <file href="html5/lib/scripts/frame.mobile.min.js" />
+      <file href="html5/lib/scripts/slides.min.js" />
+      <file href="html5/lib/stylesheets/desktop.min.css" />
+      <file href="html5/lib/stylesheets/mobile.min.css" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-bold.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-light.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-regular.woff" />
+      <file href="analytics-frame.html" />
+      <file href="story.html" />
+      <file href="index_lms.html" />
+      <file href="lms/AICCComm.html" />
+      <file href="lms/blank.html" />
+      <file href="lms/browsersniff.js" />
+      <file href="lms/goodbye.html" />
+      <file href="lms/scormdriver.js" />
+    </resource>
+  </resources>
+</manifest>
