@@ -118,12 +118,12 @@ window.Script9 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5x1aH53hPhv');
-const drag_2 = object('6Tlbewforje');
-const drag_3 = object('6pTXFY3eLDh');
-const drag_4 = object('5o0Oyg8m3RX');
-const drag_5 = object('6g6la4a0vkj');
-const drag_6 = object('6CjssinthFL');
+const drag_1 = object('6h0bweTwmby');
+const drag_2 = object('6QAedRK1GWs');
+const drag_3 = object('6U7k5Q33yME');
+const drag_4 = object('6HuNqbvdssn');
+const drag_5 = object('63AgSFrimHM');
+const drag_6 = object('6jwB8th1Gkx');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -149,16 +149,16 @@ let drag_cevap_4 = player.GetVar("drag_cevap_4");
 let drag_cevap_5 = player.GetVar("drag_cevap_5");
 let drag_cevap_6 = player.GetVar("drag_cevap_6");
 
-const drag_1 = object('5x1aH53hPhv');
-const drag_2 = object('6Tlbewforje');
-const drag_3 = object('6pTXFY3eLDh');
-const drag_4 = object('5o0Oyg8m3RX');
-const drag_5 = object('6g6la4a0vkj');
-const drag_6 = object('6CjssinthFL');
+const drag_1 = object('6h0bweTwmby');
+const drag_2 = object('6QAedRK1GWs');
+const drag_3 = object('6U7k5Q33yME');
+const drag_4 = object('6HuNqbvdssn');
+const drag_5 = object('63AgSFrimHM');
+const drag_6 = object('6jwB8th1Gkx');
 
 if(drag_cevap_1===true)
 {
-	drag_1.x = 1156;
+	drag_1.x = 1106;
 	drag_1.y = 242;
 }
 
@@ -170,13 +170,13 @@ if(drag_cevap_2===true)
 
 if(drag_cevap_3===true)
 {
-	drag_3.x = 1598;
+	drag_3.x = 1648;
 	drag_3.y = 242;
 }
 
 if(drag_cevap_4===true)
 {
-	drag_4.x = 1156;
+	drag_4.x = 1106;
 	drag_4.y = 459;
 }
 
@@ -188,7 +188,7 @@ if(drag_cevap_5===true)
 
 if(drag_cevap_6===true)
 {
-	drag_6.x = 1598;
+	drag_6.x = 1648;
 	drag_6.y = 459;
 }
 }
@@ -210,12 +210,12 @@ let drag_var_5 = player.GetVar("drag_var_5");
 let drag_var_6 = player.GetVar("drag_var_6");
 
 
-const drag_1 = object('5x1aH53hPhv');
-const drag_2 = object('6Tlbewforje');
-const drag_3 = object('6pTXFY3eLDh');
-const drag_4 = object('5o0Oyg8m3RX');
-const drag_5 = object('6g6la4a0vkj');
-const drag_6 = object('6CjssinthFL');
+const drag_1 = object('6h0bweTwmby');
+const drag_2 = object('6QAedRK1GWs');
+const drag_3 = object('6U7k5Q33yME');
+const drag_4 = object('6HuNqbvdssn');
+const drag_5 = object('63AgSFrimHM');
+const drag_6 = object('6jwB8th1Gkx');
 
 if(drag_var_1 !== drag_cevap_1)
 {
@@ -784,12 +784,12 @@ window.Script26 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('6h0bweTwmby');
-const drag_2 = object('6QAedRK1GWs');
-const drag_3 = object('6U7k5Q33yME');
-const drag_4 = object('6HuNqbvdssn');
-const drag_5 = object('63AgSFrimHM');
-const drag_6 = object('6jwB8th1Gkx');
+const drag_1 = object('5x1aH53hPhv');
+const drag_2 = object('6Tlbewforje');
+const drag_3 = object('6pTXFY3eLDh');
+const drag_4 = object('5o0Oyg8m3RX');
+const drag_5 = object('6g6la4a0vkj');
+const drag_6 = object('6CjssinthFL');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -815,16 +815,16 @@ let drag_cevap_4 = player.GetVar("drag_cevap_4");
 let drag_cevap_5 = player.GetVar("drag_cevap_5");
 let drag_cevap_6 = player.GetVar("drag_cevap_6");
 
-const drag_1 = object('6h0bweTwmby');
-const drag_2 = object('6QAedRK1GWs');
-const drag_3 = object('6U7k5Q33yME');
-const drag_4 = object('6HuNqbvdssn');
-const drag_5 = object('63AgSFrimHM');
-const drag_6 = object('6jwB8th1Gkx');
+const drag_1 = object('5x1aH53hPhv');
+const drag_2 = object('6Tlbewforje');
+const drag_3 = object('6pTXFY3eLDh');
+const drag_4 = object('5o0Oyg8m3RX');
+const drag_5 = object('6g6la4a0vkj');
+const drag_6 = object('6CjssinthFL');
 
 if(drag_cevap_1===true)
 {
-	drag_1.x = 1106;
+	drag_1.x = 1156;
 	drag_1.y = 242;
 }
 
@@ -836,13 +836,13 @@ if(drag_cevap_2===true)
 
 if(drag_cevap_3===true)
 {
-	drag_3.x = 1648;
+	drag_3.x = 1598;
 	drag_3.y = 242;
 }
 
 if(drag_cevap_4===true)
 {
-	drag_4.x = 1106;
+	drag_4.x = 1156;
 	drag_4.y = 459;
 }
 
@@ -854,7 +854,7 @@ if(drag_cevap_5===true)
 
 if(drag_cevap_6===true)
 {
-	drag_6.x = 1648;
+	drag_6.x = 1598;
 	drag_6.y = 459;
 }
 }
@@ -876,12 +876,12 @@ let drag_var_5 = player.GetVar("drag_var_5");
 let drag_var_6 = player.GetVar("drag_var_6");
 
 
-const drag_1 = object('6h0bweTwmby');
-const drag_2 = object('6QAedRK1GWs');
-const drag_3 = object('6U7k5Q33yME');
-const drag_4 = object('6HuNqbvdssn');
-const drag_5 = object('63AgSFrimHM');
-const drag_6 = object('6jwB8th1Gkx');
+const drag_1 = object('5x1aH53hPhv');
+const drag_2 = object('6Tlbewforje');
+const drag_3 = object('6pTXFY3eLDh');
+const drag_4 = object('5o0Oyg8m3RX');
+const drag_5 = object('6g6la4a0vkj');
+const drag_6 = object('6CjssinthFL');
 
 if(drag_var_1 !== drag_cevap_1)
 {
