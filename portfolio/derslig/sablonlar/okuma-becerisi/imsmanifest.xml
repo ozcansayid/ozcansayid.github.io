@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest identifier="_6OqiOr0ePRr" version="1.0" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
+      <general>
+        <title>
+          <langstring xml:lang="x-none">Okuma Becerisi</langstring>
+        </title>
+      </general>
+      <lifecycle>
+        <version>
+          <langstring xml:lang="x-none">1</langstring>
+        </version>
+        <status>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">Final</langstring>
+          </value>
+        </status>
+      </lifecycle>
+      <metametadata>
+        <metadatascheme>ADL SCORM 1.2</metadatascheme>
+      </metametadata>
+      <educational>
+        <typicallearningtime>
+          <datetime>PT0H0M0S</datetime>
+        </typicallearningtime>
+      </educational>
+      <rights>
+        <cost>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </cost>
+        <copyrightandotherrestrictions>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </copyrightandotherrestrictions>
+      </rights>
+    </lom>
+  </metadata>
+  <organizations default="Okuma_Becerisi_ORG">
+    <organization identifier="Okuma_Becerisi_ORG">
+      <title>Okuma Becerisi</title>
+      <item identifier="Ortaokul_Kavram_Yürüyüşü_SCO" isvisible="true" identifierref="__6OqiOr0ePRr_RES">
+        <title>Okuma Becerisi</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="__6OqiOr0ePRr_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
+      <file href="story_content/thumbnail.jpg" />
+      <file href="story_content/6Ud73rHQHU7_44100_48_0.mp3" />
+      <file href="story_content/WebObjects/6Bwwgb49ZBO/okuma becerisi intro.html" />
+      <file href="mobile/6Bwwgb49ZBO5kAp0Ki2pGq{Width=1996.792, Height=1114}Light.png" />
+      <file href="story_content/WebObjects/6ODsFn4B25v/büyük projektör.html" />
+      <file href="mobile/6ODsFn4B25v69YXRR5iukn{Width=606, Height=876}Light.png" />
+      <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
+      <file href="story_content/5aLaOf8VZTe.js" />
+      <file href="mobile/5bboaDZEg63.png" />
+      <file href="story_content/5fbMnoId8ou_44100_48_0.mp3" />
+      <file href="story_content/6lYIOJf7W6C_44100_48_0.mp3" />
+      <file href="mobile/6HFo9ADM2oz.png" />
+      <file href="mobile/5X3g7bNN53y.png" />
+      <file href="story_content/WebObjects/6cX6VE5rVxU/index.html" />
+      <file href="mobile/6cX6VE5rVxU6p6V0Wb99DM{Width=790.3208, Height=911}Light.png" />
+      <file href="meta.xml" />
+      <file href="story_content/triggers.js" />
+      <file href="story_content/user.js" />
+      <file href="mobile/Shape5yCu2N9sUDk.png" />
+      <file href="html5/data/css/output.min.css" />
+      <file href="html5/data/js/5nNW0eTDyqJ.js" />
+      <file href="html5/data/js/5VnLoVHCcKL.js" />
+      <file href="html5/data/js/5vO0UaTo0p1.js" />
+      <file href="html5/data/js/5y9XDfOvQPC.js" />
+      <file href="html5/data/js/5z9QdnuVkrB.js" />
+      <file href="html5/data/js/66EnasARI3e.js" />
+      <file href="html5/data/js/66UIkBec92b.js" />
+      <file href="html5/data/js/6cy3psP3LuE.js" />
+      <file href="html5/data/js/6jbAPZYoKBG.js" />
+      <file href="html5/data/js/6lsSZ96Lecv.js" />
+      <file href="html5/data/js/6SrpIEoEDdA.js" />
+      <file href="html5/data/js/6UIvR5dbFiJ.js" />
+      <file href="html5/data/js/data.js" />
+      <file href="html5/data/js/frame.js" />
+      <file href="html5/data/js/paths.js" />
+      <file href="html5/lib/scripts/bootstrapper.min.js" />
+      <file href="html5/lib/scripts/frame.desktop.min.js" />
+      <file href="html5/lib/scripts/frame.mobile.min.js" />
+      <file href="html5/lib/scripts/slides.min.js" />
+      <file href="html5/lib/stylesheets/desktop.min.css" />
+      <file href="html5/lib/stylesheets/mobile.min.css" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-bold.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-light.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-regular.woff" />
+      <file href="analytics-frame.html" />
+      <file href="story.html" />
+      <file href="index_lms.html" />
+      <file href="lms/AICCComm.html" />
+      <file href="lms/blank.html" />
+      <file href="lms/browsersniff.js" />
+      <file href="lms/goodbye.html" />
+      <file href="lms/scormdriver.js" />
+    </resource>
+  </resources>
+</manifest>
