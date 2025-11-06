@@ -15,102 +15,107 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script2 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  var player = GetPlayer();
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+// Başlangıç değerleri
+var minutes = 0;
+var seconds = 0;
+var milliseconds = 0;
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+// Önceki timer varsa durdur
+clearInterval(window.timerInterval);
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// Kronometre başlat (her 10 ms'de bir)
+window.timerInterval = setInterval(function () {
+  // Milisaniyeyi artır
+  milliseconds++;
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
+  // 100 ms = 1 saniye
+  if (milliseconds >= 100) {
+    milliseconds = 0;
+    seconds++;
+  }
 
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
+  // 60 saniye = 1 dakika
+  if (seconds >= 60) {
+    seconds = 0;
+    minutes++;
+  }
 
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  // Tek haneliyse başına 0 koy, değilse normal yaz
+  var minStr = minutes < 10 ? "0" + minutes : minutes.toString();
+  var secStr = seconds < 10 ? "0" + seconds : seconds.toString();
+  var msStr  = milliseconds < 10 ? "0" + milliseconds : milliseconds.toString();
 
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
+  // Storyline değişkenlerine aktar
+  player.SetVar("minutes", minStr);
+  player.SetVar("seconds", secStr);
+  player.SetVar("milliseconds", msStr);
 
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
+}, 10);
 
 }
 
 window.Script3 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  // Storyline player objesini al
+var player = GetPlayer();
 
-window.createProgressBar(9, progressValue, "#fcd639", "progress-container");
+// Shape'in ID'sini belirle (örnek: "text_1" veya "TextBox1")
+var shapeId = "TextBox1"; // kendi shape ID'ni buraya yaz!
+
+// DOM üzerinden shape'e eriş
+var shapeElement = document.querySelector('[data-acc-text="' + shapeId + '"]') 
+                || document.getElementById(shapeId);
+
+// Shape varsa içeriğini al
+var text = "";
+if (shapeElement) {
+    text = shapeElement.innerText || shapeElement.textContent || "";
+}
+
+// Boşlukları temizle
+text = text.replace(/\u00A0/g, " ").trim();
+
+// Kelime sayısı hesapla
+var count = 0;
+if (text.length > 0) {
+    var matches = null;
+    try {
+        matches = text.match(/\b[\p{L}\p{N}'-]+\b/gu);
+    } catch (e) {
+        matches = text.match(/[A-Za-z0-9\u00C0-\u024F\u0400-\u04FF'’-]+/g);
+    }
+    count = matches ? matches.length : 0;
+}
+
+// Sonucu Storyline değişkenine aktar
+player.SetVar("WordCount", count);
 
 }
 
 window.Script4 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  var player = GetPlayer();
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
+// Storyline değişkenlerinden verileri al
+var sure = player.GetVar("sure");        // örnek: 51000 (milisaniye)
+var wordCount = player.GetVar("WordCount"); // örnek: 240
 
+// Milisaniyeyi saniyeye çevir
+var seconds = sure / 1000;
 
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+// Dakikaya çevirmek için 60 ile çarp
+var wordsPerMinute = 0;
+if (seconds > 0) {
+    wordsPerMinute = (wordCount / seconds) * 60;
 }
+
+// Sonucu yuvarla (isteğe bağlı)
+wordsPerMinute = Math.round(wordsPerMinute);
+
+// Storyline değişkenine yaz
+player.SetVar("ReadingSpeed", wordsPerMinute);
 
 }
 
@@ -823,25 +828,6 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 window.Script26 = function()
 {
-  let player = GetPlayer();
-let userInput = player.GetVar("user_entry");
-let cevap = player.GetVar("cevap");
-
-player.SetVar("user_entry", userInput.toLocaleLowerCase("tr-TR"));
-player.SetVar("cevap", cevap.toLocaleLowerCase("tr-TR"));
-
-if(userInput === "1")
-{
-	player.SetVar("user_entry","bir");
-}
-else if(userInput === "2")
-{
-	player.SetVar("user_entry","bir");
-}
-}
-
-window.Script27 = function()
-{
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
     const targetDiv = document.querySelector(targetDivSelector);
@@ -909,20 +895,20 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
     }
 };
 
+
+}
+
+window.Script27 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(9, progressValue, "#fcd639", "progress-container");
 
 }
 
 window.Script28 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(9, progressValue, "#fcd639", "progress-container");
-
-}
-
-window.Script29 = function()
-{
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
 
@@ -941,7 +927,7 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
-window.Script30 = function()
+window.Script29 = function()
 {
   let player = GetPlayer();
 let userInput = player.GetVar("user_entry");
@@ -960,7 +946,7 @@ else if(userInput === "2")
 }
 }
 
-window.Script31 = function()
+window.Script30 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -1032,7 +1018,7 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
 
 }
 
-window.Script32 = function()
+window.Script31 = function()
 {
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
@@ -1041,7 +1027,7 @@ window.createProgressBar(9, progressValue, "#fcd639", "progress-container");
 
 }
 
-window.Script33 = function()
+window.Script32 = function()
 {
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
@@ -1061,7 +1047,127 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
+window.Script33 = function()
+{
+  let player = GetPlayer();
+let userInput = player.GetVar("user_entry");
+let cevap = player.GetVar("cevap");
+
+player.SetVar("user_entry", userInput.toLocaleLowerCase("tr-TR"));
+player.SetVar("cevap", cevap.toLocaleLowerCase("tr-TR"));
+
+if(userInput === "1")
+{
+	player.SetVar("user_entry","bir");
+}
+else if(userInput === "2")
+{
+	player.SetVar("user_entry","bir");
+}
+}
+
 window.Script34 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script35 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(9, progressValue, "#fcd639", "progress-container");
+
+}
+
+window.Script36 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script37 = function()
 {
   var player = GetPlayer();
 var puan = player.GetVar("puan"); // Storyline değişkenini al
@@ -1125,7 +1231,7 @@ xhr.onreadystatechange = function () {
 xhr.send(JSON.stringify(statement));
 }
 
-window.Script35 = function()
+window.Script38 = function()
 {
   var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
