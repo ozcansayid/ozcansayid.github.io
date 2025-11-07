@@ -15,44 +15,34 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script2 = function()
 {
-  var player = GetPlayer();
-
-// Başlangıç değerleri
+  // Değişkenleri al
+var player = GetPlayer();
 var minutes = 0;
 var seconds = 0;
-var milliseconds = 0;
 
-// Önceki timer varsa durdur
-clearInterval(window.timerInterval);
-
-// Kronometre başlat (her 10 ms'de bir)
-window.timerInterval = setInterval(function () {
-  // Milisaniyeyi artır
-  milliseconds++;
-
-  // 100 ms = 1 saniye
-  if (milliseconds >= 100) {
-    milliseconds = 0;
-    seconds++;
-  }
-
-  // 60 saniye = 1 dakika
+// Timer başlat
+var timer = setInterval(function() {
+  seconds++;
+  
   if (seconds >= 60) {
     seconds = 0;
     minutes++;
   }
 
-  // Tek haneliyse başına 0 koy, değilse normal yaz
-  var minStr = minutes < 10 ? "0" + minutes : minutes.toString();
-  var secStr = seconds < 10 ? "0" + seconds : seconds.toString();
-  var msStr  = milliseconds < 10 ? "0" + milliseconds : milliseconds.toString();
+  // Formatlama (01, 02... 10)
+  var formattedMinutes = minutes.toString().padStart(2, "0");
+  var formattedSeconds = seconds.toString().padStart(2, "0");
 
-  // Storyline değişkenlerine aktar
-  player.SetVar("minutes", minStr);
-  player.SetVar("seconds", secStr);
-  player.SetVar("milliseconds", msStr);
+  // Storyline değişkenlerini güncelle
+  player.SetVar("minutes", formattedMinutes);
+  player.SetVar("seconds", formattedSeconds);
 
-}, 10);
+  // 3 dakikadan sonra durdurmak istersen (isteğe bağlı)
+  if (minutes === 3) {
+    clearInterval(timer);
+  }
+
+}, 1000);
 
 }
 
