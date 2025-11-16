@@ -15,6 +15,20 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
+  let player = GetPlayer();
+
+player.SetVar("etkinlik_1",false);
+player.SetVar("etkinlik_2",false);
+player.SetVar("etkinlik_3",false);
+player.SetVar("etkinlik_4",false);
+player.SetVar("etkinlik_5",false);
+player.SetVar("etkinlik_6",false);
+
+
+}
+
+window.Script2 = function()
+{
   var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
 
@@ -32,7 +46,7 @@ try {
 
 }
 
-window.Script2 = function()
+window.Script3 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -101,241 +115,382 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
     }
 };
 
-
-}
-
-window.Script3 = function()
-{
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script4 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
-}
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script5 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
-
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
-
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
 
 }
 
 window.Script6 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
 
 }
 
 window.Script7 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
+let soru_no = player.GetVar("soru_no");
 
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
 
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
 }
 
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script8 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
 
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
 
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
 
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
-
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script9 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script10 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
 }
-
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
 }
 
 window.Script11 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script12 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -404,241 +559,382 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
     }
 };
 
-
-}
-
-window.Script12 = function()
-{
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script13 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
-}
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script14 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
-
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
-
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
 
 }
 
 window.Script15 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
 
 }
 
 window.Script16 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
+let soru_no = player.GetVar("soru_no");
 
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
 
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
 }
 
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script17 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
 
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
 
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
 
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
-
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script18 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script19 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
 }
-
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
 }
 
 window.Script20 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script21 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -707,241 +1003,382 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
     }
 };
 
-
-}
-
-window.Script21 = function()
-{
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script22 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
-}
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script23 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
-
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
-
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
 
 }
 
 window.Script24 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
 
 }
 
 window.Script25 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
+let soru_no = player.GetVar("soru_no");
 
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
 
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
 }
 
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script26 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
 
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
 
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
 
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
-
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script27 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script28 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
 }
-
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
 }
 
 window.Script29 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script30 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -1010,140 +1447,382 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
     }
 };
 
-
-}
-
-window.Script30 = function()
-{
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script31 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
-}
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
 window.Script32 = function()
 {
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
 
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
 
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
 
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
 
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
-
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
-
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
 
 }
 
 window.Script33 = function()
 {
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
 
-window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
 
 }
 
 window.Script34 = function()
 {
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
+  let player = GetPlayer();
 
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
+let soru_no = player.GetVar("soru_no");
 
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
 
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
 
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
 }
 
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
 }
 
 window.Script35 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script36 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script37 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script38 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script39 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -1215,7 +1894,7 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
 
 }
 
-window.Script36 = function()
+window.Script40 = function()
 {
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
@@ -1224,7 +1903,7 @@ window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
 
 }
 
-window.Script37 = function()
+window.Script41 = function()
 {
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
@@ -1244,7 +1923,6122 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
-window.Script38 = function()
+window.Script42 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script43 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script44 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script45 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script46 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script47 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script48 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script49 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script50 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script51 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script52 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script53 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script54 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script55 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script56 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script57 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script58 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script59 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script60 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script61 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script62 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script63 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script64 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script65 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script66 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script67 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script68 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script69 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script70 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script71 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script72 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script73 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script74 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script75 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script76 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script77 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script78 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script79 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script80 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script81 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script82 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script83 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script84 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script85 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script86 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script87 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script88 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script89 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script90 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script91 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script92 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script93 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script94 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script95 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script96 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script97 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script98 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script99 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script100 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script101 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script102 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script103 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script104 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script105 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script106 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script107 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script108 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script109 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script110 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script111 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script112 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script113 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script114 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script115 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script116 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script117 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script118 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script119 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script120 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script121 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script122 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script123 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script124 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script125 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script126 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script127 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script128 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script129 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script130 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script131 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script132 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script133 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script134 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script135 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script136 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script137 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script138 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script139 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script140 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script141 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script142 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script143 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script144 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script145 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script146 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script147 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script148 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script149 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script150 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script151 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script152 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script153 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script154 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script155 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script156 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script157 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(5, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script158 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script159 = function()
+{
+  let player = GetPlayer();
+let soru_no = player.GetVar("soru_no");
+
+const icon = object('5yrV6Afl43I');
+
+// icon durumları için bir dizi (array) oluşturun
+// Dizi index'i soru_no ile eşleşir
+const iconStates = [
+    'Normal',  // Soru 0 için
+    'state_2', // Soru 1 için
+    'state_3', // Soru 2 için
+    'state_4', // Soru 3 için
+    'state_5', // Soru 4 için
+    'state_6'  // Soru 5 için
+];
+
+// soru_no'nun geçerli bir aralıkta olup olmadığını kontrol edin
+if (soru_no >= 0 && soru_no < iconStates.length) {
+    // Diziden doğru durumu seçin
+    icon.state = iconStates[soru_no];
+} else {
+    // Eğer soru_no 0-5 arasında değilse, varsayılan duruma dön
+    icon.state = 'Normal';
+}
+
+}
+
+window.Script160 = function()
+{
+  let player = GetPlayer();
+
+let soru_no = player.GetVar("soru_no");
+
+let etkinlik_1 = player.GetVar("etkinlik_1");
+let etkinlik_2 = player.GetVar("etkinlik_2");
+let etkinlik_3 = player.GetVar("etkinlik_3");
+let etkinlik_4 = player.GetVar("etkinlik_4");
+let etkinlik_5 = player.GetVar("etkinlik_5");
+let etkinlik_6 = player.GetVar("etkinlik_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 ---
+if(etkinlik_1===false && soru_no===0)
+{
+    star_1.state = 'aktif';
+}
+else if(etkinlik_1===false && soru_no!==0)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(etkinlik_2===false && soru_no===1)
+{
+    star_2.state = 'aktif';
+}
+else if(etkinlik_2===false && soru_no!==1)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(etkinlik_3===false && soru_no===2)
+{
+    star_3.state = 'aktif';
+}
+else if(etkinlik_3===false && soru_no!==2)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(etkinlik_4===false && soru_no===3)
+{
+    star_4.state = 'aktif';
+}
+else if(etkinlik_4===false && soru_no!==3)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(etkinlik_5===false && soru_no===4)
+{
+    star_5.state = 'aktif';
+}
+else if(etkinlik_5===false && soru_no!==4)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(etkinlik_6===false && soru_no===5)
+{
+    star_6.state = 'aktif';
+}
+else if(etkinlik_6===false && soru_no!==5)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script161 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script162 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let soru_1 = player.GetVar("soru_1");
+let soru_2 = player.GetVar("soru_2");
+let soru_3 = player.GetVar("soru_3");
+let soru_4 = player.GetVar("soru_4");
+let soru_5 = player.GetVar("soru_5");
+let soru_6 = player.GetVar("soru_6");
+
+const star_1 = object('6c2DJGqlFE7');
+const star_2 = object('6MsChMh4x7E');
+const star_3 = object('6g3lIFb7MWx');
+const star_4 = object('6iqzd73G8L3');
+const star_5 = object('6JgtdJjHwiG');
+const star_6 = object('6TfZb3uocyJ');
+
+// --- Star 1 (Sizin kodunuz) ---
+if(gorev_no > 1 && soru_1 === true)
+{
+    star_1.state = 'parlama';
+}
+else if(gorev_no > 1 && soru_1 === false)
+{
+    star_1.state = 'Normal';
+}
+
+// --- Star 2 ---
+if(gorev_no > 2 && soru_2 === true)
+{
+    star_2.state = 'parlama';
+}
+else if(gorev_no > 2 && soru_2 === false)
+{
+    star_2.state = 'Normal';
+}
+
+// --- Star 3 ---
+if(gorev_no > 3 && soru_3 === true)
+{
+    star_3.state = 'parlama';
+}
+else if(gorev_no > 3 && soru_3 === false)
+{
+    star_3.state = 'Normal';
+}
+
+// --- Star 4 ---
+if(gorev_no > 4 && soru_4 === true)
+{
+    star_4.state = 'parlama';
+}
+else if(gorev_no > 4 && soru_4 === false)
+{
+    star_4.state = 'Normal';
+}
+
+// --- Star 5 ---
+if(gorev_no > 5 && soru_5 === true)
+{
+    star_5.state = 'parlama';
+}
+else if(gorev_no > 5 && soru_5 === false)
+{
+    star_5.state = 'Normal';
+}
+
+// --- Star 6 ---
+if(gorev_no > 6 && soru_6 === true)
+{
+    star_6.state = 'parlama';
+}
+else if(gorev_no > 6 && soru_6 === false)
+{
+    star_6.state = 'Normal';
+}
+}
+
+window.Script163 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+let yanlis_sayac = player.GetVar("yanlis_sayac");
+
+if(gorev_no===1 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_1",false);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_2",false);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_3",false);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_4",false);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_5",false);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6 && yanlis_sayac>=2)
+{
+	player.SetVar("soru_6",false);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script164 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("gorev_no");
+
+if(gorev_no===1)
+{
+	player.SetVar("soru_1",true);
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_2",true);
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===3)
+{
+	player.SetVar("soru_3",true);
+	player.SetVar("etkinlik_3",true);
+}
+else if(gorev_no===4)
+{
+	player.SetVar("soru_4",true);
+	player.SetVar("etkinlik_4",true);
+}
+else if(gorev_no===5)
+{
+	player.SetVar("soru_5",true);
+	player.SetVar("etkinlik_5",true);
+}
+else if(gorev_no===6)
+{
+	player.SetVar("soru_6",true);
+	player.SetVar("etkinlik_6",true);
+}
+}
+
+window.Script165 = function()
 {
   var player = GetPlayer();
 var puan = player.GetVar("puan"); // Storyline değişkenini al
