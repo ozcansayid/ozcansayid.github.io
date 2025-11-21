@@ -400,6 +400,26 @@ else{
 window.Script17 = function()
 {
   let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script18 = function()
+{
+  let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
 let drag_cevap_2 = player.GetVar("drag_cevap_2");
 let drag_cevap_3 = player.GetVar("drag_cevap_3");
@@ -451,7 +471,7 @@ if(drag_cevap_6===true)
 }
 }
 
-window.Script18 = function()
+window.Script19 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -512,7 +532,30 @@ if(drag_var_6 !== drag_cevap_6)
 }
 }
 
-window.Script19 = function()
+window.Script20 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("soru_1","1");
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("soru_2","1");
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_3","1");
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script21 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -584,7 +627,7 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
 
 }
 
-window.Script20 = function()
+window.Script22 = function()
 {
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
@@ -593,7 +636,7 @@ window.createProgressBar(2, progressValue, "#FCC626", "progress-container");
 
 }
 
-window.Script21 = function()
+window.Script23 = function()
 {
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
@@ -613,7 +656,7 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
-window.Script22 = function()
+window.Script24 = function()
 {
   let player = GetPlayer();
 
@@ -638,7 +681,7 @@ player.SetVar("drag_y_5",drag_5.y);
 player.SetVar("drag_y_6",drag_6.y);
 }
 
-window.Script23 = function()
+window.Script25 = function()
 {
   let player = GetPlayer();
 
@@ -734,7 +777,7 @@ else{
 
 }
 
-window.Script24 = function()
+window.Script26 = function()
 {
   let player = GetPlayer();
 
@@ -761,7 +804,7 @@ else{
 }
 }
 
-window.Script25 = function()
+window.Script27 = function()
 {
   let player = GetPlayer();
 
@@ -788,7 +831,7 @@ else{
 }
 }
 
-window.Script26 = function()
+window.Script28 = function()
 {
   let player = GetPlayer();
 
@@ -815,7 +858,7 @@ else{
 }
 }
 
-window.Script27 = function()
+window.Script29 = function()
 {
   let player = GetPlayer();
 
@@ -842,7 +885,7 @@ else{
 }
 }
 
-window.Script28 = function()
+window.Script30 = function()
 {
   let player = GetPlayer();
 
@@ -869,7 +912,7 @@ else{
 }
 }
 
-window.Script29 = function()
+window.Script31 = function()
 {
   let player = GetPlayer();
 
@@ -896,7 +939,27 @@ else{
 }
 }
 
-window.Script30 = function()
+window.Script32 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script33 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -950,7 +1013,7 @@ if(drag_cevap_6===true)
 }
 }
 
-window.Script31 = function()
+window.Script34 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -1011,7 +1074,30 @@ if(drag_var_6 !== drag_cevap_6)
 }
 }
 
-window.Script32 = function()
+window.Script35 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("soru_1","1");
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("soru_2","1");
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_3","1");
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script36 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -1083,7 +1169,7 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
 
 }
 
-window.Script33 = function()
+window.Script37 = function()
 {
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
@@ -1092,7 +1178,7 @@ window.createProgressBar(2, progressValue, "#FCC626", "progress-container");
 
 }
 
-window.Script34 = function()
+window.Script38 = function()
 {
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
@@ -1112,7 +1198,50 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
-window.Script35 = function()
+window.Script39 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script40 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("soru_1","1");
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("soru_2","1");
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_3","1");
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script41 = function()
 {
   var player = GetPlayer();
 var puan = player.GetVar("puan"); // Storyline değişkenini al
@@ -1176,7 +1305,7 @@ xhr.onreadystatechange = function () {
 xhr.send(JSON.stringify(statement));
 }
 
-window.Script36 = function()
+window.Script42 = function()
 {
   var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
@@ -1195,7 +1324,7 @@ try {
 
 }
 
-window.Script37 = function()
+window.Script43 = function()
 {
   window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
     const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
@@ -1267,7 +1396,7 @@ window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
 
 }
 
-window.Script38 = function()
+window.Script44 = function()
 {
   var player = GetPlayer();
 var progressValue = player.GetVar("soru_no");
@@ -1276,7 +1405,7 @@ window.createProgressBar(2, progressValue, "#FCC626", "progress-container");
 
 }
 
-window.Script39 = function()
+window.Script45 = function()
 {
   // Storyline değişkenlerine erişim için player nesnesini al
 var player = GetPlayer();
@@ -1296,16 +1425,16 @@ if (document.querySelector('[data-acc-text="progress-container"] .custom-progres
 
 }
 
-window.Script40 = function()
+window.Script46 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -1321,17 +1450,17 @@ player.SetVar("drag_y_5",drag_5.y);
 player.SetVar("drag_y_6",drag_6.y);
 }
 
-window.Script41 = function()
+window.Script47 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('6Hg8X1XxaLY');
-const drag_2 = object('6J6N1o9Iho8');
-const drag_3 = object('6IvxU564xFA');
-const drag_4 = object('6iiwDHoROnU');
-const drag_5 = object('5kOIMwavgeR');
-const drag_6 = object('5yTGyvnuk99');
-const kontrol_et_btn = object('5nS9qIP4aZi');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
+const kontrol_et_btn = object('6BC2ndiMKn8');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1417,16 +1546,16 @@ else{
 
 }
 
-window.Script42 = function()
+window.Script48 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('6J6N1o9Iho8');
-const drag_3 = object('6IvxU564xFA');
-const drag_4 = object('6iiwDHoROnU');
-const drag_5 = object('5kOIMwavgeR');
-const drag_6 = object('5yTGyvnuk99');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1444,16 +1573,16 @@ else{
 }
 }
 
-window.Script43 = function()
+window.Script49 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1471,16 +1600,16 @@ else{
 }
 }
 
-window.Script44 = function()
+window.Script50 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1498,16 +1627,16 @@ else{
 }
 }
 
-window.Script45 = function()
+window.Script51 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1525,16 +1654,15 @@ else{
 }
 }
 
-window.Script46 = function()
+window.Script52 = function()
 {
   let player = GetPlayer();
-
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1552,16 +1680,16 @@ else{
 }
 }
 
-window.Script47 = function()
+window.Script53 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 let dropzone_x_1 = player.GetVar("dropzone_x_1");
 let dropzone_x_2 = player.GetVar("dropzone_x_2");
@@ -1579,338 +1707,22 @@ else{
 }
 }
 
-window.Script48 = function()
-{
-  let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
-
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
-
-if(drag_cevap_1===true)
-{
-	drag_1.x = 1156;
-	drag_1.y = 242;
-}
-
-if(drag_cevap_2===true)
-{
-	drag_2.x = 1378;
-	drag_2.y = 242;
-}
-
-if(drag_cevap_3===true)
-{
-	drag_3.x = 1598;
-	drag_3.y = 242;
-}
-
-if(drag_cevap_4===true)
-{
-	drag_4.x = 1156;
-	drag_4.y = 459;
-}
-
-if(drag_cevap_5===true)
-{
-	drag_5.x = 1378;
-	drag_5.y = 459;
-}
-
-if(drag_cevap_6===true)
-{
-	drag_6.x = 1598;
-	drag_6.y = 459;
-}
-}
-
-window.Script49 = function()
-{
-  let player = GetPlayer();
-let drag_cevap_1 = player.GetVar("drag_cevap_1");
-let drag_cevap_2 = player.GetVar("drag_cevap_2");
-let drag_cevap_3 = player.GetVar("drag_cevap_3");
-let drag_cevap_4 = player.GetVar("drag_cevap_4");
-let drag_cevap_5 = player.GetVar("drag_cevap_5");
-let drag_cevap_6 = player.GetVar("drag_cevap_6");
-let drag_var_1 = player.GetVar("drag_var_1");
-let drag_var_2 = player.GetVar("drag_var_2");
-let drag_var_3 = player.GetVar("drag_var_3");
-let drag_var_4 = player.GetVar("drag_var_4");
-let drag_var_5 = player.GetVar("drag_var_5");
-let drag_var_6 = player.GetVar("drag_var_6");
-
-const drag_1 = object('5qaeS0zy0Hr');
-const drag_2 = object('5n1web6MwXA');
-const drag_3 = object('5qTkYzHqoor');
-const drag_4 = object('6b3Vfhz7025');
-const drag_5 = object('6PQM3wzBhcr');
-const drag_6 = object('6l2vIAZaAmU');
-
-if(drag_var_1 !== drag_cevap_1)
-{
-	drag_1.x = player.GetVar("drag_x_1");
-	drag_1.y = player.GetVar("drag_y_1");
-}
-
-if(drag_var_2 !== drag_cevap_2)
-{
-	drag_2.x = player.GetVar("drag_x_2");
-	drag_2.y = player.GetVar("drag_y_2");
-}
-
-if(drag_var_3 !== drag_cevap_3)
-{
-	drag_3.x = player.GetVar("drag_x_3");
-	drag_3.y = player.GetVar("drag_y_3");
-}
-
-if(drag_var_4 !== drag_cevap_4)
-{
-	drag_4.x = player.GetVar("drag_x_4");
-	drag_4.y = player.GetVar("drag_y_4");
-}
-
-if(drag_var_5 !== drag_cevap_5)
-{
-	drag_5.x = player.GetVar("drag_x_5");
-	drag_5.y = player.GetVar("drag_y_5");
-}
-
-if(drag_var_6 !== drag_cevap_6)
-{
-	drag_6.x = player.GetVar("drag_x_6");
-	drag_6.y = player.GetVar("drag_y_6");
-}
-}
-
-window.Script50 = function()
-{
-  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    // Daha önce oluşturulmuşsa yeniden oluşturma
-    const existingBar = targetDiv.querySelector('.custom-progress-container');
-    if (existingBar) {
-        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
-        return;
-    }
-
-    // Progress bar container oluştur
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
-    progressBarContainer.style.position = 'absolute';
-	progressBarContainer.style.top = '0';
-	progressBarContainer.style.left = '0';
-	progressBarContainer.style.width = '100%';
-	progressBarContainer.style.height = '100%';
-    progressBarContainer.style.backgroundColor = '#A2A1A2';
-    progressBarContainer.style.borderRadius = '100px';
-    progressBarContainer.style.overflow = 'hidden';
-    progressBarContainer.dataset.maximumProgress = maximumProgress;
-    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
-
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
-    progressBar.style.height = '0%';
-    progressBar.style.width = '100%';
-    progressBar.style.backgroundColor = color;
-    progressBar.style.transition = 'height 0.5s ease';
-    progressBar.style.position = 'absolute';
-	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
-
-    progressBarContainer.appendChild(progressBar);
-    targetDiv.appendChild(progressBarContainer);
-
-    window.updateProgressBar(currentProgress, targetDivIdentifier);
-};
-
-window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
-    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
-    const targetDiv = document.querySelector(targetDivSelector);
-    if (!targetDiv) {
-        //console.error("Target div not found");
-        return;
-    }
-
-    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
-    if (!progressBarContainer) {
-        //console.warn("Progress bar container not found");
-        return;
-    }
-
-    const maximumProgress = progressBarContainer.dataset.maximumProgress;
-    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
-    if (progressBar) {
-        const progressPercentage = (currentProgress / maximumProgress) * 100;
-        progressBar.style.height = `${progressPercentage}%`;
-    }
-};
-
-
-}
-
-window.Script51 = function()
-{
-  var player = GetPlayer();
-var progressValue = player.GetVar("soru_no");
-
-window.createProgressBar(2, progressValue, "#FCC626", "progress-container");
-
-}
-
-window.Script52 = function()
-{
-  // Storyline değişkenlerine erişim için player nesnesini al
-var player = GetPlayer();
-
-// Storyline'daki progressValue değişkenini al
-var currentProgress = player.GetVar("soru_no");
-
-
-// Storyline'daki değişkeni güncelle
-player.SetVar("soru_no", currentProgress);
-
-if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
-    window.updateProgressBar(currentProgress, "progress-container");
-} else {
-    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
-}
-
-}
-
-window.Script53 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-player.SetVar("drag_x_1",drag_1.x);
-player.SetVar("drag_x_2",drag_2.x);
-player.SetVar("drag_x_3",drag_3.x);
-player.SetVar("drag_x_4",drag_4.x);
-player.SetVar("drag_x_5",drag_5.x);
-player.SetVar("drag_x_6",drag_6.x);
-player.SetVar("drag_y_1",drag_1.y);
-player.SetVar("drag_y_2",drag_2.y);
-player.SetVar("drag_y_3",drag_3.y);
-player.SetVar("drag_y_4",drag_4.y);
-player.SetVar("drag_y_5",drag_5.y);
-player.SetVar("drag_y_6",drag_6.y);
-}
-
 window.Script54 = function()
 {
   let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
 
-const drag_1 = object('6Hg8X1XxaLY');
-const drag_2 = object('6J6N1o9Iho8');
-const drag_3 = object('6IvxU564xFA');
-const drag_4 = object('6iiwDHoROnU');
-const drag_5 = object('5kOIMwavgeR');
-const drag_6 = object('5yTGyvnuk99');
-const kontrol_et_btn = object('6c6VpBx740L');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-//kontrol et butonunun state'ini ayarla
-if(
-	drag_1.x===player.GetVar("drag_x_1") &&
-	drag_2.x===player.GetVar("drag_x_2") &&
-	drag_3.x===player.GetVar("drag_x_3") &&
-	drag_4.x===player.GetVar("drag_x_4") &&
-	drag_5.x===player.GetVar("drag_x_5") &&
-	drag_6.x===player.GetVar("drag_x_6")
-	)
+if(gorev_no===0)
 {
-	kontrol_et_btn.state = 'Disabled';
+	player.SetVar("etkinlik_1",true);
 }
-else{
-	kontrol_et_btn.state = 'Normal';
-}
-
-//Değişkenlerin true/false durumlarını kontrol et
-if(drag_1.x>player.GetVar("dropzone_x_1") && 
-   drag_1.x<player.GetVar("dropzone_x_2")
-   )
+else if(gorev_no===1)
 {
-	player.SetVar("drag_var_1",true);
+	player.SetVar("etkinlik_2",true);
 }
-else{
-	player.SetVar("drag_var_1",false);
-}
-
-if(drag_2.x>player.GetVar("dropzone_x_1") && 
-   drag_2.x<player.GetVar("dropzone_x_2")
-   )
+else if(gorev_no===2)
 {
-	player.SetVar("drag_var_2",true);
-}
-else{
-	player.SetVar("drag_var_2",false);
-}
-
-if(drag_3.x>player.GetVar("dropzone_x_1") && 
-   drag_3.x<player.GetVar("dropzone_x_2")
-   )
-{
-	player.SetVar("drag_var_3",true);
-}
-else{
-	player.SetVar("drag_var_3",false);
-}
-
-if(drag_4.x>player.GetVar("dropzone_x_1") && 
-   drag_4.x<player.GetVar("dropzone_x_2")
-   )
-{
-	player.SetVar("drag_var_4",true);
-}
-else{
-	player.SetVar("drag_var_4",false);
-}
-
-if(drag_5.x>player.GetVar("dropzone_x_1") && 
-   drag_5.x<player.GetVar("dropzone_x_2")
-   )
-{
-	player.SetVar("drag_var_5",true);
-}
-else{
-	player.SetVar("drag_var_5",false);
-}
-
-if(drag_6.x>player.GetVar("dropzone_x_1") && 
-   drag_6.x<player.GetVar("dropzone_x_2")
-   )
-{
-	player.SetVar("drag_var_6",true);
-}
-else{
-	player.SetVar("drag_var_6",false);
+	player.SetVar("etkinlik_3",true);
 }
 
 }
@@ -1918,168 +1730,6 @@ else{
 window.Script55 = function()
 {
   let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6J6N1o9Iho8');
-const drag_3 = object('6IvxU564xFA');
-const drag_4 = object('6iiwDHoROnU');
-const drag_5 = object('5kOIMwavgeR');
-const drag_6 = object('5yTGyvnuk99');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_1.x>dropzone_x_1 && drag_1.x<dropzone_x_2 && drag_1.y>dropzone_y_1 && drag_1.y<dropzone_y_2)
-{
-	drag_1.x=drag_1.x;
-	drag_1.y=drag_1.y;
-}
-else{
-	drag_1.x=player.GetVar("drag_x_1");
-	drag_1.y=player.GetVar("drag_y_1");
-}
-}
-
-window.Script56 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_2.x>dropzone_x_1 && drag_2.x<dropzone_x_2 && drag_2.y>dropzone_y_1 && drag_2.y<dropzone_y_2)
-{
-	drag_2.x=drag_2.x;
-	drag_2.y=drag_2.y;
-}
-else{
-	drag_2.x=player.GetVar("drag_x_2");
-	drag_2.y=player.GetVar("drag_y_2");
-}
-}
-
-window.Script57 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_3.x>dropzone_x_1 && drag_3.x<dropzone_x_2 && drag_3.y>dropzone_y_1 && drag_3.y<dropzone_y_2)
-{
-	drag_3.x=drag_3.x;
-	drag_3.y=drag_3.y;
-}
-else{
-	drag_3.x=player.GetVar("drag_x_3");
-	drag_3.y=player.GetVar("drag_y_3");
-}
-}
-
-window.Script58 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_4.x>dropzone_x_1 && drag_4.x<dropzone_x_2 && drag_4.y>dropzone_y_1 && drag_4.y<dropzone_y_2)
-{
-	drag_4.x=drag_4.x;
-	drag_4.y=drag_4.y;
-}
-else{
-	drag_4.x=player.GetVar("drag_x_4");
-	drag_4.y=player.GetVar("drag_y_4");
-}
-}
-
-window.Script59 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_5.x>dropzone_x_1 && drag_5.x<dropzone_x_2 && drag_5.y>dropzone_y_1 && drag_5.y<dropzone_y_2)
-{
-	drag_5.x=drag_5.x;
-	drag_5.y=drag_5.y;
-}
-else{
-	drag_5.x=player.GetVar("drag_x_5");
-	drag_5.y=player.GetVar("drag_y_5");
-}
-}
-
-window.Script60 = function()
-{
-  let player = GetPlayer();
-
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
-
-let dropzone_x_1 = player.GetVar("dropzone_x_1");
-let dropzone_x_2 = player.GetVar("dropzone_x_2");
-let dropzone_y_1 = player.GetVar("dropzone_y_1");
-let dropzone_y_2 = player.GetVar("dropzone_y_2");
-
-if(drag_6.x>dropzone_x_1 && drag_6.x<dropzone_x_2 && drag_6.y>dropzone_y_1 && drag_6.y<dropzone_y_2)
-{
-	drag_6.x=drag_6.x;
-	drag_6.y=drag_6.y;
-}
-else{
-	drag_6.x=player.GetVar("drag_x_6");
-	drag_6.y=player.GetVar("drag_y_6");
-}
-}
-
-window.Script61 = function()
-{
-  let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
 let drag_cevap_2 = player.GetVar("drag_cevap_2");
 let drag_cevap_3 = player.GetVar("drag_cevap_3");
@@ -2087,12 +1737,12 @@ let drag_cevap_4 = player.GetVar("drag_cevap_4");
 let drag_cevap_5 = player.GetVar("drag_cevap_5");
 let drag_cevap_6 = player.GetVar("drag_cevap_6");
 
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
+const drag_1 = object('6YBOGk3mz3r');
+const drag_2 = object('6VHxAGHkMu2');
+const drag_3 = object('6ogvNjKqpAy');
+const drag_4 = object('6KjzAWLMdz0');
+const drag_5 = object('6GrqfwMEKhz');
+const drag_6 = object('5zJbMvSFtP6');
 
 if(drag_cevap_1===true)
 {
@@ -2131,7 +1781,7 @@ if(drag_cevap_6===true)
 }
 }
 
-window.Script62 = function()
+window.Script56 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -2147,12 +1797,13 @@ let drag_var_4 = player.GetVar("drag_var_4");
 let drag_var_5 = player.GetVar("drag_var_5");
 let drag_var_6 = player.GetVar("drag_var_6");
 
-const drag_1 = object('6e6STO3gJx6');
-const drag_2 = object('6M3ShqnDE7a');
-const drag_3 = object('6ZJ4mu0uIRF');
-const drag_4 = object('6dygqYiYXhR');
-const drag_5 = object('6gCCLzqxuTs');
-const drag_6 = object('682IWAk5dZY');
+
+const drag_1 = object('6IFdJDVB8jY');
+const drag_2 = object('6XB1Ku4Ihf5');
+const drag_3 = object('6jjfzUXZb2f');
+const drag_4 = object('6eInOQTJObs');
+const drag_5 = object('5eHf8xFshDp');
+const drag_6 = object('5VAC4V2Dz3w');
 
 if(drag_var_1 !== drag_cevap_1)
 {
@@ -2189,6 +1840,570 @@ if(drag_var_6 !== drag_cevap_6)
 	drag_6.x = player.GetVar("drag_x_6");
 	drag_6.y = player.GetVar("drag_y_6");
 }
+}
+
+window.Script57 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("soru_1","1");
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("soru_2","1");
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_3","1");
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script58 = function()
+{
+  window.createProgressBar = function (maximumProgress, currentProgress, color = '#5EA7FF', targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    // Daha önce oluşturulmuşsa yeniden oluşturma
+    const existingBar = targetDiv.querySelector('.custom-progress-container');
+    if (existingBar) {
+        //console.warn(`[ProgressBar] Zaten mevcut, yeniden oluşturulmadı: ${targetDivIdentifier}`);
+        return;
+    }
+
+    // Progress bar container oluştur
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.classList.add('custom-progress-container'); // Bu sınıf sayesinde tekrar kontrol kolaylaşır
+    progressBarContainer.style.position = 'absolute';
+	progressBarContainer.style.top = '0';
+	progressBarContainer.style.left = '0';
+	progressBarContainer.style.width = '100%';
+	progressBarContainer.style.height = '100%';
+    progressBarContainer.style.backgroundColor = '#A2A1A2';
+    progressBarContainer.style.borderRadius = '100px';
+    progressBarContainer.style.overflow = 'hidden';
+    progressBarContainer.dataset.maximumProgress = maximumProgress;
+    progressBarContainer.dataset.targetDiv = targetDivIdentifier;
+
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('custom-progress-bar'); // stil ve sorgulama kolaylığı için
+    progressBar.style.height = '0%';
+    progressBar.style.width = '100%';
+    progressBar.style.backgroundColor = color;
+    progressBar.style.transition = 'height 0.5s ease';
+    progressBar.style.position = 'absolute';
+	progressBar.style.bottom = '0';  // hep tabandan yukarı doğru dolacak
+
+    progressBarContainer.appendChild(progressBar);
+    targetDiv.appendChild(progressBarContainer);
+
+    window.updateProgressBar(currentProgress, targetDivIdentifier);
+};
+
+window.updateProgressBar = function (currentProgress, targetDivIdentifier) {
+    const targetDivSelector = `[data-acc-text="${targetDivIdentifier}"]`;
+    const targetDiv = document.querySelector(targetDivSelector);
+    if (!targetDiv) {
+        //console.error("Target div not found");
+        return;
+    }
+
+    const progressBarContainer = targetDiv.querySelector('.custom-progress-container');
+    if (!progressBarContainer) {
+        //console.warn("Progress bar container not found");
+        return;
+    }
+
+    const maximumProgress = progressBarContainer.dataset.maximumProgress;
+    const progressBar = progressBarContainer.querySelector('.custom-progress-bar');
+    if (progressBar) {
+        const progressPercentage = (currentProgress / maximumProgress) * 100;
+        progressBar.style.height = `${progressPercentage}%`;
+    }
+};
+
+
+}
+
+window.Script59 = function()
+{
+  var player = GetPlayer();
+var progressValue = player.GetVar("soru_no");
+
+window.createProgressBar(2, progressValue, "#FCC626", "progress-container");
+
+}
+
+window.Script60 = function()
+{
+  // Storyline değişkenlerine erişim için player nesnesini al
+var player = GetPlayer();
+
+// Storyline'daki progressValue değişkenini al
+var currentProgress = player.GetVar("soru_no");
+
+
+// Storyline'daki değişkeni güncelle
+player.SetVar("soru_no", currentProgress);
+
+if (document.querySelector('[data-acc-text="progress-container"] .custom-progress-bar')) {
+    window.updateProgressBar(currentProgress, "progress-container");
+} else {
+    //console.warn("Progress bar henüz oluşturulmamış. updateProgressBar çalıştırılmadı.");
+}
+
+}
+
+window.Script61 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+player.SetVar("drag_x_1",drag_1.x);
+player.SetVar("drag_x_2",drag_2.x);
+player.SetVar("drag_x_3",drag_3.x);
+player.SetVar("drag_x_4",drag_4.x);
+player.SetVar("drag_x_5",drag_5.x);
+player.SetVar("drag_x_6",drag_6.x);
+player.SetVar("drag_y_1",drag_1.y);
+player.SetVar("drag_y_2",drag_2.y);
+player.SetVar("drag_y_3",drag_3.y);
+player.SetVar("drag_y_4",drag_4.y);
+player.SetVar("drag_y_5",drag_5.y);
+player.SetVar("drag_y_6",drag_6.y);
+}
+
+window.Script62 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+const kontrol_et_btn = object('6WEFZgTg2IA');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+//kontrol et butonunun state'ini ayarla
+if(
+	drag_1.x===player.GetVar("drag_x_1") &&
+	drag_2.x===player.GetVar("drag_x_2") &&
+	drag_3.x===player.GetVar("drag_x_3") &&
+	drag_4.x===player.GetVar("drag_x_4") &&
+	drag_5.x===player.GetVar("drag_x_5") &&
+	drag_6.x===player.GetVar("drag_x_6")
+	)
+{
+	kontrol_et_btn.state = 'Disabled';
+}
+else{
+	kontrol_et_btn.state = 'Normal';
+}
+
+//Değişkenlerin true/false durumlarını kontrol et
+if(drag_1.x>player.GetVar("dropzone_x_1") && 
+   drag_1.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_1",true);
+}
+else{
+	player.SetVar("drag_var_1",false);
+}
+
+if(drag_2.x>player.GetVar("dropzone_x_1") && 
+   drag_2.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_2",true);
+}
+else{
+	player.SetVar("drag_var_2",false);
+}
+
+if(drag_3.x>player.GetVar("dropzone_x_1") && 
+   drag_3.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_3",true);
+}
+else{
+	player.SetVar("drag_var_3",false);
+}
+
+if(drag_4.x>player.GetVar("dropzone_x_1") && 
+   drag_4.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_4",true);
+}
+else{
+	player.SetVar("drag_var_4",false);
+}
+
+if(drag_5.x>player.GetVar("dropzone_x_1") && 
+   drag_5.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_5",true);
+}
+else{
+	player.SetVar("drag_var_5",false);
+}
+
+if(drag_6.x>player.GetVar("dropzone_x_1") && 
+   drag_6.x<player.GetVar("dropzone_x_2")
+   )
+{
+	player.SetVar("drag_var_6",true);
+}
+else{
+	player.SetVar("drag_var_6",false);
+}
+
+}
+
+window.Script63 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_1.x>dropzone_x_1 && drag_1.x<dropzone_x_2 && drag_1.y>dropzone_y_1 && drag_1.y<dropzone_y_2)
+{
+	drag_1.x=drag_1.x;
+	drag_1.y=drag_1.y;
+}
+else{
+	drag_1.x=player.GetVar("drag_x_1");
+	drag_1.y=player.GetVar("drag_y_1");
+}
+}
+
+window.Script64 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_2.x>dropzone_x_1 && drag_2.x<dropzone_x_2 && drag_2.y>dropzone_y_1 && drag_2.y<dropzone_y_2)
+{
+	drag_2.x=drag_2.x;
+	drag_2.y=drag_2.y;
+}
+else{
+	drag_2.x=player.GetVar("drag_x_2");
+	drag_2.y=player.GetVar("drag_y_2");
+}
+}
+
+window.Script65 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_3.x>dropzone_x_1 && drag_3.x<dropzone_x_2 && drag_3.y>dropzone_y_1 && drag_3.y<dropzone_y_2)
+{
+	drag_3.x=drag_3.x;
+	drag_3.y=drag_3.y;
+}
+else{
+	drag_3.x=player.GetVar("drag_x_3");
+	drag_3.y=player.GetVar("drag_y_3");
+}
+}
+
+window.Script66 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_4.x>dropzone_x_1 && drag_4.x<dropzone_x_2 && drag_4.y>dropzone_y_1 && drag_4.y<dropzone_y_2)
+{
+	drag_4.x=drag_4.x;
+	drag_4.y=drag_4.y;
+}
+else{
+	drag_4.x=player.GetVar("drag_x_4");
+	drag_4.y=player.GetVar("drag_y_4");
+}
+}
+
+window.Script67 = function()
+{
+  let player = GetPlayer();
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_5.x>dropzone_x_1 && drag_5.x<dropzone_x_2 && drag_5.y>dropzone_y_1 && drag_5.y<dropzone_y_2)
+{
+	drag_5.x=drag_5.x;
+	drag_5.y=drag_5.y;
+}
+else{
+	drag_5.x=player.GetVar("drag_x_5");
+	drag_5.y=player.GetVar("drag_y_5");
+}
+}
+
+window.Script68 = function()
+{
+  let player = GetPlayer();
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+let dropzone_x_1 = player.GetVar("dropzone_x_1");
+let dropzone_x_2 = player.GetVar("dropzone_x_2");
+let dropzone_y_1 = player.GetVar("dropzone_y_1");
+let dropzone_y_2 = player.GetVar("dropzone_y_2");
+
+if(drag_6.x>dropzone_x_1 && drag_6.x<dropzone_x_2 && drag_6.y>dropzone_y_1 && drag_6.y<dropzone_y_2)
+{
+	drag_6.x=drag_6.x;
+	drag_6.y=drag_6.y;
+}
+else{
+	drag_6.x=player.GetVar("drag_x_6");
+	drag_6.y=player.GetVar("drag_y_6");
+}
+}
+
+window.Script69 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("etkinlik_3",true);
+}
+
+}
+
+window.Script70 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+
+const drag_1 = object('6YBOGk3mz3r');
+const drag_2 = object('6VHxAGHkMu2');
+const drag_3 = object('6ogvNjKqpAy');
+const drag_4 = object('6KjzAWLMdz0');
+const drag_5 = object('6GrqfwMEKhz');
+const drag_6 = object('5zJbMvSFtP6');
+
+if(drag_cevap_1===true)
+{
+	drag_1.x = 1156;
+	drag_1.y = 242;
+}
+
+if(drag_cevap_2===true)
+{
+	drag_2.x = 1378;
+	drag_2.y = 242;
+}
+
+if(drag_cevap_3===true)
+{
+	drag_3.x = 1598;
+	drag_3.y = 242;
+}
+
+if(drag_cevap_4===true)
+{
+	drag_4.x = 1156;
+	drag_4.y = 459;
+}
+
+if(drag_cevap_5===true)
+{
+	drag_5.x = 1378;
+	drag_5.y = 459;
+}
+
+if(drag_cevap_6===true)
+{
+	drag_6.x = 1598;
+	drag_6.y = 459;
+}
+}
+
+window.Script71 = function()
+{
+  let player = GetPlayer();
+let drag_cevap_1 = player.GetVar("drag_cevap_1");
+let drag_cevap_2 = player.GetVar("drag_cevap_2");
+let drag_cevap_3 = player.GetVar("drag_cevap_3");
+let drag_cevap_4 = player.GetVar("drag_cevap_4");
+let drag_cevap_5 = player.GetVar("drag_cevap_5");
+let drag_cevap_6 = player.GetVar("drag_cevap_6");
+let drag_var_1 = player.GetVar("drag_var_1");
+let drag_var_2 = player.GetVar("drag_var_2");
+let drag_var_3 = player.GetVar("drag_var_3");
+let drag_var_4 = player.GetVar("drag_var_4");
+let drag_var_5 = player.GetVar("drag_var_5");
+let drag_var_6 = player.GetVar("drag_var_6");
+
+
+const drag_1 = object('6Helahe0nOs');
+const drag_2 = object('6qvH7Ui82Zx');
+const drag_3 = object('640AyUifljZ');
+const drag_4 = object('64eqUKU0PO5');
+const drag_5 = object('6FCOPJN0TCq');
+const drag_6 = object('60hF0EHZ8XS');
+
+if(drag_var_1 !== drag_cevap_1)
+{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
+}
+
+if(drag_var_2 !== drag_cevap_2)
+{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
+}
+
+if(drag_var_3 !== drag_cevap_3)
+{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
+}
+
+if(drag_var_4 !== drag_cevap_4)
+{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
+}
+
+if(drag_var_5 !== drag_cevap_5)
+{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
+}
+
+if(drag_var_6 !== drag_cevap_6)
+{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
+}
+}
+
+window.Script72 = function()
+{
+  let player = GetPlayer();
+let gorev_no = player.GetVar("soru_no");
+
+if(gorev_no===0)
+{
+	player.SetVar("soru_1","1");
+	player.SetVar("etkinlik_1",true);
+}
+else if(gorev_no===1)
+{
+	player.SetVar("soru_2","1");
+	player.SetVar("etkinlik_2",true);
+}
+else if(gorev_no===2)
+{
+	player.SetVar("soru_3","1");
+	player.SetVar("etkinlik_3",true);
+}
+
 }
 
 };
