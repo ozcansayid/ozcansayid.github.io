@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koçluk Platformu - Öğrencilerim</title>
+    
+    <!-- Tailwind CSS (Tasarım Framework'ü) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter Fontu) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide İkonları -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Scrollbar düzenlemesi */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden flex relative">
+
+    <!-- 
+      ========================================
+      MODAL (YENİ ÖĞRENCİ EKLEME)
+      ========================================
+    -->
+    <div id="studentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-[fadeIn_0.3s_ease-out]">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-100 bg-indigo-600 rounded-t-2xl">
+                <div class="flex items-center gap-3 text-white">
+                    <div class="bg-white/20 p-2 rounded-lg">
+                        <i data-lucide="plus" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">Yeni Öğrenci Ekle</h2>
+                        <p class="text-indigo-100 text-sm">Öğrenci bilgilerini eksiksiz doldurun.</p>
+                    </div>
+                </div>
+                <button onclick="toggleModal(false)" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Temel Bilgiler -->
+                <div>
+                    <h3 class="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
+                        <i data-lucide="users" class="w-4 h-4 text-indigo-600"></i> Temel Bilgiler
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Öğrenci Adı Soyadı *</label>
+                            <input type="text" placeholder="Ad Soyad" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Doğum Tarihi *</label>
+                            <input type="date" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-600">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">E-posta Adresi *</label>
+                            <input type="email" placeholder="ornek@email.com" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Telefon Numarası</label>
+                            <input type="tel" placeholder="0555 123 45 67" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Eğitim ve Konum -->
+                <div>
+                    <h3 class="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
+                        <i data-lucide="school" class="w-4 h-4 text-indigo-600"></i> Eğitim ve Konum
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Sınıf Seviyesi *</label>
+                            <select class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                                <option>Seçiniz...</option>
+                                <option>8. Sınıf (LGS)</option>
+                                <option>12. Sınıf (YKS)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Şehir (İl)</label>
+                            <select class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                                <option>İstanbul</option>
+                                <option>Ankara</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">İlçe</label>
+                            <select class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                                <option>Kadıköy</option>
+                                <option>Beşiktaş</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-700">Okul</label>
+                            <select class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                                <option>Atatürk Anadolu Lisesi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Hedefler -->
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-gray-700">Öğrenci Hedefleri</label>
+                    <textarea rows="3" placeholder="Öğrencinin ana hedefleri..." class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50 rounded-b-2xl">
+                <button onclick="toggleModal(false)" class="px-5 py-2.5 text-gray-700 font-medium bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">İptal</button>
+                <button class="px-5 py-2.5 text-white font-medium bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-lg shadow-indigo-200">
+                    <i data-lucide="save" class="w-4 h-4"></i> Kaydet ve Devam Et
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+      ========================================
+      SIDEBAR (MOBİL & MASAÜSTÜ)
+      ========================================
+    -->
+    <!-- Mobil Overlay -->
+    <div id="mobileOverlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black/50 z-20 lg:hidden transition-opacity"></div>
+
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-[#1a1f37] text-white transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex flex-col justify-between">
+        <div>
+            <div class="p-6 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold text-xl">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                    </div>
+                    <span>KoçPanel</span>
+                </div>
+                <button onclick="toggleSidebar()" class="lg:hidden text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <nav class="mt-4 px-3 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="font-medium text-sm">Koç Paneli</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600 text-white shadow-lg shadow-indigo-900/20 transition-all">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <span class="font-medium text-sm">Öğrencilerim</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span class="font-medium text-sm">Formlar</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition-all">
+                    <i data-lucide="list-todo" class="w-5 h-5"></i>
+                    <span class="font-medium text-sm">Ödevlerim</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+            <button class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full p-2 rounded-lg hover:bg-white/5">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <span>Çıkış Yap</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- 
+      ========================================
+      ANA İÇERİK
+      ========================================
+    -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-4 py-3 lg:px-8 lg:py-4 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div>
+                    <h1 class="text-xl lg:text-2xl font-bold text-gray-900">Öğrencilerim</h1>
+                    <p class="text-sm text-gray-500 hidden sm:block">Toplam 4 öğrenci yönetiliyor</p>
+                </div>
+            </div>
+            
+            <button onclick="toggleModal(true)" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-sm transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Yeni Öğrenci</span>
+                <span class="sm:hidden">Ekle</span>
+            </button>
+        </header>
+
+        <!-- İçerik Alanı -->
+        <div class="flex-1 overflow-auto p-4 lg:p-8">
+            
+            <!-- Kontroller (Arama, Filtre, Görünüm Değiştir) -->
+            <div class="mb-6 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+                <div class="relative w-full lg:w-96">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                    <input type="text" placeholder="Öğrenci ara (isim, e-posta)..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm">
+                </div>
+                
+                <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                    <!-- Görünüm Değiştirici -->
+                    <div class="flex bg-gray-100 p-1 rounded-lg border border-gray-200 mr-2">
+                        <button onclick="switchView('list')" id="btnList" class="p-2 rounded-md transition-all bg-white text-indigo-600 shadow-sm">
+                            <i data-lucide="list" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="switchView('grid')" id="btnGrid" class="p-2 rounded-md transition-all text-gray-500 hover:text-gray-700">
+                            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                        <i data-lucide="filter" class="w-4 h-4"></i>
+                        <span>Filtrele</span>
+                    </button>
+                    <button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        <span>Sırala</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 
+                TABLE VIEW (LISTE GÖRÜNÜMÜ) 
+                Varsayılan olarak görünür
+            -->
+            <div id="listView" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto min-h-[400px]">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-gray-50/50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                            <th class="px-6 py-4">Öğrenci</th>
+                            <th class="px-6 py-4">Sınıf & Kayıt</th>
+                            <th class="px-6 py-4 text-center">Durum</th>
+                            <th class="px-6 py-4 text-right">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <!-- Öğrenci 1 -->
+                        <tr class="hover:bg-gray-50/80 transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">ŞŞ</div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-gray-900">Şener Şen</span>
+                                        <span class="text-sm text-gray-500 flex items-center gap-1">
+                                            <i data-lucide="mail" class="w-3 h-3"></i> senersen@gmail.com
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">8. Sınıf</div>
+                                <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                                    <i data-lucide="calendar" class="w-3 h-3"></i> 31.10.2025
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">Aktif</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="relative">
+                                        <!-- Buton: Click ile çalışır -->
+                                        <button onclick="toggleMenu(event, 'menu-row-1')" class="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                        </button>
+                                        <!-- Dropdown Menu -->
+                                        <div id="menu-row-1" class="hidden absolute right-0 top-full mt-1 w-52 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 text-left">
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="edit" class="w-4 h-4"></i> Düzenle</button>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Şifre Sıfırla</button>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="user-cog" class="w-4 h-4"></i> Veli Yönetimi</button>
+                                            <div class="border-t border-gray-100 my-1"></div>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Öğrenciyi Sil</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Öğrenci 2 -->
+                        <tr class="hover:bg-gray-50/80 transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">KS</div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-gray-900">Kemal Sunal</span>
+                                        <span class="text-sm text-gray-500 flex items-center gap-1">
+                                            <i data-lucide="mail" class="w-3 h-3"></i> kemalsunal@gmail.com
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">12. Sınıf</div>
+                                <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                                    <i data-lucide="calendar" class="w-3 h-3"></i> 31.10.2025
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">Aktif</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                                    <div class="relative">
+                                        <button onclick="toggleMenu(event, 'menu-row-2')" class="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                        </button>
+                                        <!-- Dropdown Menu -->
+                                        <div id="menu-row-2" class="hidden absolute right-0 top-full mt-1 w-52 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 text-left">
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="edit" class="w-4 h-4"></i> Düzenle</button>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Şifre Sıfırla</button>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="user-cog" class="w-4 h-4"></i> Veli Yönetimi</button>
+                                            <div class="border-t border-gray-100 my-1"></div>
+                                            <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Öğrenciyi Sil</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 
+                GRID VIEW (KART GÖRÜNÜMÜ) 
+                Varsayılan olarak gizli (hidden class)
+            -->
+            <div id="gridView" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Kart 1 -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative hover:shadow-md transition-shadow">
+                    <div class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <div class="relative">
+                             <button onclick="toggleMenu(event, 'menu-card-1')">
+                                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                             </button>
+                             <div id="menu-card-1" class="hidden absolute right-0 top-full mt-1 w-52 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 text-left">
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="edit" class="w-4 h-4"></i> Düzenle</button>
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Şifre Sıfırla</button>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-sm mb-3">ŞŞ</div>
+                        <h3 class="font-bold text-gray-900 text-lg">Şener Şen</h3>
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                            <i data-lucide="mail" class="w-3 h-3"></i> senersen@gmail.com
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4 bg-gray-50 p-3 rounded-lg">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Sınıf:</span>
+                            <span class="font-medium text-gray-900">8. Sınıf</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Kayıt:</span>
+                            <span class="font-medium text-gray-900">31.10.2025</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">Aktif</span>
+                        <button class="flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Profil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kart 2 -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative hover:shadow-md transition-shadow">
+                    <div class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
+                         <div class="relative">
+                             <button onclick="toggleMenu(event, 'menu-card-2')">
+                                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                             </button>
+                             <div id="menu-card-2" class="hidden absolute right-0 top-full mt-1 w-52 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 text-left">
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="edit" class="w-4 h-4"></i> Düzenle</button>
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Şifre Sıfırla</button>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-sm mb-3">KS</div>
+                        <h3 class="font-bold text-gray-900 text-lg">Kemal Sunal</h3>
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                            <i data-lucide="mail" class="w-3 h-3"></i> kemalsunal@gmail.com
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4 bg-gray-50 p-3 rounded-lg">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Sınıf:</span>
+                            <span class="font-medium text-gray-900">12. Sınıf</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Kayıt:</span>
+                            <span class="font-medium text-gray-900">31.10.2025</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border bg-green-100 text-green-700 border-green-200">Aktif</span>
+                        <button class="flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Profil
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Etkileşimleri -->
+    <script>
+        // İkonları oluştur
+        lucide.createIcons();
+
+        // Modal Kontrolü
+        const modal = document.getElementById('studentModal');
+        function toggleModal(show) {
+            if(show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        // Sidebar (Mobil Menü) Kontrolü
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Menü Aç/Kapa (Dropdown) Kontrolü
+        function toggleMenu(event, menuId) {
+            // Tıklamanın dışarıya yayılmasını engelle (sayfa click'i tetiklemesin diye)
+            event.stopPropagation();
+            
+            // Diğer açık menüleri kapat
+            const allMenus = document.querySelectorAll('[id^="menu-"]');
+            allMenus.forEach(menu => {
+                if(menu.id !== menuId) {
+                    menu.classList.add('hidden');
+                }
+            });
+
+            // Seçilen menüyü aç/kapat
+            const menu = document.getElementById(menuId);
+            if(menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        // Sayfada boş bir yere tıklayınca açık menüleri kapat
+        document.addEventListener('click', function() {
+            const allMenus = document.querySelectorAll('[id^="menu-"]');
+            allMenus.forEach(menu => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Liste / Izgara Görünüm Geçişi
+        function switchView(mode) {
+            const listView = document.getElementById('listView');
+            const gridView = document.getElementById('gridView');
+            const btnList = document.getElementById('btnList');
+            const btnGrid = document.getElementById('btnGrid');
+
+            if(mode === 'list') {
+                listView.classList.remove('hidden');
+                gridView.classList.add('hidden');
+                // Buton stillerini güncelle
+                btnList.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+                btnList.classList.remove('text-gray-500', 'hover:text-gray-700');
+                btnGrid.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                btnGrid.classList.add('text-gray-500', 'hover:text-gray-700');
+            } else {
+                listView.classList.add('hidden');
+                gridView.classList.remove('hidden');
+                // Buton stillerini güncelle
+                btnGrid.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+                btnGrid.classList.remove('text-gray-500', 'hover:text-gray-700');
+                btnList.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                btnList.classList.add('text-gray-500', 'hover:text-gray-700');
+            }
+        }
+    </script>
+</body>
+</html>
