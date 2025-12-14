@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Çevre Uzunluğu Macerası</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        nunito: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#03b0b9',
+                        danger: '#e50069',
+                        accent: '#fcd638',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* TEMEL AYARLAR: Scroll yok, tam ekran */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Scrollbar çıkmasını engelle */
+            background-color: transparent !important;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* ANA KAPLAYICI: Flex yapısı ile ortala */
+        #app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem; /* Kenarlardan çok az boşluk */
+        }
+
+        /* EKRANLAR: Tam boyut */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center; /* Dikey ortala */
+            align-items: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .active-screen {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* KART TASARIMI: Maksimum alan kullanımı */
+        .compact-card {
+            background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* İçerik taşarsa gizle */
+            border: 1px solid #e2e8f0;
+        }
+
+        /* CANVAS AYARLARI: Tam Doluluk */
+        .canvas-container {
+            flex-grow: 1; /* Kalan tüm alanı kapla */
+            position: relative;
+            background-color: #ffffff;
+            overflow: hidden;
+            display: block; /* Flex yerine block kullanarak tam yayılmasını sağla */
+            width: 100%;
+            height: 100%;
+            /* Grid deseni */
+            background-image:
+                linear-gradient(#e5e7eb 1px, transparent 1px),
+                linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none; 
+            /* object-fit kaldırdık, çünkü canvas boyutu wrapper'a eşitlenecek */
+        }
+
+        /* BUTONLAR */
+        .btn {
+            white-space: nowrap;
+            padding: 0.5rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 800;
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background-color: #03b0b9; color: white; }
+        .btn-danger { background-color: #e50069; color: white; }
+
+        /* QUIZ SEÇENEKLERİ: Sıkışık düzende kaydırma */
+        .scrollable-content {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        
+        <!-- 1. GİRİŞ EKRANI (Compact) -->
+        <div id="intro-screen" class="screen active-screen">
+            <div class="compact-card flex-row">
+                <!-- Sol Görsel (Mobilde gizlenebilir veya küçültülebilir) -->
+                <div class="hidden md:flex w-1/3 bg-slate-50 items-center justify-center border-r border-slate-200 relative">
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#03b0b9 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    <i class="fas fa-drafting-compass text-9xl text-primary opacity-20"></i>
+                    <div class="absolute z-10 bg-white p-4 rounded-xl shadow-lg border-2 border-primary text-center">
+                        <i class="fas fa-border-all text-4xl text-primary mb-2"></i>
+                        <p class="font-bold text-slate-700">Çevre = Çerçeve</p>
+                    </div>
+                </div>
+
+                <!-- Sağ İçerik -->
+                <div class="w-full md:w-2/3 p-6 flex flex-col justify-center items-center text-center">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-3">
+                        Çevre Uzunluğu Macerası
+                    </h1>
+                    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed max-w-lg">
+                        16 cm uzunluğunda bir telin var. Bu teli bükerek kenarları tam sayı olan kaç farklı dikdörtgen yapabilirsin?
+                    </p>
+                    
+                    <button onclick="startGame()" class="btn btn-primary text-lg px-8 py-3 shadow-lg animate-bounce">
+                        BAŞLA <i class="fas fa-play ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ETKİNLİK EKRANI (Full Height) -->
+        <div id="activity-screen" class="screen">
+            <div class="compact-card">
+                <!-- Header -->
+                <div class="bg-white p-2 border-b border-slate-200 flex justify-between items-center shadow-sm z-10">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-primary text-white px-3 py-1 rounded-lg font-bold text-sm">
+                            Hedef: 16 cm
+                        </div>
+                        <div id="feedback-area" class="text-sm font-bold text-slate-500 animate-pulse">
+                            <!-- Mesajlar buraya -->
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex gap-1">
+                            <div class="w-6 h-2 bg-slate-200 rounded-full" id="ind-0"></div>
+                            <div class="w-6 h-2 bg-slate-200 rounded-full" id="ind-1"></div>
+                            <div class="w-6 h-2 bg-slate-200 rounded-full" id="ind-2"></div>
+                            <div class="w-6 h-2 bg-slate-200 rounded-full" id="ind-3"></div>
+                        </div>
+                        <button id="next-stage-btn" onclick="startQuiz()" class="btn btn-primary text-xs py-1 px-3 opacity-50 cursor-not-allowed" disabled>
+                            İLERİ <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Area (Esnek) -->
+                <div class="canvas-container" id="canvas-wrapper">
+                    <!-- Canvas artık CSS ile değil JS ile boyutlandırılacak -->
+                    <canvas id="drawingCanvas"></canvas>
+                    
+                    <div class="absolute bottom-2 left-2 bg-white/80 px-2 py-1 rounded text-[10px] font-bold text-slate-400 pointer-events-none">
+                        1 Kare = 1 cm
+                    </div>
+                </div>
+
+                <!-- Footer Stats -->
+                <div class="bg-slate-50 p-2 border-t border-slate-200 grid grid-cols-3 gap-2 text-center h-16">
+                    <div class="bg-white rounded border border-slate-200 flex flex-col justify-center">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">Kısa K.</span>
+                        <span class="text-lg font-bold text-slate-700"><span id="display-short">-</span> cm</span>
+                    </div>
+                    <div class="bg-white rounded border border-slate-200 flex flex-col justify-center">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">Uzun K.</span>
+                        <span class="text-lg font-bold text-slate-700"><span id="display-long">-</span> cm</span>
+                    </div>
+                    <div class="bg-slate-800 rounded border border-slate-800 flex flex-col justify-center text-white">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">Çevre</span>
+                        <span class="text-lg font-bold"><span id="display-perimeter">-</span> cm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. QUIZ EKRANI -->
+        <div id="quiz-screen" class="screen">
+            <div class="compact-card">
+                <!-- Quiz Header -->
+                <div class="bg-slate-100 p-4 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-slate-800">Kavrama Testi</h2>
+                    <span class="bg-accent px-2 py-1 rounded text-xs font-bold">Soru <span id="question-number">1</span>/4</span>
+                </div>
+                
+                <!-- Progress -->
+                <div class="w-full h-1 bg-slate-100">
+                    <div id="quiz-progress" class="h-full bg-primary transition-all duration-300" style="width: 25%"></div>
+                </div>
+
+                <!-- Scrollable Content -->
+                <div class="scrollable-content flex flex-col justify-center">
+                    <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-700 mb-6 text-center">
+                        Soru yükleniyor...
+                    </h3>
+                    <div id="options-container" class="space-y-2 max-w-lg mx-auto w-full">
+                        <!-- Şıklar -->
+                    </div>
+                    
+                    <div id="quiz-feedback" class="hidden mt-4 p-3 rounded-lg text-center font-bold text-sm"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SONUÇ EKRANI -->
+        <div id="result-screen" class="screen">
+            <div class="compact-card justify-center items-center text-center p-6">
+                <div class="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-trophy text-5xl text-primary"></i>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Tamamladın!</h2>
+                
+                <div class="bg-slate-50 rounded-xl p-6 w-full max-w-sm border border-slate-200 mb-6">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-2">TOPLAM PUAN</p>
+                    <div class="text-5xl font-black text-primary mb-2" id="final-score">0</div>
+                    <p id="final-message" class="text-sm text-slate-600 font-medium"></p>
+                </div>
+
+                <div class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+                    <i class="fas fa-check-circle mr-1"></i> Veriler kaydedildi
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MANTIK -->
+    <script>
+        // --- STORYLINE BAĞLANTISI ---
+        function getStorylinePlayer() {
+            try {
+                if (window.parent && window.parent.GetPlayer) return window.parent.GetPlayer();
+                if (window.parent && window.parent.parent && window.parent.parent.GetPlayer) return window.parent.parent.GetPlayer();
+            } catch (e) { console.warn("Storyline bağlantı hatası:", e); }
+            return null;
+        }
+
+        function updateStorylineVar(varName, value, operation = 'set') {
+            const player = getStorylinePlayer();
+            if (player) {
+                try {
+                    if (operation === 'add') {
+                        let current = player.GetVar(varName);
+                        // Eğer sayı değilse 0 kabul et
+                        current = typeof current === 'number' ? current : 0;
+                        player.SetVar(varName, current + value);
+                    } else {
+                        player.SetVar(varName, value);
+                    }
+                } catch (e) { console.error("SL Var Error:", e); }
+            } else {
+                console.log(`[SL-Sim] ${varName} = ${value} (${operation})`);
+            }
+        }
+
+        // --- STATE ---
+        let state = {
+            screen: 'intro',
+            score: 0,
+            foundRectangles: [],
+            drawnShapes: [],
+            targetPerimeter: 16,
+            gridSize: 40,
+            isDrawing: false,
+            startPos: { x: 0, y: 0 },
+            quizIndex: 0
+        };
+
+        const questions = [
+            { text: "Kenar uzunlukları 8 cm ve 4 cm olan dikdörtgenin çevresi kaç cm'dir?", options: ["12", "20", "24", "32"], correct: 2, exp: "Çevre = 2 x (8+4) = 24" },
+            { text: "Çevresi 40 cm olan dikdörtgenin kenar toplamı (kısa+uzun) kaçtır?", options: ["10", "20", "40", "80"], correct: 1, exp: "Yarım çevre = 20" },
+            { text: "Çevresi 10 cm olan kenarları doğal sayı kaç dikdörtgen çizilir?", options: ["1", "2", "3", "5"], correct: 1, exp: "1x4 ve 2x3" },
+            { text: "Çevresi 32 cm olan karenin bir kenarı kaç cm'dir?", options: ["4", "8", "16", "64"], correct: 1, exp: "32 / 4 = 8" }
+        ];
+
+        // --- ELEMENTS ---
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const feedbackArea = document.getElementById('feedback-area');
+        
+        // --- FUNCTIONS ---
+        function startGame() {
+            switchScreen('activity-screen');
+            // Canvas boyutunu responsive hale getirmek için bekle
+            setTimeout(() => {
+                resizeCanvas();
+            }, 100);
+        }
+
+        function startQuiz() {
+            switchScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function showResult() {
+            switchScreen('result-screen');
+            document.getElementById('final-score').innerText = state.score;
+            
+            // Storyline İşlemleri
+            updateStorylineVar("activity_completed", true);
+            updateStorylineVar("puan", state.score); 
+
+            let msg = state.score >= 18 ? "Mükemmel Performans!" : "Tebrikler, tamamladın.";
+            document.getElementById('final-message').innerText = msg;
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById(id).classList.add('active-screen');
+        }
+
+        // --- CANVAS & RESIZING ---
+        function resizeCanvas() {
+            const wrapper = document.getElementById('canvas-wrapper');
+            // Canvas elementinin internal boyutunu (pixel sayısı) wrapper'ın boyutuna eşitle
+            canvas.width = wrapper.clientWidth;
+            canvas.height = wrapper.clientHeight;
+            
+            drawGrid();
+        }
+
+        // Pencere boyutu değişirse canvas'ı yeniden boyutlandır
+        window.addEventListener('resize', () => {
+             // Sadece activity ekranındaysak resize yap
+             if(state.screen === 'activity-screen') {
+                 resizeCanvas();
+             }
+        });
+
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            // Artık canvas boyutu ekrandaki ile birebir (1:1), o yüzden scale hesaplamaya gerek yok
+            // Ancak, clientX/Y her zaman sayfa koordinatıdır, rect'i çıkarmamız lazım.
+            
+            let clientX = evt.clientX;
+            let clientY = evt.clientY;
+            
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function snapToGrid(val) {
+            return Math.round(val / state.gridSize) * state.gridSize;
+        }
+
+        // --- DRAWING LOGIC ---
+        function initCanvas() {
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            
+            // Mobile Touch Support
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("mousedown", { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
+            canvas.addEventListener('touchend', () => {
+                canvas.dispatchEvent(new MouseEvent("mouseup", {}));
+            });
+        }
+        initCanvas();
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Sabit şekiller
+            state.drawnShapes.forEach(shape => {
+                ctx.beginPath();
+                ctx.fillStyle = 'rgba(3, 176, 185, 0.4)';
+                ctx.strokeStyle = '#03b0b9';
+                ctx.lineWidth = 3;
+                ctx.rect(shape.x, shape.y, shape.w, shape.h);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Text
+                ctx.fillStyle = '#0f766e';
+                ctx.font = 'bold 16px Nunito';
+                const uW = Math.round(shape.w/state.gridSize);
+                const uH = Math.round(shape.h/state.gridSize);
+                if(shape.w>20) ctx.fillText(uW, shape.x + shape.w/2 - 5, shape.y - 5);
+                if(shape.h>20) ctx.fillText(uH, shape.x - 15, shape.y + shape.h/2 + 5);
+            });
+        }
+
+        function startDrawing(e) {
+            state.isDrawing = true;
+            const pos = getMousePos(e);
+            state.startPos = { x: snapToGrid(pos.x), y: snapToGrid(pos.y) };
+            feedbackArea.innerText = "Çiziliyor...";
+            feedbackArea.className = "text-sm font-bold text-slate-400";
+        }
+
+        function draw(e) {
+            if (!state.isDrawing) return;
+            const pos = getMousePos(e);
+            const currX = snapToGrid(pos.x);
+            const currY = snapToGrid(pos.y);
+            
+            const w = Math.abs(currX - state.startPos.x);
+            const h = Math.abs(currY - state.startPos.y);
+            const startX = Math.min(state.startPos.x, currX);
+            const startY = Math.min(state.startPos.y, currY);
+            
+            const uW = Math.round(w/state.gridSize);
+            const uH = Math.round(h/state.gridSize);
+            
+            // UI Update
+            document.getElementById('display-short').innerText = Math.min(uW, uH);
+            document.getElementById('display-long').innerText = Math.max(uW, uH);
+            document.getElementById('display-perimeter').innerText = 2*(uW+uH);
+
+            drawGrid(); // Clear & Redraw old
+            
+            // Draw Current
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.rect(startX, startY, w, h);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Live measurements
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 16px Nunito';
+            if(w>20) ctx.fillText(`${uW}cm`, startX + w/2 - 20, startY - 10);
+            if(h>20) ctx.fillText(`${uH}cm`, startX - 45, startY + h/2 + 5);
+        }
+
+        function stopDrawing(e) {
+            if (!state.isDrawing) return;
+            state.isDrawing = false;
+            
+            const pos = getMousePos(e);
+            const currX = snapToGrid(pos.x);
+            const currY = snapToGrid(pos.y);
+            
+            const w = Math.abs(currX - state.startPos.x);
+            const h = Math.abs(currY - state.startPos.y);
+            const startX = Math.min(state.startPos.x, currX);
+            const startY = Math.min(state.startPos.y, currY);
+            
+            const uW = Math.round(w/state.gridSize);
+            const uH = Math.round(h/state.gridSize);
+            
+            if(uW === 0 || uH === 0) { drawGrid(); return; }
+            
+            validateShape(uW, uH, startX, startY, w, h);
+        }
+
+        function validateShape(uW, uH, x, y, pxW, pxH) {
+            const perim = 2*(uW+uH);
+            const small = Math.min(uW, uH);
+            const big = Math.max(uW, uH);
+            const key = `${small}x${big}`;
+            
+            if(perim === state.targetPerimeter) {
+                if(state.foundRectangles.includes(key)) {
+                    feedbackArea.innerText = "Bu şekli zaten buldun!";
+                    feedbackArea.className = "text-sm font-bold text-accent";
+                    drawGrid();
+                } else {
+                    // DOĞRU
+                    updateStorylineVar("var_correct", 1, "add");
+                    state.foundRectangles.push(key);
+                    state.score += 2;
+                    state.drawnShapes.push({ x, y, w: pxW, h: pxH });
+                    
+                    feedbackArea.innerText = `Harika! ${small}x${big} doğru.`;
+                    feedbackArea.className = "text-sm font-bold text-primary";
+                    
+                    // Update dots
+                    const dot = document.getElementById(`ind-${state.foundRectangles.length-1}`);
+                    if(dot) { dot.classList.replace('bg-slate-200', 'bg-primary'); }
+                    
+                    if(state.foundRectangles.length === 4) {
+                        document.getElementById('next-stage-btn').disabled = false;
+                        document.getElementById('next-stage-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                        document.getElementById('next-stage-btn').classList.add('animate-pulse');
+                        feedbackArea.innerText = "HEPSİ TAMAM! İLERLE";
+                    }
+                    drawGrid();
+                }
+            } else {
+                // YANLIŞ
+                updateStorylineVar("var_wrong", 1, "add");
+                feedbackArea.innerText = `Hata! Çevre ${perim} cm oldu.`;
+                feedbackArea.className = "text-sm font-bold text-danger";
+                drawGrid();
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        function loadQuestion() {
+            const q = questions[state.quizIndex];
+            document.getElementById('question-number').innerText = state.quizIndex + 1;
+            document.getElementById('quiz-progress').style.width = `${((state.quizIndex + 1) / questions.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.text;
+            
+            const cont = document.getElementById('options-container');
+            cont.innerHTML = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold text-slate-600 flex justify-between items-center text-sm md:text-base";
+                btn.innerHTML = `<span><span class="font-bold mr-2 text-slate-400">${String.fromCharCode(65+i)}</span> ${opt}</span>`;
+                btn.onclick = () => answer(i, btn);
+                cont.appendChild(btn);
+            });
+        }
+
+        function answer(idx, btn) {
+            // Disable all
+            Array.from(document.getElementById('options-container').children).forEach(b => b.disabled = true);
+            
+            const q = questions[state.quizIndex];
+            const fb = document.getElementById('quiz-feedback');
+            fb.classList.remove('hidden');
+            
+            const slVar = `var_test_${state.quizIndex + 1}`;
+            
+            if(idx === q.correct) {
+                state.score += 3;
+                btn.classList.add('bg-primary', 'text-white', 'border-primary');
+                btn.classList.remove('text-slate-600');
+                fb.innerText = "Doğru!";
+                fb.className = "mt-2 p-2 rounded bg-primary/10 text-primary text-center font-bold text-sm";
+                updateStorylineVar(slVar, 1);
+            } else {
+                btn.classList.add('bg-danger', 'text-white', 'border-danger');
+                fb.innerHTML = `Yanlış. <br><span class="font-normal text-xs">${q.exp}</span>`;
+                fb.className = "mt-2 p-2 rounded bg-danger/10 text-danger text-center font-bold text-sm";
+                updateStorylineVar(slVar, 2);
+            }
+            
+            setTimeout(() => {
+                state.quizIndex++;
+                if(state.quizIndex < questions.length) loadQuestion();
+                else showResult();
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
