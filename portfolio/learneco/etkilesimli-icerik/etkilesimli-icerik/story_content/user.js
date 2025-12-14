@@ -1586,15 +1586,15 @@ let step2 = player.GetVar("var_step_2");
 let step3 = player.GetVar("var_step_3");
 let step4 = player.GetVar("var_step_4");
 
-if(step2+step3+step4>=6)
+if(step2+step3+step4===6)
 {
 	feedback.state = '3 Doğru';
 }
-else if(step2+step3+step4>=5)
+else if(step2+step3+step4===7)
 {
 	feedback.state = '2 Doğru';
 }
-else if(step2+step3+step4>=3)
+else if(step2+step3+step4>=8)
 {
 	feedback.state = '1 Doğru';
 }
