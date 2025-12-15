@@ -94,6 +94,7 @@
           <option name="placement" value="100" />
           <option name="backgroundColor" value="#000000FF" />
           <option name="color" value="#FFFFFFFF" />
+          <option name="textShadow" value="1" />
         </options>
       </optiongroup>
     </optiongroups>
@@ -1548,6 +1549,20 @@
       <string id="video_transcript_title">Yazılar</string>
       <string id="zoom_to_fit">Sığacak şekilde yakınlaştır</string>
       <string id="continue">Devam Et</string>
+      <string id="acc_select_an_option">Bir seçenek seçin</string>
+      <string id="acc_ordinal_eighth">sekizinci</string>
+      <string id="acc_ordinal_fifth">beşinci</string>
+      <string id="acc_ordinal_first">ilk</string>
+      <string id="acc_ordinal_fourth">dördüncü</string>
+      <string id="acc_ordinal_ninth">dokuzuncu</string>
+      <string id="acc_correct_choice">%answer% (doğru seçim)</string>
+      <string id="acc_search_result_status">%term% için %count% sonuç bulundu</string>
+      <string id="acc_ordinal_second">ikinci</string>
+      <string id="acc_played">%time% oynatıcı</string>
+      <string id="acc_ordinal_seventh">yedinci</string>
+      <string id="acc_ordinal_sixth">altıncı</string>
+      <string id="acc_ordinal_tenth">onuncu</string>
+      <string id="acc_ordinal_third">üçüncü</string>
       <string id="invalid_prompt_button">Tamam</string>
       <string id="invalid_prompt_message">Göndermeden önce soruyu tamamlamanız gerekir.</string>
       <string id="invalid_prompt_title">Geçersiz Yanıt</string>
@@ -1589,22 +1604,12 @@
         </slidelink>
         <slidelink slideid="_player.5sC1GZUyjs9" displaytext="Zor Yeni" expand="true" type="slide">
           <links>
-            <slidelink slideid="_player.5sC1GZUyjs9.64dhmxv6mJi" displaytext="Kolay - 1. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5sC1GZUyjs9.6TywM3o8rMF" displaytext="Kolay - 2. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5sC1GZUyjs9.6HSOoWc4xRs" displaytext="Kolay - 3. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5sC1GZUyjs9.6n931h7yNSn" displaytext="Kolay - 4. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5sC1GZUyjs9.6XywcyQEGbN" displaytext="Kolay - 5. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5sC1GZUyjs9.5brwzfFB6es" displaytext="Kolay - 6. Görev" expand="false" type="slide" />
-          </links>
-        </slidelink>
-        <slidelink slideid="_player.5yyeHfXQEKJ" displaytext="Zor" expand="true" type="slide">
-          <links>
-            <slidelink slideid="_player.5yyeHfXQEKJ.6A7XwG04BF9" displaytext="Zor - 1. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5yyeHfXQEKJ.6CNjrMeAkcl" displaytext="Zor - 2. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5yyeHfXQEKJ.6cIy2onWUt0" displaytext="Zor - 3. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5yyeHfXQEKJ.6PKp3Jcmw0Z" displaytext="Zor - 4. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5yyeHfXQEKJ.6pH7kSlaMrK" displaytext="Zor - 5. Görev" expand="false" type="slide" />
-            <slidelink slideid="_player.5yyeHfXQEKJ.6TiNjGVw0D5" displaytext="Zor - 6. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.64dhmxv6mJi" displaytext="Zor - 1. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.6TywM3o8rMF" displaytext="Zor - 2. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.6HSOoWc4xRs" displaytext="Zor - 3. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.6n931h7yNSn" displaytext="Zor - 4. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.6XywcyQEGbN" displaytext="Zor - 5. Görev" expand="false" type="slide" />
+            <slidelink slideid="_player.5sC1GZUyjs9.5brwzfFB6es" displaytext="Zor - 6. Görev" expand="false" type="slide" />
           </links>
         </slidelink>
         <slidelink slideid="_player.5cmKAHydqFB" displaytext="Sonuç" expand="true" type="slide">
