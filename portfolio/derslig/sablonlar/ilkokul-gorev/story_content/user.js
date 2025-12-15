@@ -111,7 +111,6 @@ if(drag_4.x>player.GetVar("dropzone_x_1") &&
 else{
 	player.SetVar("drag_var_4",false);
 }
-
 if(drag_5.x>player.GetVar("dropzone_x_1") && 
    drag_5.x<player.GetVar("dropzone_x_2")
    )
@@ -121,6 +120,7 @@ if(drag_5.x>player.GetVar("dropzone_x_1") &&
 else{
 	player.SetVar("drag_var_5",false);
 }
+
 
 if(drag_6.x>player.GetVar("dropzone_x_1") && 
    drag_6.x<player.GetVar("dropzone_x_2")
@@ -1534,12 +1534,12 @@ window.Script77 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5mwUzr8JNvt');
-const drag_2 = object('6ckGSC6oqI3');
-const drag_3 = object('5qDxF3IruGf');
-const drag_4 = object('6jQvV6w1dpW');
-const drag_5 = object('6ELw5gPkR6v');
-const drag_6 = object('6nayKzrTEh1');
+const drag_1 = object('60xvvIBS5lz');
+const drag_2 = object('5svjjjMsvXo');
+const drag_3 = object('5WhTHmApPsQ');
+const drag_4 = object('5ml0lacZdmI');
+const drag_5 = object('5oj7piFdesK');
+const drag_6 = object('6TrmbgMS10m');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -1843,38 +1843,62 @@ const drag_6 = object('6TrmbgMS10m');
 
 if(drag_cevap_1===true)
 {
-	drag_1.x = 1187;
+	drag_1.x = 1159;
 	drag_1.y = 300;
+}
+else{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
 }
 
 if(drag_cevap_2===true)
 {
-	drag_2.x = 1420;
+	drag_2.x = 1398;
 	drag_2.y = 300;
+}
+else{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
 }
 
 if(drag_cevap_3===true)
 {
-	drag_3.x = 1654;
+	drag_3.x = 1636;
 	drag_3.y = 300;
+}
+else{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
 }
 
 if(drag_cevap_4===true)
 {
-	drag_4.x = 1187;
+	drag_4.x = 1159;
 	drag_4.y = 543;
+}
+else{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
 }
 
 if(drag_cevap_5===true)
 {
-	drag_5.x = 1420;
+	drag_5.x = 1398;
 	drag_5.y = 543;
+}
+else{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
 }
 
 if(drag_cevap_6===true)
 {
-	drag_6.x = 1654;
+	drag_6.x = 1636;
 	drag_6.y = 543;
+}
+else{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
 }
 }
 
@@ -1978,12 +2002,12 @@ window.Script91 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5mwUzr8JNvt');
-const drag_2 = object('6ckGSC6oqI3');
-const drag_3 = object('5qDxF3IruGf');
-const drag_4 = object('6jQvV6w1dpW');
-const drag_5 = object('6ELw5gPkR6v');
-const drag_6 = object('6nayKzrTEh1');
+const drag_1 = object('6nNnoHB2sJU');
+const drag_2 = object('5cTgZr0nZm8');
+const drag_3 = object('6cKzI6gaMKA');
+const drag_4 = object('60wG7d0ED5N');
+const drag_5 = object('5qRMXkGEUfI');
+const drag_6 = object('6JylGiHB3kK');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -2287,38 +2311,62 @@ const drag_6 = object('6JylGiHB3kK');
 
 if(drag_cevap_1===true)
 {
-	drag_1.x = 1187;
+	drag_1.x = 1159;
 	drag_1.y = 300;
+}
+else{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
 }
 
 if(drag_cevap_2===true)
 {
-	drag_2.x = 1420;
+	drag_2.x = 1398;
 	drag_2.y = 300;
+}
+else{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
 }
 
 if(drag_cevap_3===true)
 {
-	drag_3.x = 1654;
+	drag_3.x = 1636;
 	drag_3.y = 300;
+}
+else{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
 }
 
 if(drag_cevap_4===true)
 {
-	drag_4.x = 1187;
+	drag_4.x = 1159;
 	drag_4.y = 543;
+}
+else{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
 }
 
 if(drag_cevap_5===true)
 {
-	drag_5.x = 1420;
+	drag_5.x = 1398;
 	drag_5.y = 543;
+}
+else{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
 }
 
 if(drag_cevap_6===true)
 {
-	drag_6.x = 1654;
+	drag_6.x = 1636;
 	drag_6.y = 543;
+}
+else{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
 }
 }
 
@@ -2422,12 +2470,12 @@ window.Script105 = function()
 {
   let player = GetPlayer();
 
-const drag_1 = object('5mwUzr8JNvt');
-const drag_2 = object('6ckGSC6oqI3');
-const drag_3 = object('5qDxF3IruGf');
-const drag_4 = object('6jQvV6w1dpW');
-const drag_5 = object('6ELw5gPkR6v');
-const drag_6 = object('6nayKzrTEh1');
+const drag_1 = object('6gSuu1ZowS9');
+const drag_2 = object('6VjoKJ2deXp');
+const drag_3 = object('6i6ckFSNDXM');
+const drag_4 = object('5yNgoT5tL7k');
+const drag_5 = object('6lPW7cymbJC');
+const drag_6 = object('6bXAIJGaSmX');
 
 player.SetVar("drag_x_1",drag_1.x);
 player.SetVar("drag_x_2",drag_2.x);
@@ -2731,38 +2779,62 @@ const drag_6 = object('6bXAIJGaSmX');
 
 if(drag_cevap_1===true)
 {
-	drag_1.x = 1187;
+	drag_1.x = 1159;
 	drag_1.y = 300;
+}
+else{
+	drag_1.x = player.GetVar("drag_x_1");
+	drag_1.y = player.GetVar("drag_y_1");
 }
 
 if(drag_cevap_2===true)
 {
-	drag_2.x = 1420;
+	drag_2.x = 1398;
 	drag_2.y = 300;
+}
+else{
+	drag_2.x = player.GetVar("drag_x_2");
+	drag_2.y = player.GetVar("drag_y_2");
 }
 
 if(drag_cevap_3===true)
 {
-	drag_3.x = 1654;
+	drag_3.x = 1636;
 	drag_3.y = 300;
+}
+else{
+	drag_3.x = player.GetVar("drag_x_3");
+	drag_3.y = player.GetVar("drag_y_3");
 }
 
 if(drag_cevap_4===true)
 {
-	drag_4.x = 1187;
+	drag_4.x = 1159;
 	drag_4.y = 543;
+}
+else{
+	drag_4.x = player.GetVar("drag_x_4");
+	drag_4.y = player.GetVar("drag_y_4");
 }
 
 if(drag_cevap_5===true)
 {
-	drag_5.x = 1420;
+	drag_5.x = 1398;
 	drag_5.y = 543;
+}
+else{
+	drag_5.x = player.GetVar("drag_x_5");
+	drag_5.y = player.GetVar("drag_y_5");
 }
 
 if(drag_cevap_6===true)
 {
-	drag_6.x = 1654;
+	drag_6.x = 1636;
 	drag_6.y = 543;
+}
+else{
+	drag_6.x = player.GetVar("drag_x_6");
+	drag_6.y = player.GetVar("drag_y_6");
 }
 }
 

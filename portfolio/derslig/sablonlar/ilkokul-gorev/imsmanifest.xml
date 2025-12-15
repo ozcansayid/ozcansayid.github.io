@@ -61,16 +61,16 @@
   <resources>
     <resource identifier="__5gZNtUEdgAz_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
       <file href="story_content/thumbnail.jpg" />
-      <file href="story_content/WebObjects/6XfxOrEAa24/Uçan Kuşlar animasyonu.html" />
-      <file href="mobile/6XfxOrEAa245wrFqIEgi0U{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6XfxOrEAa24/index.html" />
+      <file href="mobile/6XfxOrEAa246nVkM7qbjKJ{Width=520, Height=520}Light.png" />
       <file href="story_content/5WCUEWX9ejX.js" />
-      <file href="story_content/WebObjects/6c1bhhVJP95/Zubulig Merhaba Animasyonu.html" />
-      <file href="mobile/6c1bhhVJP955eKiBV33SBS{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6c1bhhVJP95/index.html" />
+      <file href="mobile/6c1bhhVJP9568kuT3akV7y{Width=520, Height=520}Light.png" />
       <file href="mobile/6DjHKMKzJdh.png" />
       <file href="story_content/5nTUInqgyer_44100_48_0.mp3" />
       <file href="story_content/5W0yJHWsVZM_44100_48_0.mp3" />
-      <file href="story_content/WebObjects/6CIb0sjVTEs/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6CIb0sjVTEs6AVAvKduF2M{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6CIb0sjVTEs/index.html" />
+      <file href="mobile/6CIb0sjVTEs6SjNGq9eugI{Width=520, Height=520}Light.png" />
       <file href="story_content/5bwn8xtP6Tw_44100_48_0.mp3" />
       <file href="story_content/5k3HJhWbx1b.js" />
       <file href="mobile/5h2MLMjNuYs.png" />
@@ -79,76 +79,76 @@
       <file href="mobile/6hW1bBLwiWs.png" />
       <file href="mobile/6QuK2QxB9c1.png" />
       <file href="mobile/6IHSud6ll4r.png" />
+      <file href="story_content/WebObjects/5xx0Pt0AXRa/index.html" />
+      <file href="mobile/5xx0Pt0AXRa6Z0TKo6qRa8{Width=520, Height=520}Light.png" />
+      <file href="story_content/6SGMi7ngyIL_44100_48_0.mp3" />
+      <file href="mobile/5yRnHS5XIu8.png" />
+      <file href="mobile/5cM5jh65OmJ.png" />
+      <file href="story_content/WebObjects/6nCXAS3uAsf/index.html" />
+      <file href="mobile/6nCXAS3uAsf6cBJGbVoPCU{Width=520, Height=520}Light.png" />
       <file href="mobile/6gd60b6JfCe.png" />
       <file href="mobile/6cqpJFLx0yg.png" />
       <file href="mobile/65qfm3DUGKE.png" />
       <file href="mobile/6rK0dnw0FZa.png" />
       <file href="mobile/6XIhy3kr7TS.png" />
       <file href="mobile/5dLjLBOmIbj.png" />
-      <file href="story_content/WebObjects/5xx0Pt0AXRa/Stabil Zubulig animasyonu.html" />
-      <file href="mobile/5xx0Pt0AXRa6p0yV0zBY9a{Width=520, Height=520}Light.png" />
-      <file href="story_content/6SGMi7ngyIL_44100_48_0.mp3" />
-      <file href="mobile/5yRnHS5XIu8.png" />
-      <file href="mobile/5cM5jh65OmJ.png" />
-      <file href="story_content/WebObjects/6nCXAS3uAsf/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6nCXAS3uAsf68hKm11b0Vr{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/61ygx5JsJ19/Stabil Zubulig animasyonu.html" />
-      <file href="mobile/61ygx5JsJ196HptpY7Imco{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6a9rwOvDXbN/Yanlışa Tepki Zubulig animasyonu.html" />
-      <file href="mobile/6a9rwOvDXbN63j2eIH8gMw{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/61ygx5JsJ19/index.html" />
+      <file href="mobile/61ygx5JsJ196BweY1Z0uXB{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6a9rwOvDXbN/index.html" />
+      <file href="mobile/6a9rwOvDXbN67lz6MFjBKE{Width=520, Height=520}Light.png" />
       <file href="mobile/67DG7JeGLqn.png" />
       <file href="story_content/6AaLDlRrTpy_44100_48_0.mp3" />
-      <file href="story_content/WebObjects/6mLDT8JaDn3/Doğruya Tepki Zubulig animasyonu.html" />
-      <file href="mobile/6mLDT8JaDn35idy3c5H0dp{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6mLDT8JaDn3/index.html" />
+      <file href="mobile/6mLDT8JaDn36oziBH9F2hN{Width=520, Height=520}Light.png" />
       <file href="story_content/68pRAkSTWVD_44100_48_0.mp3" />
-      <file href="story_content/WebObjects/69jlwmlfeqd/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/69jlwmlfeqd6UJKWiNzKJz{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/5ZD4ylKYmhL/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/5ZD4ylKYmhL6DtZ2dPNMig{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6B9Mc5VhdlF/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6B9Mc5VhdlF6TG7ZcgtJoX{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6YLTc7ENKJE/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6YLTc7ENKJE6Rf2iP2bQZ4{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6C7qW3TLXWj/Finalde Gelen sancak Animasyonu.html" />
-      <file href="mobile/6C7qW3TLXWj6VQFu5SfOku{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/69jlwmlfeqd/index.html" />
+      <file href="mobile/69jlwmlfeqd669CzW6FkcF{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/5ZD4ylKYmhL/index.html" />
+      <file href="mobile/5ZD4ylKYmhL6iSeucfxtfT{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6B9Mc5VhdlF/index.html" />
+      <file href="mobile/6B9Mc5VhdlF606BT0elayS{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6YLTc7ENKJE/index.html" />
+      <file href="mobile/6YLTc7ENKJE6pPjC3ck8UA{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6C7qW3TLXWj/index.html" />
+      <file href="mobile/6C7qW3TLXWj6ZpZ1rLnCBe{Width=520, Height=520}Light.png" />
       <file href="story_content/6oBwQBZ9v2D_44100_48_0.mp3" />
-      <file href="story_content/WebObjects/6PUxCtGaBzx/Final Zubulig animasyonu.html" />
-      <file href="mobile/6PUxCtGaBzx5iJvLPj9smk{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6HXApzAw9fj/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6HXApzAw9fj6GM1EN8jTMr{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6mzZirShVa8/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6mzZirShVa85VVi2b1SnBO{Width=520, Height=520}Light.png" />
-      <file href="story_content/WebObjects/6BJIlVcgBig/Yürüyen Zubulig animasyonu.html" />
-      <file href="mobile/6BJIlVcgBig5f5eHyX3eFm{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6PUxCtGaBzx/index.html" />
+      <file href="mobile/6PUxCtGaBzx5kMjGxvOG17{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6HXApzAw9fj/index.html" />
+      <file href="mobile/6HXApzAw9fj6RE9QoiZ9Lx{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6mzZirShVa8/index.html" />
+      <file href="mobile/6mzZirShVa85ZK59fpgWzA{Width=520, Height=520}Light.png" />
+      <file href="story_content/WebObjects/6BJIlVcgBig/index.html" />
+      <file href="mobile/6BJIlVcgBig5ncA398EXr4{Width=520, Height=520}Light.png" />
       <file href="meta.xml" />
       <file href="story_content/triggers.js" />
       <file href="story_content/user.js" />
-      <file href="mobile/Slide6WrNHtwpo2s.jpg" />
+      <file href="mobile/Slide62WbYVddAM1.jpg" />
       <file href="mobile/Shape6fSF79737fQ.png" />
-      <file href="mobile/Slide69LXD4MTVna.jpg" />
+      <file href="mobile/Slide6gKnEqb6dJP.jpg" />
       <file href="mobile/txt__default_6XgEdsMhemL.png" />
       <file href="mobile/txt_Correct_6XgEdsMhemL.png" />
       <file href="mobile/txt_Wrong_6XgEdsMhemL.png" />
-      <file href="mobile/Slide6Gwf527Q3RF.jpg" />
+      <file href="mobile/Slide5r05J3tzQe5.jpg" />
       <file href="mobile/txt__default_6oSwQmkGBjh.png" />
       <file href="mobile/txt_Correct_6oSwQmkGBjh.png" />
       <file href="mobile/txt_Wrong_6oSwQmkGBjh.png" />
-      <file href="mobile/Slide6MLV8EkmM4z.jpg" />
+      <file href="mobile/Slide6U2wOYodUBm.jpg" />
       <file href="mobile/txt__default_5zGV5jXOv6e.png" />
       <file href="mobile/txt_Correct_5zGV5jXOv6e.png" />
       <file href="mobile/txt_Wrong_5zGV5jXOv6e.png" />
-      <file href="mobile/Slide6PSVEbw1TRl.jpg" />
-      <file href="mobile/Slide6g0cYhrglbo.jpg" />
-      <file href="mobile/Slide6GytnP2Rzc9.jpg" />
-      <file href="mobile/Slide5eRDNt2qofq.jpg" />
+      <file href="mobile/Slide5yOu7ZbkuTI.jpg" />
+      <file href="mobile/Slide6XE5h3ySpGh.jpg" />
+      <file href="mobile/Slide5zx4Y1p5asT.jpg" />
+      <file href="mobile/Slide6OWTdpa3KeC.jpg" />
       <file href="mobile/txt__default_5qUu65HGORV.png" />
       <file href="mobile/txt_Correct_5qUu65HGORV.png" />
       <file href="mobile/txt_Wrong_5qUu65HGORV.png" />
-      <file href="mobile/Slide67mlVx8rRaz.jpg" />
+      <file href="mobile/Slide6ISQXf0e3f1.jpg" />
       <file href="mobile/txt__default_5d2gejpJcOc.png" />
       <file href="mobile/txt_Correct_5d2gejpJcOc.png" />
       <file href="mobile/txt_Wrong_5d2gejpJcOc.png" />
-      <file href="mobile/Slide6F6tGexocnu.jpg" />
+      <file href="mobile/Slide6OfBGa5gyMG.jpg" />
       <file href="mobile/txt__default_6FWIFKsDb9F.png" />
       <file href="mobile/txt_Correct_6FWIFKsDb9F.png" />
       <file href="mobile/txt_Wrong_6FWIFKsDb9F.png" />
