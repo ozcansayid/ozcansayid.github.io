@@ -94,6 +94,7 @@
           <option name="placement" value="100" />
           <option name="backgroundColor" value="#000000FF" />
           <option name="color" value="#FFFFFFFF" />
+          <option name="textShadow" value="1" />
         </options>
       </optiongroup>
     </optiongroups>
@@ -1407,6 +1408,7 @@
     <string_table name="npnxnanbnsnfns00011100101">
       <string id="acc_cc_hide">Başlıkları gizle (Ctrl+Alt+C)</string>
       <string id="acc_cc_show">Başlıkları göster (Ctrl+Alt+C)</string>
+      <string id="acc_correct_choice">%answer% (doğru seçim)</string>
       <string id="acc_enter_fullscreen">Tam ekrana gir (Ctrl+Alt+F)</string>
       <string id="acc_exit_fullscreen">Tam ekrandan çık (Ctrl+Alt+F)</string>
       <string id="acc_locked">kilitli</string>
@@ -1423,14 +1425,27 @@
       <string id="acc_mute">Sesi Kapat (Ctrl+Alt+M)</string>
       <string id="acc_next">Sonraki (Ctrl+Alt+nokta)</string>
       <string id="acc_next_visual">Sonraki (Ctrl+Alt+.)</string>
+      <string id="acc_ordinal_eighth">sekizinci</string>
+      <string id="acc_ordinal_fifth">beşinci</string>
+      <string id="acc_ordinal_first">ilk</string>
+      <string id="acc_ordinal_fourth">dördüncü</string>
+      <string id="acc_ordinal_ninth">dokuzuncu</string>
+      <string id="acc_ordinal_second">ikinci</string>
+      <string id="acc_ordinal_seventh">yedinci</string>
+      <string id="acc_ordinal_sixth">altıncı</string>
+      <string id="acc_ordinal_tenth">onuncu</string>
+      <string id="acc_ordinal_third">üçüncü</string>
       <string id="acc_pause">Duraklat (Ctrl+Alt+P)</string>
       <string id="acc_play">Oynat (Ctrl+Alt+P)</string>
       <string id="acc_playback_speed">Tekrar oynatma hızı</string>
+      <string id="acc_played">%time% oynatıcı</string>
       <string id="acc_previous">Önceki (Ctrl+Alt+virgül)</string>
       <string id="acc_previous_visual">Önceki (Ctrl+Alt+,)</string>
       <string id="acc_replay">Tekrar Oynat (Ctrl+Alt+R)</string>
       <string id="acc_search_input">ara</string>
+      <string id="acc_search_result_status">%term% için %count% sonuç bulundu</string>
       <string id="acc_search_results_status">%count% bulunan sonuçlar %term%</string>
+      <string id="acc_select_an_option">Bir seçenek seçin</string>
       <string id="acc_settings">Ayarlar</string>
       <string id="acc_skipnavigation">En yukarıya dön</string>
       <string id="acc_slide_progress">slayt ilerlemesi</string>
@@ -1578,9 +1593,9 @@
             <slidelink slideid="_player.6OF3VuEuTYU.6oPHNpadSZP" displaytext="Kart 2" expand="false" type="slide" />
             <slidelink slideid="_player.6OF3VuEuTYU.6LdncsokSY7" displaytext="Kart 3" expand="false" type="slide" />
             <slidelink slideid="_player.6OF3VuEuTYU.6iI0xnIwQ2d" displaytext="Sayfa 1" expand="false" type="slide" />
-            <slidelink slideid="_player.6OF3VuEuTYU.6EcGWdrLYmR" displaytext="Sayfa 2" expand="false" type="slide" />
-            <slidelink slideid="_player.6OF3VuEuTYU.6lY2K29ppBR" displaytext="Sayfa 3" expand="false" type="slide" />
-            <slidelink slideid="_player.6OF3VuEuTYU.5bDXXmVBF95" displaytext="Sayfa 4" expand="false" type="slide" />
+            <slidelink slideid="_player.6OF3VuEuTYU.6UlkgdcCN7L" displaytext="Sayfa 2" expand="false" type="slide" />
+            <slidelink slideid="_player.6OF3VuEuTYU.6S2khlsIJOv" displaytext="Sayfa 3" expand="false" type="slide" />
+            <slidelink slideid="_player.6OF3VuEuTYU.69F3FmffXy4" displaytext="Sayfa 4" expand="false" type="slide" />
             <slidelink slideid="_player.6OF3VuEuTYU.5hTXv3WI7SU" displaytext="Sayfa 5" expand="false" type="slide" />
             <slidelink slideid="_player.6OF3VuEuTYU.6UIvR5dbFiJ" displaytext="Sayfa 6" expand="false" type="slide" />
             <slidelink slideid="_player.6OF3VuEuTYU.5wvqP1jo57R" displaytext="Sayfa 7" expand="false" type="slide" />
