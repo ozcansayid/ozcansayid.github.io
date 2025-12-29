@@ -323,7 +323,7 @@ var iframe = document.getElementById("672yzfPJjRK_iframe");
 
 if (iframe && videoID) {
     // Yeni URL oluştur (autoplay ekledik ki sorunsuz başlasın)
-var newURL = "https://www.youtube.com/embed/" + videoID + "?autoplay=1&enablejsapi=1";
+var newURL = "https://player.vimeo.com/video/" + videoID;
 
     // URL'i iframe'e ata
     iframe.src = newURL;
