@@ -19,6 +19,11 @@ window.Script3 = function()
 const step_2 = object('6ZYguqSoYil');
 const step_3 = object('5cAFRxZ37Lb');
 const step_4 = object('5pb1HoyhQGN');
+const textBox2 = object('6p1UteQrc1a');
+const live_board = object('6JLc0vvODHa');
+const score_board = object('6bZssC5UHsk');
+const heart_1 = object('6KkZV4npcv8');
+const heart_2 = object('5miOLS1fQ1w');
 
 let player = GetPlayer();
 let var_step_1 = player.GetVar("var_step_1");
@@ -54,6 +59,11 @@ if(pageNumber === 1)
 		step_4.state = 'hex_4_completed';
 	}
 	step_1.state = 'hex_1_active';
+	textBox2.state = 'Hidden';
+	live_board.state = 'Hidden';
+	score_board.state = 'Hidden';
+	heart_1.state = 'Hidden';
+	heart_2.state = 'Hidden';
 }
 else if(pageNumber === 2)
 {	
@@ -338,6 +348,11 @@ window.Script7 = function()
 const step_2 = object('6ZYguqSoYil');
 const step_3 = object('5cAFRxZ37Lb');
 const step_4 = object('5pb1HoyhQGN');
+const textBox2 = object('6p1UteQrc1a');
+const live_board = object('6JLc0vvODHa');
+const score_board = object('6bZssC5UHsk');
+const heart_1 = object('6KkZV4npcv8');
+const heart_2 = object('5miOLS1fQ1w');
 
 let player = GetPlayer();
 let var_step_1 = player.GetVar("var_step_1");
@@ -373,6 +388,11 @@ if(pageNumber === 1)
 		step_4.state = 'hex_4_completed';
 	}
 	step_1.state = 'hex_1_active';
+	textBox2.state = 'Hidden';
+	live_board.state = 'Hidden';
+	score_board.state = 'Hidden';
+	heart_1.state = 'Hidden';
+	heart_2.state = 'Hidden';
 }
 else if(pageNumber === 2)
 {	
@@ -861,6 +881,11 @@ window.Script16 = function()
 const step_2 = object('6ZYguqSoYil');
 const step_3 = object('5cAFRxZ37Lb');
 const step_4 = object('5pb1HoyhQGN');
+const textBox2 = object('6p1UteQrc1a');
+const live_board = object('6JLc0vvODHa');
+const score_board = object('6bZssC5UHsk');
+const heart_1 = object('6KkZV4npcv8');
+const heart_2 = object('5miOLS1fQ1w');
 
 let player = GetPlayer();
 let var_step_1 = player.GetVar("var_step_1");
@@ -896,6 +921,11 @@ if(pageNumber === 1)
 		step_4.state = 'hex_4_completed';
 	}
 	step_1.state = 'hex_1_active';
+	textBox2.state = 'Hidden';
+	live_board.state = 'Hidden';
+	score_board.state = 'Hidden';
+	heart_1.state = 'Hidden';
+	heart_2.state = 'Hidden';
 }
 else if(pageNumber === 2)
 {	
@@ -1568,6 +1598,11 @@ window.Script28 = function()
 const step_2 = object('6ZYguqSoYil');
 const step_3 = object('5cAFRxZ37Lb');
 const step_4 = object('5pb1HoyhQGN');
+const textBox2 = object('6p1UteQrc1a');
+const live_board = object('6JLc0vvODHa');
+const score_board = object('6bZssC5UHsk');
+const heart_1 = object('6KkZV4npcv8');
+const heart_2 = object('5miOLS1fQ1w');
 
 let player = GetPlayer();
 let var_step_1 = player.GetVar("var_step_1");
@@ -1603,6 +1638,11 @@ if(pageNumber === 1)
 		step_4.state = 'hex_4_completed';
 	}
 	step_1.state = 'hex_1_active';
+	textBox2.state = 'Hidden';
+	live_board.state = 'Hidden';
+	score_board.state = 'Hidden';
+	heart_1.state = 'Hidden';
+	heart_2.state = 'Hidden';
 }
 else if(pageNumber === 2)
 {	

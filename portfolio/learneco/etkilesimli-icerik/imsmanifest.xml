@@ -62,18 +62,21 @@
   <resources>
     <resource identifier="__6pBdlz8za1U_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
       <file href="story_content/thumbnail.jpg" />
-      <file href="mobile/5n0pWMDKKqx.png" />
+      <file href="mobile/5cOKnevKMgR.png" />
       <file href="story_content/6o2wzeISPqE_44100_48_0.mp3" />
       <file href="mobile/6Rcwlqg0SDP.png" />
       <file href="story_content/WebObjects/6ojGz5NRx2h/index.html" />
-      <file href="mobile/6ojGz5NRx2h6FuxFj3Tk0C{Width=250, Height=250}Light.png" />
+      <file href="mobile/6ojGz5NRx2h6C8fd77QeWD{Width=250.0002, Height=250}Light.png" />
       <file href="mobile/6lcPTcZzdkg.png" />
       <file href="mobile/6NFFcyPSvuf.png" />
       <file href="mobile/5oTc9xGULo6.png" />
+      <file href="mobile/6IgrAFOJcXP.png" />
+      <file href="mobile/6k3t1VWFPMH.png" />
+      <file href="mobile/5tpMIbIYS2f.png" />
       <file href="mobile/5c50g9bz17n.png" />
       <file href="mobile/6isCMpX3hEb.png" />
       <file href="mobile/6UNmXmUYNqp.png" />
-      <file href="mobile/672yzfPJjRK6MkRAXQ1pet{Width=1251.336, Height=748}Light.png" />
+      <file href="mobile/672yzfPJjRK6Lct5rV97zp{Width=1251.336, Height=748}Light.png" />
       <file href="mobile/5qVe1IpqFcO.png" />
       <file href="mobile/6QjgQL4SnNM.png" />
       <file href="mobile/5ttCoGA0dNT.png" />
@@ -155,9 +158,10 @@
       <file href="meta.xml" />
       <file href="story_content/triggers.js" />
       <file href="story_content/user.js" />
-      <file href="mobile/Slide6Z1TVA1A9Bc.jpg" />
-      <file href="mobile/Slide6MiJJ3Fk443.jpg" />
-      <file href="mobile/Slide5q79Kqn81xp.jpg" />
+      <file href="story_content/external_files/Çevrimiçi Eğitim Tasarımı- El Kitapçığı.pdf" />
+      <file href="mobile/Slide5ZxTnok8P79.jpg" />
+      <file href="mobile/Slide5rhU3SxcOfr.jpg" />
+      <file href="mobile/Slide6fxJ1FeIQKL.jpg" />
       <file href="html5/data/css/output.min.css" />
       <file href="html5/data/js/5nA041tpMz5.js" />
       <file href="html5/data/js/5uH6ksnkvry.js" />
