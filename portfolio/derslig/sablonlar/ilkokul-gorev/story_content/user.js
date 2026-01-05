@@ -1449,6 +1449,26 @@ if (webObject) {
 
 window.Script75 = function()
 {
+  let player = GetPlayer();
+let puan = player.GetVar("puan");
+
+let sevinen = document.querySelector('[data-model-id="6PUxCtGaBzx"]');
+let uzulen = document.querySelector('[data-model-id="6cVYc9Ex0Gx"]');
+
+if(puan>0)
+{
+	sevinen.style.display = 'block';
+	uzulen.style.display = 'none';
+}
+else if(puan===0)
+{
+	sevinen.style.display = 'none';
+	uzulen.style.display = 'block';
+}
+}
+
+window.Script76 = function()
+{
   var player = GetPlayer();
 var puan = player.GetVar("puan"); // Storyline değişkenini al
 var maxpuan = player.GetVar("maxPuan"); // Storyline değişkenini al
@@ -1511,7 +1531,7 @@ xhr.onreadystatechange = function () {
 xhr.send(JSON.stringify(statement));
 }
 
-window.Script76 = function()
+window.Script77 = function()
 {
   var player = GetPlayer();
 var targetURL = player.GetVar("ExitURL"); 
@@ -1530,7 +1550,7 @@ try {
 
 }
 
-window.Script77 = function()
+window.Script78 = function()
 {
   let player = GetPlayer();
 
@@ -1555,7 +1575,7 @@ player.SetVar("drag_y_5",drag_5.y);
 player.SetVar("drag_y_6",drag_6.y);
 }
 
-window.Script78 = function()
+window.Script79 = function()
 {
   let player = GetPlayer();
 
@@ -1651,7 +1671,7 @@ else{
 
 }
 
-window.Script79 = function()
+window.Script80 = function()
 {
   let player = GetPlayer();
 const drag_1 = object('60xvvIBS5lz');
@@ -1677,7 +1697,7 @@ else{
 }
 }
 
-window.Script80 = function()
+window.Script81 = function()
 {
   let player = GetPlayer();
 
@@ -1704,7 +1724,7 @@ else{
 }
 }
 
-window.Script81 = function()
+window.Script82 = function()
 {
   let player = GetPlayer();
 
@@ -1731,7 +1751,7 @@ else{
 }
 }
 
-window.Script82 = function()
+window.Script83 = function()
 {
   let player = GetPlayer();
 
@@ -1758,7 +1778,7 @@ else{
 }
 }
 
-window.Script83 = function()
+window.Script84 = function()
 {
   let player = GetPlayer();
 
@@ -1785,7 +1805,7 @@ else{
 }
 }
 
-window.Script84 = function()
+window.Script85 = function()
 {
   let player = GetPlayer();
 
@@ -1812,7 +1832,7 @@ else{
 }
 }
 
-window.Script85 = function()
+window.Script86 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -1824,7 +1844,7 @@ if (webObject) {
 }
 }
 
-window.Script86 = function()
+window.Script87 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -1902,7 +1922,7 @@ else{
 }
 }
 
-window.Script87 = function()
+window.Script88 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -1914,7 +1934,7 @@ if (webObject) {
 }
 }
 
-window.Script88 = function()
+window.Script89 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -1926,7 +1946,7 @@ if (webObject) {
 }
 }
 
-window.Script89 = function()
+window.Script90 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -1986,7 +2006,7 @@ if(drag_var_6 !== drag_cevap_6)
 }
 }
 
-window.Script90 = function()
+window.Script91 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -1998,7 +2018,7 @@ if (webObject) {
 }
 }
 
-window.Script91 = function()
+window.Script92 = function()
 {
   let player = GetPlayer();
 
@@ -2023,7 +2043,7 @@ player.SetVar("drag_y_5",drag_5.y);
 player.SetVar("drag_y_6",drag_6.y);
 }
 
-window.Script92 = function()
+window.Script93 = function()
 {
   let player = GetPlayer();
 
@@ -2119,7 +2139,7 @@ else{
 
 }
 
-window.Script93 = function()
+window.Script94 = function()
 {
   let player = GetPlayer();
 const drag_1 = object('6nNnoHB2sJU');
@@ -2145,7 +2165,7 @@ else{
 }
 }
 
-window.Script94 = function()
+window.Script95 = function()
 {
   let player = GetPlayer();
 
@@ -2172,7 +2192,7 @@ else{
 }
 }
 
-window.Script95 = function()
+window.Script96 = function()
 {
   let player = GetPlayer();
 
@@ -2199,7 +2219,7 @@ else{
 }
 }
 
-window.Script96 = function()
+window.Script97 = function()
 {
   let player = GetPlayer();
 
@@ -2226,7 +2246,7 @@ else{
 }
 }
 
-window.Script97 = function()
+window.Script98 = function()
 {
   let player = GetPlayer();
 
@@ -2253,7 +2273,7 @@ else{
 }
 }
 
-window.Script98 = function()
+window.Script99 = function()
 {
   let player = GetPlayer();
 
@@ -2280,7 +2300,7 @@ else{
 }
 }
 
-window.Script99 = function()
+window.Script100 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2292,7 +2312,7 @@ if (webObject) {
 }
 }
 
-window.Script100 = function()
+window.Script101 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -2370,7 +2390,7 @@ else{
 }
 }
 
-window.Script101 = function()
+window.Script102 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2382,7 +2402,7 @@ if (webObject) {
 }
 }
 
-window.Script102 = function()
+window.Script103 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2394,7 +2414,7 @@ if (webObject) {
 }
 }
 
-window.Script103 = function()
+window.Script104 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -2454,7 +2474,7 @@ if(drag_var_6 !== drag_cevap_6)
 }
 }
 
-window.Script104 = function()
+window.Script105 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2466,7 +2486,7 @@ if (webObject) {
 }
 }
 
-window.Script105 = function()
+window.Script106 = function()
 {
   let player = GetPlayer();
 
@@ -2491,7 +2511,7 @@ player.SetVar("drag_y_5",drag_5.y);
 player.SetVar("drag_y_6",drag_6.y);
 }
 
-window.Script106 = function()
+window.Script107 = function()
 {
   let player = GetPlayer();
 
@@ -2587,7 +2607,7 @@ else{
 
 }
 
-window.Script107 = function()
+window.Script108 = function()
 {
   let player = GetPlayer();
 const drag_1 = object('6gSuu1ZowS9');
@@ -2613,7 +2633,7 @@ else{
 }
 }
 
-window.Script108 = function()
+window.Script109 = function()
 {
   let player = GetPlayer();
 
@@ -2640,7 +2660,7 @@ else{
 }
 }
 
-window.Script109 = function()
+window.Script110 = function()
 {
   let player = GetPlayer();
 
@@ -2667,7 +2687,7 @@ else{
 }
 }
 
-window.Script110 = function()
+window.Script111 = function()
 {
   let player = GetPlayer();
 
@@ -2694,7 +2714,7 @@ else{
 }
 }
 
-window.Script111 = function()
+window.Script112 = function()
 {
   let player = GetPlayer();
 
@@ -2721,7 +2741,7 @@ else{
 }
 }
 
-window.Script112 = function()
+window.Script113 = function()
 {
   let player = GetPlayer();
 
@@ -2748,7 +2768,7 @@ else{
 }
 }
 
-window.Script113 = function()
+window.Script114 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2760,7 +2780,7 @@ if (webObject) {
 }
 }
 
-window.Script114 = function()
+window.Script115 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -2838,7 +2858,7 @@ else{
 }
 }
 
-window.Script115 = function()
+window.Script116 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2850,7 +2870,7 @@ if (webObject) {
 }
 }
 
-window.Script116 = function()
+window.Script117 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
@@ -2862,7 +2882,7 @@ if (webObject) {
 }
 }
 
-window.Script117 = function()
+window.Script118 = function()
 {
   let player = GetPlayer();
 let drag_cevap_1 = player.GetVar("drag_cevap_1");
@@ -2922,7 +2942,7 @@ if(drag_var_6 !== drag_cevap_6)
 }
 }
 
-window.Script118 = function()
+window.Script119 = function()
 {
   // GÜVENİLİR YÖNTEM
 // '6YOyhJW2aoe' yerine kendi nesnenizin model ID'sini yazın.
