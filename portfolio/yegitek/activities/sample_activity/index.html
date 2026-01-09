@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Örnek Etkinlik</title>
+    <!-- Tasarım Kütüphaneleri -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Animasyon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- Etkileşim -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+
+    <!-- Ses & İkon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+    <style>
+        /* Storyline Web Object Standartları */
+        body {
+            background-color: transparent;
+            /* Şeffaf Arkaplan */
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            /* Sol üstten başla */
+            justify-content: flex-start;
+            font-family: 'Fillip', 'Nunito', sans-serif;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #game-scale-container {
+            width: 1920px;
+            height: 1080px;
+            transform-origin: top left;
+            position: relative;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-scale-container">
+        <div class="game-container bg-base-200/90 rounded-xl relative shadow-2xl border-4 border-base-300">
+            <!-- Arkaplan Dekoru -->
+            <div class="absolute top-10 left-10 animate__animated animate__fadeInLeft">
+                <h1 class="text-6xl font-bold text-primary">Örnek Etkinlik</h1>
+                <p class="text-2xl mt-2 text-base-content/70">Storyline Entegrasyon Testi</p>
+            </div>
+
+            <div class="card w-[800px] bg-base-100 shadow-2xl animate__animated animate__zoomIn">
+                <div class="card-body items-center text-center p-10">
+                    <i data-lucide="help-circle" class="w-24 h-24 text-accent mb-4"></i>
+                    <h2 class="card-title text-4xl mb-6">Aşağıdakilerden hangisi bir programlama dilidir?</h2>
+
+                    <div class="grid grid-cols-1 gap-4 w-full">
+                        <button onclick="checkAnswer(false)"
+                            class="btn btn-outline btn-lg hover:bg-error hover:text-white transition-all">HTML</button>
+                        <button onclick="checkAnswer(true)"
+                            class="btn btn-outline btn-lg hover:bg-success hover:text-white transition-all">Python</button>
+                        <button onclick="checkAnswer(false)"
+                            class="btn btn-outline btn-lg hover:bg-error hover:text-white transition-all">CSS</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontrol Paneli (Test Amaçlı) -->
+            <div class="absolute bottom-10 right-10 flex gap-2">
+                <div class="badge badge-lg badge-neutral">Puan: <span id="score-display">0</span></div>
+                <div class="badge badge-lg badge-neutral">Doğru: <span id="correct-display">0</span></div>
+                <div class="badge badge-lg badge-neutral">Yanlış: <span id="wrong-display">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // -------------------------------------------------------------------------
+        // STORYLINE ENTEGRASYON KODLARI (Boilerplate)
+        // -------------------------------------------------------------------------
+
+        // Player objesini al veya mock obje döndür (Test için)
+        function getPlayer() {
+            var player = window.parent.GetPlayer ? window.parent.GetPlayer() : null;
+            if (!player) {
+                // Eğer iframe içinde değilsek ve parent yoksa, veya local file ise:
+                return {
+                    GetVar: function (name) {
+                        return parseInt(document.getElementById(name + '-display')?.innerText || 0);
+                    },
+                    SetVar: function (name, val) {
+                        console.log(`[STORYLINE] SetVar: ${name} = ${val}`);
+                        // Test arayüzünü güncelle
+                        const el = document.getElementById(name + '-display');
+                        if (el) el.innerText = val;
+                    }
+                };
+            }
+            return player;
+        }
+
+        const player = getPlayer();
+
+        function triggerCorrect() {
+            var currentCorrect = player.GetVar("correct") || 0;
+            player.SetVar("correct", currentCorrect + 1);
+
+            var currentScore = player.GetVar("score") || 0;
+            player.SetVar("score", currentScore + 10);
+        }
+
+        function triggerWrong() {
+            var currentWrong = player.GetVar("wrong") || 0;
+            player.SetVar("wrong", currentWrong + 1);
+
+            var currentLive = player.GetVar("live") || 3;
+            if (currentLive > 0) player.SetVar("live", currentLive - 1);
+        }
+
+        // -------------------------------------------------------------------------
+        // OYUN MANTIĞI
+        // -------------------------------------------------------------------------
+
+        function checkAnswer(isCorrect) {
+            if (isCorrect) {
+                // Animasyon
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Ses (Varsayılan hata vermemesi için kapalı, dosya varsa açılabilir)
+                // var snd = new Howl({ src: ['success.mp3'] }); snd.play();
+
+                // SweetAlert
+                Swal.fire({
+                    title: 'Harika!',
+                    text: 'Doğru cevabı buldun.',
+                    icon: 'success',
+                    confirmButtonText: 'Tamam',
+                    timer: 2000
+                });
+
+                // Storyline Tetikleyici
+                triggerCorrect();
+
+            } else {
+                // SweetAlert
+                Swal.fire({
+                    title: 'Üzgünüm...',
+                    text: 'Yanlış cevap, tekrar dene!',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+
+                // Storyline Tetikleyici
+                triggerWrong();
+
+                // Titreme Efekti
+                anime({
+                    targets: '.card',
+                    translateX: [
+                        { value: -10, duration: 100 },
+                        { value: 10, duration: 100 },
+                        { value: -10, duration: 100 },
+                        { value: 0, duration: 100 }
+                    ]
+                });
+            }
+        }
+
+        // AUTO-SCALE SCRIPT
+        function resizeGame() {
+            const container = document.getElementById('game-scale-container');
+            const targetWidth = 1920;
+            const targetHeight = 1080;
+
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            const scaleX = windowWidth / targetWidth;
+            const scaleY = windowHeight / targetHeight;
+
+            const scale = Math.min(scaleX, scaleY);
+
+            container.style.transform = `scale(${scale})`;
+
+            container.style.left = `${(windowWidth - (targetWidth * scale)) / 2}px`;
+            container.style.top = `${(windowHeight - (targetHeight * scale)) / 2}px`;
+        }
+
+        window.addEventListener('resize', resizeGame);
+        window.addEventListener('load', resizeGame);
+    </script>
+</body>
+
+</html>

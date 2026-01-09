@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Portföyü</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .aspect-video-custom {
+            aspect-ratio: 16 / 9;
+        }
+    </style>
+</head>
+
+<body class="bg-base-200 min-h-screen font-sans">
+    <!-- Navbar -->
+    <div class="navbar bg-base-100 shadow-md">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl">🚀 Etkinlik Portföyü</a>
+        </div>
+        <div class="flex-none">
+            <button class="btn btn-square btn-ghost">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="container mx-auto p-4 md:p-8">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold mb-4">Etkinlikler ve Oyunlar</h1>
+            <p class="text-lg opacity-70">Storyline entegrasyonu için hazırlanan web object etkinliklerinin listesi.</p>
+        </div>
+        <!-- Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card 1: Sample Activity -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <figure class="bg-primary/10 h-48 flex items-center justify-center">
+                    <i data-lucide="gamepad-2" class="w-16 h-16 text-primary opacity-50"></i>
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        Örnek Etkinlik
+                        <div class="badge badge-secondary">YENİ</div>
+                    </h2>
+                    <p>Temel entegrasyon ve değişkenlerin test edildiği örnek etkinlik.</p>
+                    <div class="card-actions justify-end mt-4">
+                        <button onclick="openPreview('activities/sample_activity/index.html', 'Örnek Etkinlik')"
+                            class="btn btn-primary w-full">
+                            <i data-lucide="play"></i> Önizle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card: 3.15 Sıra Sizde 1 -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <figure class="bg-secondary/10 h-48 flex items-center justify-center">
+                    <i data-lucide="layers" class="w-16 h-16 text-secondary opacity-50"></i>
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        3.15 Sıra Sizde 1
+                        <div class="badge badge-accent">YENİ</div>
+                    </h2>
+                    <p>Yeni etkinlik şablonu (Standartlara uygun).</p>
+                    <div class="card-actions justify-end mt-4">
+                        <button onclick="openPreview('activities/03-15-SS1/index.html', '3.15 Sıra Sizde 1')"
+                            class="btn btn-primary w-full">
+                            <i data-lucide="play"></i> Önizle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card: Sinek Yakalama Oyunu -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <figure class="bg-accent/10 h-48 flex items-center justify-center">
+                    <i data-lucide="bug" class="w-16 h-16 text-accent opacity-50"></i>
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        Sinek Yakalama Oyunu
+                        <div class="badge badge-accent">YENİ</div>
+                    </h2>
+                    <p>Süre dolmadan sinekleri yakala! (03-15-GF)</p>
+                    <div class="card-actions justify-end mt-4">
+                        <button onclick="openPreview('activities/03-15-GF/index.html', 'Sinek Yakalama Oyunu')"
+                            class="btn btn-primary w-full">
+                            <i data-lucide="play"></i> Önizle
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Baloncuk Oyunu -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <figure class="bg-info/10 h-48 flex items-center justify-center">
+                    <i data-lucide="circle-dashed" class="w-16 h-16 text-info opacity-50"></i>
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        Baloncuk Oyunu
+                        <div class="badge badge-accent">YENİ</div>
+                    </h2>
+                    <p>Baloncukları patlat ve harfleri yakala.</p>
+                    <div class="card-actions justify-end mt-4">
+                        <button onclick="openPreview('activities/baloncuk/index.html', 'Baloncuk Oyunu')"
+                            class="btn btn-primary w-full">
+                            <i data-lucide="play"></i> Önizle
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Preview Modal -->
+    <dialog id="preview_modal" class="modal">
+        <div class="modal-box w-11/12 max-w-7xl h-[90vh] flex flex-col p-0 overflow-hidden bg-black/90">
+            <!-- Modal Header -->
+            <div class="bg-base-100 p-2 flex justify-between items-center px-4 z-10">
+                <h3 id="modal_title" class="font-bold text-lg">Önizleme</h3>
+                <div class="flex gap-2">
+                    <button class="btn btn-sm btn-ghost" onclick="toggleFullscreen()" title="Tam Ekran">
+                        <i data-lucide="maximize"></i>
+                    </button>
+                    <button class="btn btn-sm btn-circle btn-ghost" onclick="closePreview()">✕</button>
+                </div>
+            </div>
+            <!-- Iframe Container -->
+            <div class="flex-1 bg-gray-900 relative w-full h-full overflow-hidden">
+                <iframe id="preview_frame" class="w-full h-full border-0" src=""></iframe>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button onclick="closePreview()">kapat</button>
+        </form>
+    </dialog>
+    <script>
+        lucide.createIcons();
+        function openPreview(url, title) {
+            const modal = document.getElementById('preview_modal');
+            const frame = document.getElementById('preview_frame');
+            const modalTitle = document.getElementById('modal_title');
+            frame.src = url;
+            modalTitle.innerText = title;
+            modal.showModal();
+        }
+        function closePreview() {
+            const frame = document.getElementById('preview_frame');
+            frame.src = ''; // Stop content
+            document.getElementById('preview_modal').close();
+        }
+        function toggleFullscreen() {
+            const modalBox = document.querySelector('.modal-box');
+            if (!document.fullscreenElement) {
+                modalBox.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinek Yakalama Oyunu</title>
+    <!-- Tasarım Kütüphaneleri (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Animasyon & Etkileşim (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <!-- Ses & İkon (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* STANDARTLAR: Şeffaf, Fullscreen, Fillip/Nunito */
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: transparent;
+            font-family: 'Fillip', 'Nunito', sans-serif;
+            touch-action: none;
+        }
+
+        #scaler {
+            width: 1920px;
+            height: 1080px;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #app-container {
+            width: 1920px;
+            height: 1080px;
+            background: url('./assets/bg.png') no-repeat center center;
+            background-size: cover;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        /* TASARIM SİSTEMİ RENKLERİ */
+        .color-primary {
+            color: #4F46E5;
+        }
+
+        .bg-primary {
+            background-color: #4F46E5;
+        }
+
+        .color-accent {
+            color: #EA580C;
+        }
+
+        .bg-accent {
+            background-color: #EA580C;
+        }
+
+        .color-text {
+            color: #1E293B;
+        }
+
+        /* Pasta ve Sinek Alanı */
+        #game-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: crosshair;
+        }
+
+        #cake-img {
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            z-index: 10;
+            pointer-events: none;
+            /* Tıklamayı engelleme */
+        }
+
+        .fly {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            font-size: 50px;
+            z-index: 20;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Sineğin tıklanma alanını büyüt */
+            width: 80px;
+            height: 80px;
+        }
+
+        /* Dashboard / HUD */
+        #hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 50;
+            pointer-events: none;
+            /* Altını etkilemesin */
+        }
+
+        .hud-panel {
+            background: #F1F5F9;
+            border: 2px solid #E2E8F0;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+            min-width: 200px;
+        }
+
+        .hud-label {
+            font-size: 1.5rem;
+            color: #64748B;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .hud-value {
+            font-size: 3.5rem;
+            color: #1E293B;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        #start-screen,
+        #end-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .btn-large {
+            background-color: #4F46E5;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 900;
+            padding: 20px 60px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-large:hover {
+            transform: scale(1.05);
+            background-color: #4338CA;
+        }
+
+        /* Timer Animasyon Barı */
+        #timer-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #E2E8F0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 60;
+        }
+
+        #timer-bar {
+            height: 100%;
+            background: #EA580C;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        #cup-image {
+            width: 200px;
+            height: auto;
+            display: none;
+            margin-bottom: 20px;
+            animation: bounceIn 1s;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.1);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="scaler">
+        <div id="app-container">
+
+            <!-- Timer Bar -->
+            <div id="timer-bar-container">
+                <div id="timer-bar"></div>
+            </div>
+
+            <!-- HUD -->
+            <div id="hud">
+                <div class="hud-panel">
+                    <span class="hud-label">Süre</span>
+                    <span class="hud-value" id="timer-val">60</span>
+                </div>
+                <div class="hud-panel">
+                    <span class="hud-label">Puan</span>
+                    <span class="hud-value" id="score-val" style="color: #4F46E5;">0</span>
+                </div>
+            </div>
+
+            <!-- Oyun Alanı -->
+            <div id="game-area">
+                <img src="./assets/cake.png" id="cake-img" alt="Pasta">
+                <!-- Sinekler dinamik eklenecek -->
+            </div>
+
+            <!-- Giriş Ekranı -->
+            <div id="start-screen">
+                <h1 style="font-size: 5rem; font-weight: 900; color: #1E293B; margin: 0;">Sinek Yakalama</h1>
+                <p style="font-size: 2rem; color: #64748B; max-width: 800px;">
+                    Pastanın etrafında uçuşan sinekleri yakalamalısın. <br>
+                    <span class="text-orange-600 font-bold">Bronz: 0-6</span> |
+                    <span class="text-gray-500 font-bold">Gümüş: 7-13</span> |
+                    <span class="text-yellow-500 font-bold">Altın: 14+</span>
+                </p>
+                <button class="btn-large" onclick="startGame()">OYUNA BAŞLA</button>
+            </div>
+
+            <!-- Bitiş Ekranı -->
+            <div id="end-screen" style="display: none;">
+                <img id="cup-image" src="" alt="Kupa">
+                <h1 id="end-title" style="font-size: 5rem; font-weight: 900; color: #1E293B; margin: 0;">Süre Doldu!
+                </h1>
+                <p id="end-msg" style="font-size: 2rem; color: #64748B;">Toplam Puanın: 0</p>
+                <button class="btn-large" onclick="startGame()">TEKRAR OYNA</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Storyline Boilerplate & Auto-Scale ---
+        function updateScale() {
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const scaler = document.getElementById('scaler');
+            const scale = Math.min(winW / 1920, winH / 1080);
+            scaler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', updateScale);
+        updateScale();
+
+        function getPlayer() {
+            try { return window.parent.GetPlayer ? window.parent.GetPlayer() : { SetVar: () => { }, GetVar: () => 0 }; }
+            catch { return { SetVar: () => { }, GetVar: () => 0 }; }
+        }
+        const player = getPlayer();
+        // ------------------------------------------
+
+        // OYUN AYARLARI
+        const GAME_DURATION = 60; // saniye
+        const FLY_COUNT = 25;
+        let score = 0;
+        let timeLeft = GAME_DURATION;
+        let gameActive = false;
+        let timerInterval = null;
+        let flies = [];
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('cup-image').style.display = 'none';
+
+            score = 0;
+            timeLeft = GAME_DURATION;
+            gameActive = true;
+
+            updateScore(0);
+            updateTimer(GAME_DURATION);
+
+            // Temizle
+            const area = document.getElementById('game-area');
+            document.querySelectorAll('.fly').forEach(f => f.remove());
+            flies = [];
+
+            // Sinekleri Oluştur
+            for (let i = 0; i < FLY_COUNT; i++) {
+                createFly(i);
+            }
+
+            // Sayacı Başlat
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer(timeLeft);
+                if (timeLeft <= 0) endGame();
+            }, 1000);
+        }
+
+        function createFly(id) {
+            const fly = document.createElement('div');
+            fly.className = 'fly';
+            fly.innerHTML = '🪰'; // Emoji sinek
+            fly.id = 'fly-' + id;
+
+            // Rastgele başlangıç konumu
+            const x = Math.random() * 1800 + 50;
+            const y = Math.random() * 900 + 50;
+
+            fly.style.left = x + 'px';
+            fly.style.top = y + 'px';
+
+            document.getElementById('game-area').appendChild(fly);
+
+            fly.addEventListener('pointerdown', (e) => catchFly(fly));
+            animateFly(fly);
+        }
+
+        function animateFly(fly) {
+            if (!gameActive) return;
+            const duration = Math.random() * 1000 + 800;
+            const nextX = Math.random() * 1800;
+            const nextY = Math.random() * 1000;
+
+            anime({
+                targets: fly,
+                left: nextX,
+                top: nextY,
+                easing: 'easeInOutQuad',
+                duration: duration,
+                complete: () => {
+                    if (document.body.contains(fly) && gameActive) animateFly(fly);
+                }
+            });
+        }
+
+        function catchFly(fly) {
+            if (!gameActive) return;
+            anime.remove(fly);
+            fly.style.pointerEvents = 'none';
+
+            anime({
+                targets: fly,
+                scale: [1, 0],
+                opacity: 0,
+                duration: 200,
+                easing: 'easeOutExpo',
+                complete: () => fly.remove()
+            });
+            score++;
+            updateScore(score);
+            setTimeout(() => {
+                if (gameActive) createFly('respawn-' + Date.now());
+            }, 500);
+        }
+
+        function updateScore(val) {
+            document.getElementById('score-val').innerText = val;
+            player.SetVar('score', val);
+        }
+
+        function updateTimer(val) {
+            document.getElementById('timer-val').innerText = val;
+            const percent = (val / GAME_DURATION) * 100;
+            const bar = document.getElementById('timer-bar');
+            bar.style.width = percent + '%';
+
+            if (val <= 10) bar.style.backgroundColor = '#EF4444';
+            else bar.style.backgroundColor = '#EA580C';
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            anime.remove('.fly');
+
+            const endScreen = document.getElementById('end-screen');
+            const endTitle = document.getElementById('end-title');
+            const endMsg = document.getElementById('end-msg');
+            const cupImg = document.getElementById('cup-image');
+
+            endScreen.style.display = 'flex';
+            endMsg.innerText = `Toplam Puanın: ${score}`;
+            cupImg.style.display = 'block';
+
+            // Kupa Lojik
+            // < 7: Bronz
+            // 7 - 13: Gümüş
+            // >= 14: Altın
+
+            if (score >= 14) {
+                endTitle.innerText = "Altın Kupa!";
+                endTitle.style.color = "#EAB308"; // Gold text color
+                cupImg.src = "./assets/gold.png";
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+                player.SetVar('completed', 1); // Başarılı sayılabilir
+            } else if (score >= 7) {
+                endTitle.innerText = "Gümüş Kupa!";
+                endTitle.style.color = "#94A3B8"; // Silver text color
+                cupImg.src = "./assets/silver.png";
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } else {
+                endTitle.innerText = "Bronz Kupa";
+                endTitle.style.color = "#B45309"; // Bronze text color
+                cupImg.src = "./assets/bronz.png";
+            }
+        }
+    </script>
+</body>
+
+</html>

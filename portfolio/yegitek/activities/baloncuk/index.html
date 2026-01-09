@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sualtı Harf Avı</title>
+    <style>
+        :root {
+            --bubble-bg: rgba(255, 255, 255, 0.3);
+            --bubble-border: rgba(255, 255, 255, 0.5);
+            --primary-color: #60a5fa;
+            --accent-color: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://www.egiteknoloji.com/wp-content/uploads/2026/01/bg.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Başlangıç ve Sonuç Ekranları */
+        #setup-screen,
+        #result-screen {
+            position: absolute;
+            z-index: 20;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 2.5rem;
+            border-radius: 24px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--bubble-border);
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            font-size: 2.2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .letter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 0 #2563eb;
+        }
+
+        .btn:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #2563eb;
+        }
+
+        /* HUD */
+        #hud {
+            position: absolute;
+            top: 20px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            border-radius: 18px;
+            backdrop-filter: blur(8px);
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: 1px solid var(--bubble-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Oyun Alanı */
+        #play-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1));
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: inset -5px -5px 15px rgba(255, 255, 255, 0.3),
+                inset 5px 5px 15px rgba(0, 0, 0, 0.1);
+            will-change: transform;
+            color: #1e3a8a;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            z-index: 5;
+        }
+
+        /* Dekoratif Balıklar */
+        .fish {
+            position: absolute;
+            pointer-events: none;
+            /* Tıklanamaz */
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            will-change: transform;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <!-- HUD -->
+        <div id="hud" class="hidden">
+            <div class="stat-box">⏱️ <span id="timer">60</span></div>
+            <div class="stat-box">🎯 <span id="target-display">-</span></div>
+            <div class="stat-box">⭐ <span id="score">0</span></div>
+        </div>
+
+        <!-- Başlangıç Ekranı -->
+        <div id="setup-screen">
+            <h1>Harf Avı</h1>
+            <p>Yakalayacağın harfi seçerek oyunu başlat:</p>
+            <div class="letter-grid" id="letter-grid"></div>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Hedef harfini gördüğünde balona dokun!</p>
+        </div>
+
+        <!-- Sonuç Ekranı -->
+        <div id="result-screen" class="hidden">
+            <h1>Süre Doldu!</h1>
+            <p id="final-score-text" style="font-size: 1.5rem; font-weight: bold;"></p>
+            <button class="btn" style="width: 100%;" onclick="location.reload()">Yeniden Dene</button>
+        </div>
+
+        <!-- Oyun Alanı -->
+        <div id="play-area"></div>
+    </div>
+
+    <script>
+        const letters = ['A', 'N', 'E', 'T', 'İ', 'L'];
+        const fishEmojis = ['🐟', '🐠', '🐡']; // Yunus (🐬) çıkartıldı
+
+        let targetLetter = '';
+        let score = 0;
+        let timeLeft = 60;
+        let gameActive = false;
+        let bubbles = [];
+        let decorativeFish = [];
+
+        const playArea = document.getElementById('play-area');
+        const setupScreen = document.getElementById('setup-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const hud = document.getElementById('hud');
+        const letterGrid = document.getElementById('letter-grid');
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score');
+        const targetDisplay = document.getElementById('target-display');
+
+        // Harf Seçeneklerini Oluştur
+        letters.forEach(char => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = char;
+            btn.onclick = () => startGame(char);
+            letterGrid.appendChild(btn);
+        });
+
+        // Dekoratif Balık Sınıfı
+        class Fish {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'fish';
+
+                this.element.innerText = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
+
+                const fromRight = Math.random() > 0.5;
+                this.size = 30 + Math.random() * 30;
+                this.element.style.fontSize = `${this.size}px`;
+
+                // Balıklar ekranın ortasından yukarılara kadar rastgele yükseklikte
+                this.y = 50 + Math.random() * (window.innerHeight - 150);
+
+                this.vx = fromRight ? -(0.4 + Math.random() * 0.8) : (0.4 + Math.random() * 0.8);
+                this.x = fromRight ? window.innerWidth + 100 : -150;
+
+                // Yön Düzeltmesi
+                this.updateFlip();
+
+                playArea.appendChild(this.element);
+            }
+
+            updateFlip() {
+                if (this.vx > 0) {
+                    this.element.style.transform = 'scaleX(-1)';
+                } else {
+                    this.element.style.transform = 'scaleX(1)';
+                }
+            }
+
+            update() {
+                this.x += this.vx;
+                const waveY = Math.sin(this.x * 0.02) * 2;
+
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y + waveY}px`;
+
+                if (this.vx > 0 && this.x > window.innerWidth + 150) return false;
+                if (this.vx < 0 && this.x < -200) return false;
+                return true;
+            }
+
+            remove() {
+                if (this.element.parentNode) this.element.remove();
+            }
+        }
+
+        class Bubble {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'bubble';
+
+                let selectedChar;
+                if (Math.random() < 0.4) {
+                    selectedChar = targetLetter;
+                } else {
+                    selectedChar = letters[Math.floor(Math.random() * letters.length)];
+                }
+
+                this.char = Math.random() > 0.5 ? selectedChar : selectedChar.toLowerCase();
+                this.element.innerText = this.char;
+                this.size = 70 + Math.random() * 30;
+                this.x = Math.random() * (window.innerWidth - this.size);
+                this.y = window.innerHeight + 10;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = -(0.6 + Math.random() * 0.9);
+
+                this.element.style.width = `${this.size}px`;
+                this.element.style.height = `${this.size}px`;
+                this.element.style.fontSize = `${this.size * 0.45}px`;
+
+                const handlePop = (e) => {
+                    e.preventDefault();
+                    this.pop();
+                };
+                this.element.addEventListener('mousedown', handlePop);
+                this.element.addEventListener('touchstart', handlePop);
+
+                playArea.appendChild(this.element);
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x <= 0 || this.x + this.size >= window.innerWidth) {
+                    this.vx *= -1;
+                }
+
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+
+                if (this.y + this.size < -20) {
+                    this.remove();
+                    return false;
+                }
+                return true;
+            }
+
+            pop() {
+                if (!gameActive || this.popped) return;
+                this.popped = true;
+
+                if (this.char.toLowerCase() === targetLetter.toLowerCase()) {
+                    score++;
+                    this.element.style.background = "rgba(74, 222, 128, 0.8)";
+                    this.element.style.boxShadow = "0 0 30px rgba(74, 222, 128, 0.9)";
+                } else {
+                    score--;
+                    this.element.style.background = "rgba(248, 113, 113, 0.8)";
+                    this.element.style.boxShadow = "0 0 30px rgba(248, 113, 113, 0.9)";
+                }
+
+                scoreDisplay.innerText = score;
+                this.element.style.transition = "all 0.2s ease-out";
+                this.element.style.transform += " scale(1.4)";
+                this.element.style.opacity = "0";
+                setTimeout(() => this.remove(), 200);
+            }
+
+            remove() {
+                if (this.element.parentNode) {
+                    this.element.remove();
+                }
+                bubbles = bubbles.filter(b => b !== this);
+            }
+        }
+
+        function startGame(char) {
+            targetLetter = char;
+            targetDisplay.innerText = `${targetLetter} / ${targetLetter.toLowerCase()}`;
+
+            setupScreen.classList.add('hidden');
+            hud.classList.remove('hidden');
+            gameActive = true;
+            score = 0;
+            scoreDisplay.innerText = "0";
+            timeLeft = 60;
+
+            gameLoop();
+
+            const timerInterval = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                timeLeft--;
+                timerDisplay.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+
+            const spawnInterval = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(spawnInterval);
+                    return;
+                }
+                if (bubbles.length < 15) {
+                    bubbles.push(new Bubble());
+                }
+                // Dekoratif balık çıkar
+                if (decorativeFish.length < 5 && Math.random() < 0.3) {
+                    decorativeFish.push(new Fish());
+                }
+            }, 750);
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                bubbles[i].update();
+            }
+
+            for (let i = decorativeFish.length - 1; i >= 0; i--) {
+                if (!decorativeFish[i].update()) {
+                    decorativeFish[i].remove();
+                    decorativeFish.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            gameActive = false;
+            hud.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            document.getElementById('final-score-text').innerText = `Skorun: ${score}`;
+            bubbles.forEach(b => b.remove());
+            decorativeFish.forEach(f => f.remove());
+            bubbles = [];
+            decorativeFish = [];
+        }
+    </script>
+</body>
+
+</html>
