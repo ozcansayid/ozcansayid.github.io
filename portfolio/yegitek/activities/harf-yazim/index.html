@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnteraktif Harf Yazma Atölyesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: transparent;
+            margin: 0;
+            padding: 50px; 
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1800px;
+            height: 90vh;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            border: 10px solid #f0f9ff;
+            position: relative;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+            background-size: 40px 40px;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 2px solid #f1f5f9;
+        }
+
+        canvas {
+            position: absolute;
+            border-radius: 20px;
+            touch-action: none;
+        }
+
+        #mask-canvas { z-index: 1; opacity: 0.15; } 
+        #drawing-canvas { z-index: 5; cursor: crosshair; }
+
+        .active-letter-btn {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-pill {
+            padding: 10px 30px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 22px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        #letter-list::-webkit-scrollbar { width: 6px; }
+        #letter-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+        #loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+            color: #3b82f6;
+            font-size: 1.5rem;
+            pointer-events: none;
+        }
+
+        #loading-overlay.hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-pattern"></div>
+
+    <!-- Giriş Ekranı -->
+    <div id="intro-screen" class="main-container items-center justify-center text-center">
+        <h1 class="text-7xl font-black text-blue-600 mb-6">Yazı Atölyesi</h1>
+        <p class="text-2xl text-gray-500 mb-10">Harflerin üzerinden geçerek çizmeyi öğren!</p>
+        <div class="flex gap-8">
+            <button onclick="initGame('upper')" class="bg-blue-500 hover:bg-blue-600 text-white font-black text-3xl py-10 px-20 rounded-3xl shadow-xl transition-all hover:scale-105">
+                BÜYÜK HARFLER
+            </button>
+            <button onclick="initGame('lower')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-3xl py-10 px-20 rounded-3xl shadow-xl transition-all hover:scale-105" disabled>
+                KÜÇÜK HARFLER
+            </button>
+        </div>
+    </div>
+
+    <!-- Oyun Ekranı -->
+    <div id="game-screen" class="main-container hidden">
+        <div id="loading-overlay" class="hidden">ŞABLON YÜKLENİYOR...</div>
+        
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-4">
+                <button onclick="location.reload()" class="bg-gray-100 hover:bg-gray-200 p-4 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </button>
+                <h2 id="mode-title" class="text-2xl font-black text-blue-800 uppercase tracking-widest">BÜYÜK HARFLER</h2>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="status-pill text-emerald-600">DOĞRU: <span id="val-correct">0</span></div>
+                <div class="status-pill text-blue-600">PUAN: <span id="val-puan">0</span></div>
+            </div>
+        </div>
+
+        <div class="flex flex-1 gap-8 overflow-hidden">
+            <!-- Sol Panel -->
+            <div class="w-1/6 bg-white rounded-3xl p-4 flex flex-col gap-4 border border-gray-100 shadow-sm">
+                <span class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">Harf Seçimi</span>
+                <div id="letter-list" class="flex flex-col gap-3 overflow-y-auto pr-2"></div>
+            </div>
+
+            <!-- Çizim Alanı -->
+            <div class="flex-1 relative flex flex-col">
+                <div class="flex-1 canvas-wrapper" id="canvas-container">
+                    <canvas id="mask-canvas"></canvas> 
+                    <canvas id="drawing-canvas"></canvas> 
+                </div>
+
+                <!-- Kontroller -->
+                <div class="h-28 flex items-center justify-between px-2">
+                    <div class="flex gap-4">
+                        <button id="pen-btn" onclick="setTool('pen')" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-lg shadow-md transition-all scale-105">
+                            KALEM
+                        </button>
+                        <button id="eraser-btn" onclick="setTool('eraser')" class="bg-white text-gray-400 border border-gray-200 px-8 py-3 rounded-2xl font-black text-lg hover:bg-gray-50 transition-all">
+                            SİLGİ
+                        </button>
+                    </div>
+
+                    <div class="flex gap-6 items-center">
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-gray-400 uppercase block">Tamamlanma</span>
+                            <div class="text-2xl font-black text-blue-600" id="progress-text">0%</div>
+                        </div>
+                        <button onclick="clearCanvas()" class="bg-gray-100 text-gray-600 px-8 py-3 rounded-2xl font-black text-lg hover:bg-gray-200">
+                            TEMİZLE
+                        </button>
+                        <button id="check-btn" onclick="checkResult()" class="bg-emerald-500 text-white px-12 py-4 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-600 active:scale-95 transition-all">
+                            KONTROL ET
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bitiş -->
+    <div id="finish-screen" class="main-container hidden items-center justify-center text-center">
+        <h2 class="text-8xl font-black text-emerald-500 mb-4">TEBRİKLER!</h2>
+        <p class="text-3xl text-gray-500 mb-10">Tüm harfleri başarıyla tamamladın.</p>
+        <button onclick="location.reload()" class="bg-blue-600 text-white font-black text-3xl py-8 px-16 rounded-3xl shadow-xl hover:bg-blue-700 transition-all">YENİDEN BAŞLA</button>
+    </div>
+
+    <script>
+        let storyline = { correct: 0, wrong: 0, puan: 0, completed: 0 };
+        const letters = ['A', 'N', 'E', 'T', 'İ', 'L'];
+        
+        // Tüm harfler için görsel eşleştirmeleri
+        const letterAssets = {
+            'A': 'assets/A.png',
+            'N': 'assets/N.png',
+            'E': 'assets/E.png',
+            'T': 'assets/T.png',
+            'İ': 'assets/I.png',
+            'L': 'assets/L.png'
+        };
+
+        let currentMode = 'upper';
+        let currentLetter = 'A';
+        let completedLetters = [];
+        let tool = 'pen';
+        let isDrawing = false;
+        let lastPos = { x: 0, y: 0 };
+        let currentMaskData = null;
+        let outsideCount = 0;
+        let loadTimeout = null;
+
+        const maskCanvas = document.getElementById('mask-canvas');
+        const drawingCanvas = document.getElementById('drawing-canvas');
+        const mctx = maskCanvas.getContext('2d', { willReadFrequently: true });
+        const dctx = drawingCanvas.getContext('2d', { willReadFrequently: true });
+
+        function initGame(mode) {
+            currentMode = mode;
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('mode-title').innerText = mode === 'upper' ? 'BÜYÜK HARFLER' : 'KÜÇÜK HARFLER';
+            
+            const list = document.getElementById('letter-list');
+            list.innerHTML = '';
+            letters.forEach(char => {
+                const btn = document.createElement('button');
+                btn.className = 'letter-btn bg-white border border-gray-100 text-gray-500 font-bold text-2xl py-4 rounded-2xl transition-all hover:bg-gray-50';
+                btn.id = `btn-${char}`;
+                btn.innerText = mode === 'upper' ? char : char.toLowerCase();
+                btn.onclick = () => selectLetter(char);
+                list.appendChild(btn);
+            });
+
+            window.addEventListener('resize', debounce(resizeCanvas, 200));
+            requestAnimationFrame(() => {
+                resizeCanvas();
+                selectLetter('A');
+            });
+        }
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+            const w = container.clientWidth || 800;
+            const h = container.clientHeight || 600;
+            maskCanvas.width = drawingCanvas.width = w;
+            maskCanvas.height = drawingCanvas.height = h;
+            
+            if (currentLetter) loadLetterTemplate();
+        }
+
+        function selectLetter(char) {
+            currentLetter = char;
+            document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active-letter-btn'));
+            const activeBtn = document.getElementById(`btn-${char}`);
+            if(activeBtn) activeBtn.classList.add('active-letter-btn');
+            
+            clearCanvas();
+            loadLetterTemplate();
+        }
+
+        function drawTextFallback() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.add('hidden');
+
+            if (maskCanvas.width <= 0 || maskCanvas.height <= 0) return;
+            
+            const displayChar = currentMode === 'upper' ? currentLetter : currentLetter.toLowerCase();
+            mctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+            mctx.textAlign = 'center';
+            mctx.textBaseline = 'middle';
+            
+            mctx.font = `900 ${Math.min(maskCanvas.height * 0.75, 550)}px Nunito, sans-serif`;
+            mctx.strokeStyle = "#cbd5e1";
+            mctx.lineWidth = 4;
+            mctx.setLineDash([20, 15]);
+            mctx.strokeText(displayChar, maskCanvas.width / 2, maskCanvas.height / 2);
+            mctx.setLineDash([]);
+            
+            try {
+                currentMaskData = mctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+            } catch (e) { 
+                currentMaskData = null; 
+            }
+        }
+
+        function loadLetterTemplate() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.remove('hidden');
+            
+            if (loadTimeout) clearTimeout(loadTimeout);
+            
+            const assetUrl = letterAssets[currentLetter];
+            
+            if (assetUrl) {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.src = assetUrl; 
+                
+                // 3 saniye içinde yüklenmezse fallback'e geç
+                loadTimeout = setTimeout(drawTextFallback, 3000);
+
+                img.onload = () => {
+                    clearTimeout(loadTimeout);
+                    if (maskCanvas.width <= 0 || maskCanvas.height <= 0) {
+                        if (overlay) overlay.classList.add('hidden');
+                        return;
+                    }
+                    mctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+                    
+                    const scale = Math.min(maskCanvas.width / img.width, maskCanvas.height / img.height) * 0.8;
+                    const x = (maskCanvas.width - img.width * scale) / 2;
+                    const y = (maskCanvas.height - img.height * scale) / 2;
+                    
+                    mctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                    
+                    try {
+                        currentMaskData = mctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+                    } catch(e) { 
+                        drawTextFallback(); 
+                    }
+                    if (overlay) overlay.classList.add('hidden');
+                };
+
+                img.onerror = () => {
+                    clearTimeout(loadTimeout);
+                    drawTextFallback();
+                };
+            } else {
+                drawTextFallback();
+            }
+        }
+
+        function getMousePos(e) {
+            const rect = drawingCanvas.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            lastPos = getMousePos(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing || !currentMaskData) return;
+            const pos = getMousePos(e);
+            const pixelX = Math.round(pos.x);
+            const pixelY = Math.round(pos.y);
+            
+            if (pixelX < 0 || pixelX >= maskCanvas.width || pixelY < 0 || pixelY >= maskCanvas.height) return;
+            
+            const pixelIndex = (pixelY * maskCanvas.width + pixelX) * 4;
+            const alpha = currentMaskData.data[pixelIndex + 3];
+
+            dctx.beginPath();
+            dctx.moveTo(lastPos.x, lastPos.y);
+            dctx.lineTo(pos.x, pos.y);
+            dctx.lineWidth = tool === 'pen' ? 22 : 45; 
+            dctx.lineCap = 'round';
+            dctx.lineJoin = 'round';
+
+            if (tool === 'pen') {
+                dctx.strokeStyle = '#3b82f6'; 
+                if (alpha < 10) { 
+                    outsideCount++;
+                    // Her 15 dışarı taşmada bir hata puanı
+                    if(outsideCount % 15 === 0) updateStoryline('wrong', storyline.wrong + 1);
+                }
+            } else {
+                dctx.globalCompositeOperation = 'destination-out';
+            }
+
+            dctx.stroke();
+            dctx.globalCompositeOperation = 'source-over';
+            lastPos = pos;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            if(!currentMaskData || maskCanvas.width === 0) return;
+            const drawData = dctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            let match = 0, total = 0;
+            
+            // Performans için her 8 pikselde bir kontrol et
+            for (let i = 3; i < currentMaskData.data.length; i += 32) {
+                if (currentMaskData.data[i] > 50) {
+                    total++;
+                    if (drawData.data[i] > 50) match++;
+                }
+            }
+            
+            // PNG şablonlar genellikle %60-70 doluluk oranına sahip olduğu için normalize ediyoruz
+            const rawPercent = total === 0 ? 0 : (match / total);
+            const percent = Math.min(Math.round((rawPercent / 0.65) * 100), 100);
+            
+            const el = document.getElementById('progress-text');
+            if (el) el.innerText = percent + '%';
+        }
+
+        function checkResult() {
+            const el = document.getElementById('progress-text');
+            const percent = el ? parseInt(el.innerText) : 0;
+            
+            if (percent > 80) { 
+                showFeedback('Harika!', 'success');
+                if (!completedLetters.includes(currentLetter)) {
+                    completedLetters.push(currentLetter);
+                    updateStoryline('correct', storyline.correct + 1);
+                    updateStoryline('puan', (storyline.correct) * 10);
+                    const btn = document.getElementById(`btn-${currentLetter}`);
+                    if(btn) btn.classList.add('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
+                }
+                
+                if (completedLetters.length === letters.length) {
+                    setTimeout(finishGame, 1500);
+                } else {
+                    const idx = letters.indexOf(currentLetter);
+                    if (idx < letters.length - 1) setTimeout(() => selectLetter(letters[idx+1]), 1500);
+                }
+            } else {
+                showFeedback('Biraz daha üzerinden geç!', 'error');
+            }
+        }
+
+        function updateStoryline(key, val) {
+            storyline[key] = val;
+            const el = document.getElementById(`val-${key}`);
+            if (el) el.innerText = val;
+            
+            console.log(`Storyline Variable Update: ${key} = ${val}`);
+            try {
+                if (window.parent && typeof window.parent.GetPlayer === 'function') {
+                    window.parent.GetPlayer().SetVar(key, val);
+                }
+            } catch(e) {}
+        }
+
+        function setTool(t) {
+            tool = t;
+            const pBtn = document.getElementById('pen-btn');
+            const eBtn = document.getElementById('eraser-btn');
+            if (pBtn && eBtn) {
+                pBtn.className = t === 'pen' ? 'bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-lg shadow-md transition-all scale-105' : 'bg-white text-gray-400 border border-gray-200 px-8 py-3 rounded-2xl font-black text-lg hover:bg-gray-50 transition-all';
+                eBtn.className = t === 'eraser' ? 'bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-lg shadow-md transition-all scale-105' : 'bg-white text-gray-400 border border-gray-200 px-8 py-3 rounded-2xl font-black text-lg hover:bg-gray-50 transition-all';
+            }
+        }
+
+        function clearCanvas() {
+            dctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            const el = document.getElementById('progress-text');
+            if (el) el.innerText = '0%';
+        }
+
+        function showFeedback(msg, type) {
+            const fb = document.createElement('div');
+            fb.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[200] px-16 py-8 rounded-3xl font-black text-5xl text-white shadow-2xl transition-all duration-500 scale-0 ${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`;
+            fb.innerText = msg;
+            document.body.appendChild(fb);
+            setTimeout(() => fb.classList.add('scale-100'), 50);
+            setTimeout(() => { 
+                fb.classList.remove('scale-100'); 
+                setTimeout(() => fb.remove(), 500); 
+            }, 1200);
+        }
+
+        function finishGame() {
+            updateStoryline('completed', 1);
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('finish-screen').classList.remove('hidden');
+        }
+
+        function debounce(f, w) {
+            let t; return function() { clearTimeout(t); t = setTimeout(() => f.apply(this, arguments), w); };
+        }
+
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', () => isDrawing = false);
+        drawingCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); });
+        drawingCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+        drawingCanvas.addEventListener('touchend', () => isDrawing = false);
+
+    </script>
+</body>
+</html>
