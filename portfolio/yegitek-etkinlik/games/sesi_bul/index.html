@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesi Bul - Etkinlik</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti Library for Rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-item {
+            width: 300px;
+            height: 300px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, border 0.2s;
+            border: 5px solid transparent;
+            position: relative;
+        }
+
+        .card-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-item.selected {
+            border-color: #4CC9F0;
+            background-color: #e0f7fa;
+        }
+
+        .card-item img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .card-item.correct-reveal {
+            border-color: #2ecc71 !important;
+            background-color: #e8f5e9 !important;
+        }
+
+        .card-item.wrong-reveal {
+            opacity: 0.5;
+        }
+
+        /* Acorn Lives */
+        .acorn-icon {
+            width: 50px;
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: opacity 0.3s;
+        }
+
+        .acorn-lost {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        .question-text {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            background: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-area {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .check-circle {
+            position: absolute;
+            bottom: -20px;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .check-circle i {
+            font-size: 2rem;
+            color: #ddd;
+        }
+
+        .card-item.selected .check-circle i {
+            color: #4CC9F0;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            background: #fff;
+            padding: 0.5rem 2rem;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #555;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Lives Indicator -->
+            <div class="lives-container" id="livesDisplay">
+                <!-- Acorns will be injected here -->
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container">
+                <button class="btn btn-kid btn-info-kid btn-icon-only" data-bs-toggle="modal"
+                    data-bs-target="#instructionsModal" title="Yönerge">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <a href="../../index.html" class="btn btn-kid btn-danger btn-icon-only" title="Anasayfa">
+                    <i class="bi bi-house-fill"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- Standard Game Header -->
+            <div class="game-header">
+                <h2 class="game-title">Sesi Bul</h2>
+                <div class="game-nav"></div>
+            </div>
+
+            <div class="game-board-wrapper"
+                style="background-color: #f0f8ff; border-radius: 20px; padding: 2rem; margin: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+
+                <div class="text-center mb-4">
+                    <!-- Pagination (Numbers Only) -->
+                    <div id="pageIndicator" class="display-6 fw-bold text-primary"
+                        style="font-family: 'Comic Sans MS', cursive, sans-serif;">
+                        1 / 3
+                    </div>
+
+                    <!-- Question Text -->
+                    <div class="question-text mt-3" id="questionText" style="background: rgba(255,255,255,0.9);">
+                        ...
+                    </div>
+                </div>
+
+                <!-- Cards -->
+                <div class="cards-container" id="cardsContainer">
+                    <!-- Dynamic -->
+                </div>
+
+                <!-- Controls -->
+                <div class="controls-area justify-content-center mt-4 w-100">
+                    <button class="btn btn-kid btn-primary-kid px-5 py-3" id="btnCheck"
+                        onclick="SesiBulGame.checkAnswer()">
+                        KONTROL ET
+                    </button>
+
+                    <button class="btn btn-kid btn-success-kid px-5 py-3 d-none" id="btnNext"
+                        onclick="SesiBulGame.nextQuestion()">
+                        İLERİ <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-kid">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6">Nasıl Oynanır?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <p class="lead">İsmi "E" sesi ile başlayan nesneleri bulalım!</p>
+                    <ul class="list-unstyled" style="font-size: 1.2rem;">
+                        <li class="mb-2">👉 Resimlere tıkla ve ismini dinle.</li>
+                        <li class="mb-2">👉 "E" sesi olanları seç.</li>
+                        <li class="mb-2">👉 "Kontrol Et" butonuna bas.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Anladım</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel">Sonuç</h5>
+                </div>
+                <div class="modal-body text-center" id="feedbackModalBody">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Tamam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        const SesiBulGame = {
+            questions: [
+                {
+                    text: "İsminde 'E' sesi olanları seç",
+                    items: [
+                        { name: "Elbise", image: "img_1_1.png", audio: "audio_1_1.mp3", isCorrect: true },
+                        { name: "Eşek", image: "img_1_2.png", audio: "audio_1_2.mp3", isCorrect: true },
+                        { name: "Mandalina", image: "img_1_3.png", audio: "audio_1_3.mp3", isCorrect: false }
+                    ]
+                },
+                {
+                    text: "İsminde 'E' sesi olanları seç",
+                    items: [
+                        { name: "Ağaç", image: "img_2_1.png", audio: "audio_2_1.mp3", isCorrect: false },
+                        { name: "Perde", image: "img_2_2.png", audio: "audio_2_2.mp3", isCorrect: true },
+                        { name: "Çiçek", image: "img_2_3.png", audio: "audio_2_3.mp3", isCorrect: true }
+                    ]
+                },
+                {
+                    text: "İsminde 'E' sesi olanları seç",
+                    items: [
+                        { name: "Masa", image: "img_3_1.png", audio: "audio_3_1.mp3", isCorrect: false },
+                        { name: "Sandalye", image: "img_3_2.png", audio: "audio_3_2.mp3", isCorrect: true },
+                        { name: "Ütü", image: "img_3_3.png", audio: "audio_3_3.mp3", isCorrect: false }
+                    ]
+                }
+            ],
+
+            currentIndex: 0,
+            lives: 3,
+            maxLives: 3,
+            selectedIndices: [],
+            isAnswered: false,
+
+            init: function () {
+                // Resize handling
+                GameEngine.resize();
+                window.addEventListener('resize', () => GameEngine.resize());
+
+                this.renderQuestion();
+                this.updateLives();
+
+                // Play instruction audio
+                setTimeout(() => {
+                    const audio = new Audio('../../assets/audio/sesi_bul/instruction.mp3');
+                    audio.play().catch(e => console.log("Auto-play prevented or audio missing", e));
+                }, 500); // Small delay to ensure interaction or load
+            },
+
+            renderQuestion: function () {
+                const q = this.questions[this.currentIndex];
+                document.getElementById('questionText').innerText = q.text;
+                document.getElementById('pageIndicator').innerText = `${this.currentIndex + 1} / ${this.questions.length}`;
+
+                // Reset state
+                this.selectedIndices = [];
+                this.isAnswered = false;
+                this.lives = 3;
+                this.updateLives();
+
+                // UI Reset
+                document.getElementById('btnCheck').classList.remove('d-none');
+                document.getElementById('btnNext').classList.add('d-none');
+                document.getElementById('btnCheck').disabled = false;
+
+                const container = document.getElementById('cardsContainer');
+                container.innerHTML = '';
+
+                q.items.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card-item';
+                    card.onclick = () => this.toggleSelection(index);
+                    card.innerHTML = `
+                        <img src="../../assets/img/sesi_bul/${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/300x300?text=${item.name}'">
+                        <div class="check-circle">
+                            <i class="bi bi-check-lg" id="icon-${index}"></i>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            },
+
+            toggleSelection: function (index) {
+                if (this.isAnswered && this.lives === 0) return; // Locked only if failed? Logic: "kontrol et dedikten sonra her bir soruda 3 hakkı olacak"
+                // Actually, if check is pressed and wrong, user effectively has another try until lives run out.
+                // But "kontrol et" implies user submits a set of answers.
+                // Re-reading logic: "kontrol et dedikten sonra her bir soruda 3 hakkı olacak, eğer doğru ise iler butonu aktif hale gelecek, değilse pasif duracak."
+                // This means checking *is* the attempt.
+
+                // Play Sound
+                const item = this.questions[this.currentIndex].items[index];
+                const audio = new Audio(`../../assets/audio/sesi_bul/${item.audio}`);
+                audio.play().catch(e => console.log("Audio missing: " + item.audio));
+
+                const idxOf = this.selectedIndices.indexOf(index);
+                if (idxOf === -1) {
+                    this.selectedIndices.push(index);
+                } else {
+                    this.selectedIndices.splice(idxOf, 1);
+                }
+                this.updateCardStyles();
+            },
+
+            updateCardStyles: function () {
+                const cards = document.querySelectorAll('.card-item');
+                cards.forEach((card, index) => {
+                    if (this.selectedIndices.includes(index)) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+            },
+
+            updateLives: function () {
+                const container = document.getElementById('livesDisplay');
+                // Heart SVG with white stroke/filter
+                const heartSVG = `
+                <svg class="life-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:36px; height:36px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));">
+                    <path d="M50 88.9L16.2 55.2C8.3 47.3 8.3 34.5 16.2 26.6C24.1 18.7 36.9 18.7 44.8 26.6L50 31.8L55.2 26.6C63.1 18.7 75.9 18.7 83.8 26.6C91.7 34.5 91.7 47.3 83.8 55.2L50 88.9Z" 
+                    fill="#FF4D6D" stroke="#fff" stroke-width="6"/>
+                </svg>`;
+
+                let heartsHtml = '';
+                for (let i = 0; i < this.maxLives; i++) {
+                    const isLost = i >= this.lives;
+                    const style = isLost ? 'filter: grayscale(100%); opacity: 0.3;' : '';
+                    heartsHtml += `<div style="${style}">${heartSVG}</div>`;
+                }
+
+                // Inject content directly, relying on 'lives-container' class in CSS for box styling
+                const html = `
+                    <span class="lives-label">KALAN CAN</span>
+                    <div class="hearts-row">
+                        ${heartsHtml}
+                    </div>
+                `;
+                container.innerHTML = html;
+            },
+
+            checkAnswer: function () {
+                if (this.lives <= 0) return;
+
+                const q = this.questions[this.currentIndex];
+
+                // Determine Correctness
+                // Logic: The user selected set MUST match exactly the set of isCorrect=true items?
+                // Or "is correct" if ALL selected items are correct AND ALL correct items are selected?
+                // Let's go strict.
+
+                const correctIndices = q.items.map((item, i) => item.isCorrect ? i : -1).filter(i => i !== -1);
+                const userIndices = this.selectedIndices.sort();
+
+                const isCorrect = JSON.stringify(correctIndices.sort()) === JSON.stringify(userIndices.sort());
+
+                if (isCorrect) {
+                    this.handleSuccess();
+                } else {
+                    this.lives--;
+                    this.updateLives();
+                    if (this.lives <= 0) {
+                        this.handleFail();
+                    } else {
+                        // Just visual feedback? Or shake?
+                        this.showFeedback("Yanlış cevap, tekrar dene!", "warning");
+                    }
+                }
+            },
+
+            handleSuccess: function () {
+                this.isAnswered = true;
+                document.getElementById('btnCheck').classList.add('d-none');
+                document.getElementById('btnNext').classList.remove('d-none');
+
+                // Show confetti
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Visual reveal
+                this.revealAnswers();
+                GameEngine.showCorrect("Harikasın! Doğru bildin.");
+            },
+
+            handleFail: function () {
+                this.isAnswered = true;
+                // document.getElementById('btnCheck').disabled = true; // wait, prompt says "3 hakkı biterse doğru cevap gösterilip ileri butonu aktif hale gelecek"
+                document.getElementById('btnCheck').classList.add('d-none');
+                document.getElementById('btnNext').classList.remove('d-none');
+
+                this.revealAnswers();
+                GameEngine.showTryAgain("Hakların bitti. İşte doğru cevaplar!");
+            },
+
+            revealAnswers: function () {
+                const q = this.questions[this.currentIndex];
+                const cards = document.querySelectorAll('.card-item');
+                cards.forEach((card, index) => {
+                    card.classList.remove('selected'); // Remove user selection style to clear confusion? Or keep?
+                    // Let's clear user selection and show truth.
+
+                    if (q.items[index].isCorrect) {
+                        card.classList.add('correct-reveal');
+                    } else {
+                        card.classList.add('wrong-reveal');
+                    }
+                });
+            },
+
+            nextQuestion: function () {
+                if (this.currentIndex < this.questions.length - 1) {
+                    this.currentIndex++;
+                    this.renderQuestion();
+                } else {
+                    // Game Over / Finish
+                    this.showFinishScreen();
+                }
+            },
+
+            showFinishScreen: function () {
+                const board = document.querySelector('.game-board-wrapper');
+                board.innerHTML = `
+                    <div class="text-center animate-pop">
+                        <i class="bi bi-trophy-fill text-warning" style="font-size: 8rem;"></i>
+                        <h1 class="display-3 fw-bold mt-4">Tebrikler!</h1>
+                        <p class="lead mb-5">Oyunu başarıyla tamamladın.</p>
+                        <button onclick="location.reload()" class="btn btn-kid btn-primary-kid px-5 py-3">
+                            <i class="bi bi-arrow-clockwise me-2"></i> Tekrar Oyna
+                        </button>
+                    </div>
+                `;
+                document.getElementById('livesDisplay').innerHTML = ''; // Hide lives
+            },
+
+            showFeedback: function (msg, type) {
+                // GameEngine has showCorrect/showTryAgain which are modal based.
+                // Reuse modal but don't stop game.
+
+                if (type === 'warning') {
+                    // Using GameEngine.showTryAgain for visual feedback
+                    GameEngine.showTryAgain(msg);
+                }
+            }
+        };
+
+        // Start
+        document.addEventListener('DOMContentLoaded', () => {
+            SesiBulGame.init();
+        });
+    </script>
+</body>
+
+</html>

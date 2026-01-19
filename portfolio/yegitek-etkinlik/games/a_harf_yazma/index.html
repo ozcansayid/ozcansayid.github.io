@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harf Yazma Atölyesi</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom Game Styles */
+        .game-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .canvas-container-custom {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            background: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 4px solid #f0f0f0;
+            overflow: hidden;
+            touch-action: none;
+            /* Prevent scroll on touch */
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 26px;
+            /* Inner radius matching border */
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #mask-canvas {
+            z-index: 1;
+            opacity: 0.2;
+            /* Light guide */
+        }
+
+        #drawing-canvas {
+            z-index: 5;
+            cursor: crosshair;
+        }
+
+        .controls-area {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-tool {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-tool.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 159, 28, 0.3);
+        }
+
+        .btn-action {
+            height: 60px;
+            padding: 0 30px;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Lives Indicator -->
+            <div class="lives-container" id="livesDisplay">
+                <!-- SVG Hearts will be injected here by JS (main.js) -->
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container">
+                <!-- Instructions Button -->
+                <button class="btn btn-kid btn-info-kid btn-icon-only" data-bs-toggle="modal"
+                    data-bs-target="#instructionsModal" title="Yönerge">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Reload/Retry Button -->
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <!-- Home Button -->
+                <a href="../../index.html" class="btn btn-kid btn-danger btn-icon-only" title="Anasayfa">
+                    <i class="bi bi-house-fill"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- Top Header -->
+            <div class="game-header">
+                <h2 class="game-title">Harf Yazma Atölyesi</h2>
+                <div class="game-nav">
+                    <!-- Placeholder nav buttons matching template -->
+                    <button class="btn-nav-flat" title="Önceki" style="opacity: 0.5;">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" style="opacity: 0.5;">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board">
+                <div class="game-wrapper">
+
+                    <!-- Canvas Area -->
+                    <div class="canvas-container-custom" id="canvas-container">
+                        <canvas id="mask-canvas"></canvas>
+                        <canvas id="drawing-canvas"></canvas>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="controls-area">
+                        <button id="btn-pen" class="btn-tool active" onclick="setTool('pen')" title="Kalem">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button id="btn-eraser" class="btn-tool" onclick="setTool('eraser')" title="Silgi">
+                            <i class="bi bi-eraser-fill"></i>
+                        </button>
+
+                        <div class="vr mx-2"></div>
+
+                        <button class="btn btn-outline-secondary btn-action"
+                            style="border: 2px solid #e0e0e0; color: #666;" onclick="clearCanvas()">
+                            <i class="bi bi-trash"></i> Temizle
+                        </button>
+
+                        <button class="btn btn-kid btn-success-kid btn-action" onclick="checkGameResult()">
+                            <i class="bi bi-check-lg"></i> KONTROL ET
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-kid" style="border-color: #4CC9F0;">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6">Nasıl Oynanır?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-pencil-fill text-info" style="font-size: 6rem;"></i>
+                        </div>
+                        <div class="col-8 text-start">
+                            <p class="lead">Harfin üzerinden taşırmadan geç!</p>
+                            <ul class="list-unstyled" style="font-size: 1.2rem;">
+                                <li class="mb-2">👉 <strong>1.</strong> Kalem ile çizgilerin üzerinden git.</li>
+                                <li class="mb-2">👉 <strong>2.</strong> Silgi ile düzeltmeler yapabilirsin.</li>
+                                <li class="mb-2">👉 <strong>3.</strong> Bitirince 'KONTROL ET' butonuna bas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Anladım</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Feedback Modal (Standard from template) -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6" id="feedbackModalLabel">Feedback</h5>
+                </div>
+                <div class="modal-body" id="feedbackModalBody">
+                    <!-- Dynamic Content -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Tamam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        // Global Variables
+        var guideImageSrc = 'assets/img/a_harf_yazma/A.png';
+        var tool = 'pen';
+        var isDrawing = false;
+        var lastPos = { x: 0, y: 0 };
+        var currentMaskData = null;
+        var maskCanvas, drawingCanvas, mctx, dctx;
+
+        // Initialize on Load
+        window.addEventListener('load', function () {
+            maskCanvas = document.getElementById('mask-canvas');
+            drawingCanvas = document.getElementById('drawing-canvas');
+
+            if (maskCanvas && drawingCanvas) {
+                mctx = maskCanvas.getContext('2d', { willReadFrequently: true });
+                dctx = drawingCanvas.getContext('2d', { willReadFrequently: true });
+
+                resizeCustomCanvas();
+                loadGuideImage(mctx);
+                setupEvents();
+            } else {
+                console.error("Canvas elements not found!");
+            }
+        });
+
+        function resizeCustomCanvas() {
+            var container = document.getElementById('canvas-container');
+            if (!container) return;
+            var w = container.clientWidth;
+            var h = container.clientHeight;
+            maskCanvas.width = w;
+            maskCanvas.height = h;
+            drawingCanvas.width = w;
+            drawingCanvas.height = h;
+        }
+
+        function loadGuideImage(ctx) {
+            var img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = guideImageSrc;
+
+            img.onload = function () {
+                ctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+                var padding = 40;
+                var availW = maskCanvas.width - (padding * 2);
+                var availH = maskCanvas.height - (padding * 2);
+
+                var scale = Math.min(availW / img.width, availH / img.height);
+                var x = (maskCanvas.width - img.width * scale) / 2;
+                var y = (maskCanvas.height - img.height * scale) / 2;
+
+                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                try {
+                    currentMaskData = ctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+                    console.log("Mask data loaded successfully.");
+                } catch (e) {
+                    console.error("Mask data access error", e);
+                }
+            };
+
+            img.onerror = function () {
+                console.error("Image loading failed:", guideImageSrc);
+                // Fallback A
+                ctx.font = "300px Nunito";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#ccc";
+                ctx.fillText("A", maskCanvas.width / 2, maskCanvas.height / 2);
+                currentMaskData = ctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+            };
+        }
+
+        // Drawing Event Setup
+        function setupEvents() {
+            function getMousePos(e) {
+                var rect = drawingCanvas.getBoundingClientRect();
+                var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+                var scaleX = drawingCanvas.width / rect.width;
+                var scaleY = drawingCanvas.height / rect.height;
+
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                lastPos = getMousePos(e);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                var pos = getMousePos(e);
+
+                dctx.beginPath();
+                dctx.moveTo(lastPos.x, lastPos.y);
+                dctx.lineTo(pos.x, pos.y);
+                dctx.lineCap = 'round';
+                dctx.lineJoin = 'round';
+
+                if (tool === 'pen') {
+                    dctx.strokeStyle = '#3b82f6';
+                    dctx.lineWidth = 40; // Increased to help with coverage
+                } else {
+                    dctx.globalCompositeOperation = 'destination-out';
+                    dctx.lineWidth = 50;
+                }
+
+                dctx.stroke();
+                dctx.globalCompositeOperation = 'source-over';
+                lastPos = pos;
+            }
+
+            function stopDrawing() { isDrawing = false; }
+
+            drawingCanvas.addEventListener('mousedown', startDrawing);
+            drawingCanvas.addEventListener('mousemove', draw);
+            drawingCanvas.addEventListener('mouseup', stopDrawing);
+            drawingCanvas.addEventListener('mouseout', stopDrawing);
+            drawingCanvas.addEventListener('touchstart', function (e) { e.preventDefault(); startDrawing(e); });
+            drawingCanvas.addEventListener('touchmove', function (e) { e.preventDefault(); draw(e); });
+            drawingCanvas.addEventListener('touchend', stopDrawing);
+        }
+
+        // Global Action Functions
+        function setTool(t) {
+            tool = t;
+            document.querySelectorAll('.btn-tool').forEach(function (b) { b.classList.remove('active') });
+            if (t === 'pen') {
+                var btn = document.getElementById('btn-pen');
+                if (btn) btn.classList.add('active');
+            } else {
+                var btn = document.getElementById('btn-eraser');
+                if (btn) btn.classList.add('active');
+            }
+        }
+
+        function clearCanvas() {
+            if (dctx) dctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+
+        function checkGameResult() {
+            console.log("Check button clicked");
+            if (!currentMaskData) {
+                console.warn("Mask data not loaded yet.");
+                return;
+            }
+            if (!dctx) return;
+
+            var drawData = dctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            var match = 0, total = 0;
+
+            // Analyze overlap
+            for (var i = 3; i < currentMaskData.data.length; i += 16) {
+                // Use higher threshold to ignore shadow/anti-aliasing of the mask image
+                if (currentMaskData.data[i] > 100) {
+                    total++;
+                    // Check if drawing covers this pixel
+                    if (drawData.data[i] > 50) match++;
+                }
+            }
+
+            console.log("Total pixels:", total, "Matched:", match);
+
+            if (total === 0) {
+                console.warn("Total mask pixels is 0 - something is wrong with the mask.");
+                return;
+            }
+
+            // Normalization:
+            // Multiplier reduced to 1.1 to require stricter coverage (must draw all parts).
+            // Threshold increased to 90%.
+            var rawRatio = match / total;
+            var normalizedPercent = Math.min((rawRatio * 1.1) * 100, 100);
+
+            console.log("Raw Ratio:", rawRatio.toFixed(2), "Score:", normalizedPercent);
+
+            if (normalizedPercent >= 90) {
+                // Play Sound Directly
+                if (window.GameEngine && GameEngine.sounds && GameEngine.sounds.correct) {
+                    GameEngine.sounds.correct.currentTime = 0;
+                    GameEngine.sounds.correct.play().catch(e => console.error(e));
+                }
+
+                if (window.GameEngine) GameEngine.showCorrect("Harika! Çok güzel bir A harfi çizdin.");
+            } else {
+                // Play Sound Directly
+                if (window.GameEngine && GameEngine.sounds && GameEngine.sounds.wrong) {
+                    GameEngine.sounds.wrong.currentTime = 0;
+                    GameEngine.sounds.wrong.play().catch(e => console.error(e));
+                }
+
+                if (window.GameEngine) GameEngine.decreaseLife();
+            }
+        }
+    </script>
+</body>
+
+</html>

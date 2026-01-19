@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Bahçesi - 1. Sınıf</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom Kid Theme -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Reset body styles for dashboard, as style.css is optimized for fixed game screens */
+        body {
+            width: auto;
+            height: auto;
+            overflow: auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="text-center mb-5 animate-pop">
+            <h1 class="display-4" style="color: var(--primary-color);">🌼 Etkinlik Bahçesi 🌼</h1>
+            <p class="lead">Hadi öğrenmeye başlayalım!</p>
+        </div>
+
+        <!-- Games Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            <!-- Card: Sualtı Harf Avı -->
+            <div class="col">
+                <div class="card card-kid h-100">
+                    <div class="card-header-kid" style="background-color: #4CC9F0;">
+                        <i class="bi bi-water"></i> Harf Avı
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="game-thumb rounded mb-3" style="background-color: #e0faff; color: #4CC9F0;">
+                            <i class="bi bi-airplane-engines"></i> <!-- Fish icon substitute or just generic -->
+                            <span style="font-size: 4rem;">🐡</span>
+                        </div>
+                        <p class="card-text">Uçan balonlardaki doğru harfleri yakala!</p>
+                        <a href="games/baloncuk/index.html" class="btn btn-kid btn-primary-kid w-100">
+                            OYNA <i class="bi bi-play-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Harf Yazma Atölyesi -->
+            <div class="col">
+                <div class="card card-kid h-100">
+                    <div class="card-header-kid" style="background-color: #FF9F1C;">
+                        <i class="bi bi-pencil-fill"></i> Harf Yazma
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="game-thumb rounded mb-3" style="background-color: #fff8e1; color: #FF9F1C;">
+                            <span style="font-size: 4rem;">✍️</span>
+                        </div>
+                        <p class="card-text">Harfleri doğru şekilde çizmeyi öğren!</p>
+                        <a href="games/a_harf_yazma/index.html" class="btn btn-kid btn-primary-kid w-100">
+                            OYNA <i class="bi bi-play-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Cümle Yılanı -->
+            <div class="col">
+                <div class="card card-kid h-100">
+                    <div class="card-header-kid" style="background-color: #06D6A0;">
+                        <i class="bi bi-translate"></i> Cümle Yılanı
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="game-thumb rounded mb-3" style="background-color: #e3fff9; color: #06D6A0;">
+                            <span style="font-size: 4rem;">🐍</span>
+                        </div>
+                        <p class="card-text">Yılanı yönet ve İngilizce cümleleri kur!</p>
+                        <a href="games/yilan_cumle/index.html" class="btn btn-kid btn-primary-kid w-100">
+                            OYNA <i class="bi bi-play-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Sesi Bul -->
+            <div class="col">
+                <div class="card card-kid h-100">
+                    <div class="card-header-kid" style="background-color: var(--danger-color);">
+                        <i class="bi bi-music-note-beamed"></i> Sesi Bul
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="game-thumb rounded mb-3"
+                            style="background-color: #ffe5e5; color: var(--danger-color);">
+                            <span style="font-size: 4rem;">👂</span>
+                        </div>
+                        <p class="card-text">İsminde 'E' sesi olan nesneleri bul!</p>
+                        <a href="games/sesi_bul/index.html" class="btn btn-kid btn-primary-kid w-100">
+                            OYNA <i class="bi bi-play-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Kar Üzerine Yazı Yaz -->
+            <div class="col">
+                <div class="card card-kid h-100">
+                    <div class="card-header-kid" style="background-color: #00B4D8;">
+                        <i class="bi bi-snow2"></i> Kar Yazı
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="game-thumb rounded mb-3" style="background-color: #e0f7fa; color: #00B4D8;">
+                            <span style="font-size: 4rem;">❄️</span>
+                        </div>
+                        <p class="card-text">Kar üzerine yazı yaz veya resim çiz!</p>
+                        <a href="games/kar_yazi/index.html" class="btn btn-kid btn-primary-kid w-100">
+                            OYNA <i class="bi bi-play-fill"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

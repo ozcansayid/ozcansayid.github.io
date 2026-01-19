@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cümle Yılanı</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Full Width Canvas Wrapper */
+        .canvas-wrapper {
+            width: 100%;
+            flex-grow: 1;
+            /* Take available space */
+            background-color: #2b2d42;
+            border-radius: 20px;
+            border: 6px solid #4CC9F0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+            /* Prevent scroll */
+        }
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sentence-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-height: 80px;
+        }
+
+        .sentence-word {
+            padding: 10px 20px;
+            background-color: #f1f3f5;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #adb5bd;
+            border: 3px dashed #ced4da;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .sentence-word.filled {
+            background-color: #4CC9F0;
+            color: white;
+            border: 3px solid #48cae4;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 0 #0096c7;
+        }
+
+        /* D-PAD Styles */
+        .d-pad-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 180px;
+            height: 180px;
+            z-index: 100;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .d-pad-container:hover {
+            opacity: 0.9;
+        }
+
+        .d-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            /* Rounded block */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .d-btn:active {
+            background: rgba(76, 201, 240, 0.5);
+            transform: scale(0.95);
+        }
+
+        .d-up {
+            top: 0;
+            left: 60px;
+        }
+
+        .d-down {
+            bottom: 0;
+            left: 60px;
+        }
+
+        .d-left {
+            top: 60px;
+            left: 0;
+        }
+
+        .d-right {
+            top: 60px;
+            right: 0;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid d-flex flex-column align-items-stretch">
+            <!-- Lives - Full Width -->
+            <div class="lives-container w-100" id="livesDisplay"
+                style="margin-bottom: 0px !important; padding-bottom: 5px;"></div>
+
+            <!-- Level Info - Full Width & Small Top Margin -->
+            <div class="sidebar-box w-100"
+                style="background-color: #f8f9fa; border-radius: 15px; padding: 10px; margin-top: 5px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #6c757d; text-align: center;">SEVİYE</div>
+                <div style="font-size: 2.5rem; color: var(--primary-color); font-weight: 800; text-align: center;"
+                    id="levelDisplay">1/10</div>
+            </div>
+
+            <div class="nav-buttons-container" style="margin-top: auto;">
+                <button class="btn btn-kid btn-info-kid btn-icon-only" data-bs-toggle="modal"
+                    data-bs-target="#instructionsModal" title="Yönerge">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <a href="../../index.html" class="btn btn-kid btn-danger btn-icon-only" title="Anasayfa">
+                    <i class="bi bi-house-fill"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content-kid">
+            <div class="game-header" style="margin-bottom: 5px; padding: 5px;">
+                <h2 class="game-title" style="margin:0; font-size: 1.8rem;">Cümle Yılanı</h2>
+            </div>
+
+            <div class="game-board">
+                <!-- Sentence Builder Area -->
+                <div class="sentence-container" id="sentenceContainer"></div>
+
+                <!-- Game Canvas -->
+                <div class="canvas-wrapper">
+                    <canvas id="game-canvas"></canvas>
+                    <div class="d-pad-container">
+                        <div class="d-btn d-up" onpointerdown="setDir(0, -1)"><i class="bi bi-caret-up-fill"></i></div>
+                        <div class="d-btn d-left" onpointerdown="setDir(-1, 0)"><i class="bi bi-caret-left-fill"></i>
+                        </div>
+                        <div class="d-btn d-right" onpointerdown="setDir(1, 0)"><i class="bi bi-caret-right-fill"></i>
+                        </div>
+                        <div class="d-btn d-down" onpointerdown="setDir(0, 1)"><i class="bi bi-caret-down-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-kid" style="border-color: #4CC9F0;">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6">Nasıl Oynanır?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-controller text-info" style="font-size: 6rem;"></i>
+                        </div>
+                        <div class="col-8 text-start">
+                            <ul class="list-unstyled" style="font-size: 1.2rem;">
+                                <li class="mb-2">👉 <strong>Yön Tuşları:</strong> Yılanı hareket ettir.</li>
+                                <li class="mb-2">👉 <strong>Sırayla:</strong> Kelimeleri cümledeki sırasına göre ye.
+                                </li>
+                                <li class="mb-2">⚠️ Yanlış yaparsan canın gider! Canın bitince oyun biter.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" id="startBtn"
+                        data-bs-dismiss="modal">Başla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6" id="feedbackModalLabel">Feedback</h5>
+                </div>
+                <div class="modal-body" id="feedbackModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        // --- Level Data ---
+        const levels = [
+            "A na",
+            "E la",
+            "A li",
+            "An ne",
+            "Na ne",
+            "El le",
+            "A let",
+            "An ten",
+            "Na lan",
+            "Ta til"
+        ];
+
+        // --- Game Config ---
+        let config = {
+            gridSize: 40,
+            baseSpeed: 180,
+            rows: 20,
+            cols: 30
+        };
+
+        // --- State ---
+        let currentLevelIndex = 0;
+        let currentSentenceWords = [];
+        let collectedWords = [];
+        let snake = [];
+        let direction = { x: 1, y: 0 };
+        let nextDirection = { x: 1, y: 0 };
+        let activeWordsOnBoard = [];
+        let gameLoopId;
+        let isPaused = false;
+        let canSwitchDir = true;
+
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('sentenceContainer');
+        const levelDisplay = document.getElementById('levelDisplay');
+
+        const wordColors = ["#EF476F", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD"];
+
+        window.addEventListener('load', () => {
+            initCanvas();
+            window.addEventListener('resize', initCanvas);
+
+            const modal = new bootstrap.Modal(document.getElementById('instructionsModal'));
+            modal.show();
+            document.getElementById('startBtn').onclick = () => {
+                startGame();
+            };
+        });
+
+        function initCanvas() {
+            const wrapper = document.querySelector('.canvas-wrapper');
+            canvas.width = wrapper.clientWidth;
+            canvas.height = wrapper.clientHeight;
+
+            config.gridSize = 40;
+            config.cols = Math.floor(canvas.width / config.gridSize);
+            config.rows = Math.floor(canvas.height / config.gridSize);
+        }
+
+        window.setDir = function (dx, dy) {
+            handleDirInput(dx, dy);
+        }
+
+        function handleDirInput(dx, dy) {
+            if (isPaused) return;
+            if (!canSwitchDir) return;
+            if (dx !== 0 && direction.x !== 0) return;
+            if (dy !== 0 && direction.y !== 0) return;
+
+            nextDirection = { x: dx, y: dy };
+            canSwitchDir = false;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+
+            switch (e.key) {
+                case 'ArrowUp': handleDirInput(0, -1); break;
+                case 'ArrowDown': handleDirInput(0, 1); break;
+                case 'ArrowLeft': handleDirInput(-1, 0); break;
+                case 'ArrowRight': handleDirInput(1, 0); break;
+            }
+        });
+
+        function startGame() {
+            currentLevelIndex = 0;
+            GameEngine.lives = 3;
+            GameEngine.updateLivesDisplay();
+            startLevel(0);
+        }
+
+        function startLevel(index) {
+            if (index >= levels.length) {
+                victory();
+                return;
+            }
+
+            currentLevelIndex = index;
+            levelDisplay.innerText = `${currentLevelIndex + 1}/${levels.length}`;
+
+            let rawSentence = levels[index];
+            currentSentenceWords = rawSentence.split(' ');
+            collectedWords = [];
+
+            updateSentenceUI();
+            resetSnake();
+            spawnWords();
+
+            isPaused = false;
+            clearInterval(gameLoopId);
+            gameLoopId = setInterval(gameTick, config.baseSpeed);
+        }
+
+        function resetSnake() {
+            let startY = Math.floor(config.rows / 2);
+            let startX = Math.floor(config.cols / 4);
+            snake = [
+                { x: startX + 4, y: startY },
+                { x: startX + 3, y: startY },
+                { x: startX + 2, y: startY }
+            ];
+            direction = { x: 1, y: 0 };
+            nextDirection = { x: 1, y: 0 };
+        }
+
+        function updateSentenceUI() {
+            container.innerHTML = '';
+            currentSentenceWords.forEach((word, idx) => {
+                const div = document.createElement('div');
+                div.className = 'sentence-word';
+                if (idx < collectedWords.length) {
+                    div.innerText = word;
+                    div.classList.add('filled');
+                } else {
+                    div.innerText = "?";
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function spawnWords() {
+            activeWordsOnBoard = [];
+            ctx.font = "bold 20px Nunito";
+
+            for (let i = collectedWords.length; i < currentSentenceWords.length; i++) {
+                let w = currentSentenceWords[i];
+                // Calculate how many grid cells this word needs
+                let widthPx = ctx.measureText(w).width + 30; // Padding included
+                let widthCells = Math.ceil(widthPx / config.gridSize);
+
+                let pos = getRandomEmptyPos(widthCells);
+                if (pos) {
+                    activeWordsOnBoard.push({
+                        word: w,
+                        originalIndex: i,
+                        x: pos.x,
+                        y: pos.y,
+                        widthCells: widthCells,
+                        color: wordColors[i % wordColors.length]
+                    });
+                }
+            }
+        }
+
+        function getRandomEmptyPos(widthCells) {
+            let safe = false;
+            let attempts = 0;
+            let x, y;
+            while (!safe && attempts < 100) {
+                x = 1 + Math.floor(Math.random() * (config.cols - 2 - widthCells));
+                y = 1 + Math.floor(Math.random() * (config.rows - 2));
+
+                // Collision with Snake
+                let hitsSnake = snake.some(s => s.y === y && s.x >= x - 2 && s.x <= x + widthCells + 1);
+
+                // Collision with Words
+                let hitsWord = activeWordsOnBoard.some(w =>
+                    w.y === y &&
+                    !((x + widthCells + 1 < w.x - 1) || (x - 1 > w.x + w.widthCells + 1))
+                );
+
+                if (!hitsSnake && !hitsWord) safe = true;
+                attempts++;
+            }
+            return safe ? { x, y } : null;
+        }
+
+        function gameTick() {
+            if (isPaused) return;
+
+            direction = nextDirection;
+            canSwitchDir = true;
+
+            let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+            // Wall Collision
+            if (head.x < 0 || head.x >= config.cols || head.y < 0 || head.y >= config.rows) {
+                hitError();
+                return;
+            }
+
+            // Self Collision
+            if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                hitError();
+                return;
+            }
+
+            snake.unshift(head);
+
+            // Word Collision
+            let ateWordIndex = -1;
+            for (let i = 0; i < activeWordsOnBoard.length; i++) {
+                let w = activeWordsOnBoard[i];
+                // Hitbox check: Head inside the range [w.x ... w.x + widthCells)
+                if (head.y === w.y && head.x >= w.x && head.x < w.x + w.widthCells) {
+                    ateWordIndex = i;
+                    break;
+                }
+            }
+
+            if (ateWordIndex !== -1) {
+                let eatenObj = activeWordsOnBoard[ateWordIndex];
+                let nextNeededIndex = collectedWords.length;
+
+                if (eatenObj.originalIndex === nextNeededIndex) {
+                    playSound(true);
+                    collectedWords.push(eatenObj.word);
+                    snake.push({}, {});
+                    activeWordsOnBoard.splice(ateWordIndex, 1);
+                    updateSentenceUI();
+
+                    if (collectedWords.length === currentSentenceWords.length) {
+                        isPaused = true;
+                        if (window.confetti) confetti();
+                        setTimeout(() => {
+                            startLevel(currentLevelIndex + 1);
+                        }, 1500);
+                    }
+                } else {
+                    hitError();
+                    return;
+                }
+            } else {
+                snake.pop();
+            }
+
+            render();
+        }
+
+        function hitError() {
+            playSound(false);
+
+            // Manually decrease life to AVOID GameEngine.decreaseLife() triggering the modal
+            if (GameEngine.lives > 0) {
+                GameEngine.lives--;
+                GameEngine.updateLivesDisplay();
+            }
+
+            if (GameEngine.lives <= 0) {
+                gameOver();
+            } else {
+                resetSnake();
+            }
+        }
+
+        function render() {
+            ctx.fillStyle = '#2b2d42';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Snake
+            snake.forEach((seg, i) => {
+                ctx.fillStyle = (i === 0) ? '#ffffff' : '#4CC9F0';
+
+                let px = seg.x * config.gridSize;
+                let py = seg.y * config.gridSize;
+                let size = config.gridSize - 2;
+
+                ctx.beginPath();
+                ctx.roundRect(px, py, size, size, 8);
+                ctx.fill();
+
+                if (i === 0) {
+                    ctx.fillStyle = '#2b2d42';
+                    ctx.beginPath();
+                    ctx.arc(px + size * 0.3, py + size * 0.3, size * 0.15, 0, Math.PI * 2);
+                    ctx.arc(px + size * 0.7, py + size * 0.3, size * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            // Draw Words (Left Aligned for correct hitbox visualization)
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.font = "bold 20px Nunito";
+
+            activeWordsOnBoard.forEach(w => {
+                let px = w.x * config.gridSize;
+                let py = w.y * config.gridSize;
+
+                let boxWidth = w.widthCells * config.gridSize - 4; // leave slight gap
+                let boxHeight = config.gridSize - 4;
+                let drawY = py + 2;
+
+                // Pill Body
+                ctx.fillStyle = w.color;
+                ctx.beginPath();
+                ctx.roundRect(px + 2, drawY, boxWidth, boxHeight, 15);
+                ctx.fill();
+
+                // Text Centered in Pill
+                ctx.fillStyle = "#fff";
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 4;
+
+                const textMetrics = ctx.measureText(w.word);
+                let textX = px + 2 + (boxWidth / 2) - (textMetrics.width / 2);
+                let textY = py + (config.gridSize / 2);
+
+                ctx.fillText(w.word, textX, textY);
+                ctx.shadowBlur = 0;
+            });
+        }
+
+        function playSound(isCorrect) {
+            try {
+                if (isCorrect && GameEngine.sounds.correct) {
+                    GameEngine.sounds.correct.currentTime = 0;
+                    GameEngine.sounds.correct.play().catch(e => { });
+                } else if (!isCorrect && GameEngine.sounds.wrong) {
+                    GameEngine.sounds.wrong.currentTime = 0;
+                    GameEngine.sounds.wrong.play().catch(e => { });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function gameOver() {
+            isPaused = true;
+            clearInterval(gameLoopId);
+            GameEngine.showTryAgain("Maalesef canın bitti. Tekrar denemek ister misin?");
+        }
+
+        function victory() {
+            isPaused = true;
+            clearInterval(gameLoopId);
+            GameEngine.showCorrect("Harikasın! Tüm cümleleri tamamladın!");
+        }
+
+    </script>
+</body>
+
+</html>
