@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" standalone="no" ?>
+<manifest identifier="com.derslig.oyun.001" version="1"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="derslig_org_001">
+    <organization identifier="derslig_org_001">
+      <title>Derslig Etkinlik 001</title>
+      <item identifier="item_001" identifierref="resource_001">
+        <title>Derslig Etkinlik 001</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="resource_001" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <!-- Assets klasÃ¶rÃ¼ndeki dosyalar otomatik olarak pakete dahildir -->
+    </resource>
+  </resources>
+</manifest>
