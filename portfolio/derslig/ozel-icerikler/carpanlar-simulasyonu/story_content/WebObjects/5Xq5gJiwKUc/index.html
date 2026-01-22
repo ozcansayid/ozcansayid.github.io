@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çarpanlar Simülasyonu - Derslig</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        magenta: '#E50069',
+                        turquoise: '#0DBFC7',
+                        yellow: '#FCD638',
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+
+    <style>
+        /* Base Reset & Layout */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff;
+            /* White background */
+            font-family: 'Nunito', sans-serif;
+        }
+
+        #main-app {
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Scaler: Centered Absolutely */
+        #game-scaler {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 1080px;
+            background-color: white;
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+
+            /* Flex Layout for Header + Content consistency */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        #app-header {
+            width: 100%;
+            height: 100px;
+            background: #0DBFC7;
+            border-bottom: 3px solid #00acc1;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            justify-content: space-between;
+            z-index: 50;
+            flex-shrink: 0;
+            /* Never shrink */
+            position: relative;
+        }
+
+        .header-title {
+            font-weight: 800;
+            color: white;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        .header-controls .control-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-left: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-controls .control-btn:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Game Specific Styles */
+        .grid-area {
+            display: grid !important;
+            gap: 2px;
+            background-color: #eee;
+            border: 2px solid #ccc;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .grid-cell {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            display: block;
+        }
+
+        /* Modal Transitions */
+        .modal-enter {
+            opacity: 0;
+        }
+
+        .modal-enter-active {
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .modal-exit {
+            opacity: 1;
+        }
+
+        .modal-exit-active {
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
+        }
+
+        .modal-content-enter {
+            transform: scale(0.9);
+        }
+
+        .modal-content-enter-active {
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-content-enter-active {
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-content-enter-active {
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-app">
+        <div id="game-stage">
+
+            <!-- Game Scaler -->
+            <div id="game-scaler">
+
+                <!-- Flex Item 1: Header -->
+                <header id="app-header">
+                    <div class="header-title">Çarpanlar Simülasyonu</div>
+                    <div class="header-controls">
+                        <button class="control-btn"
+                            onclick="Game.showAlert('Yeniden Başlat', 'Etkinliği baştan başlatmak istiyor musunuz?', 'question', () => location.reload())"
+                            title="Yeniden Başlat"><i class="fas fa-redo"></i></button>
+                        <button class="control-btn" onclick="Game.openHint()" title="İpucu"><i
+                                class="fas fa-lightbulb"></i></button>
+                        <button class="control-btn" onclick="Game.toggleFullscreen()" title="Tam Ekran"><i
+                                class="fas fa-expand"></i></button>
+                    </div>
+                </header>
+
+
+                <!-- Flex Item 2: Content (Fills remaining height) -->
+                <!-- OYUN İÇERİĞİ -->
+                <main id="simulation-stage" class="flex-1 w-full flex overflow-hidden relative">
+                    <!-- Sol Panel: Bilgi ve Hedef -->
+                    <div
+                        class="w-[450px] bg-white p-10 shadow-r border-r border-gray-200 flex flex-col overflow-y-auto z-10 flex-shrink-0">
+                        <h2 class="text-4xl font-bold text-gray-800 mb-6">Görev Kartı</h2>
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-8">
+                            <p class="text-2xl text-gray-700 leading-relaxed">
+                                Elimizde <span class="font-bold text-magenta text-3xl" id="target-number">12</span>
+                                parça çikolata var.
+                                <br><br>
+                                Bu parçaları kullanarak, hiç artmayacak şekilde dikdörtgen paketler oluştur.
+                            </p>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-turquoise text-2xl mb-4">Bulunan Paketler (Çarpanlar):
+                            </h3>
+                            <ul id="found-factors-list" class="space-y-3 text-xl"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Merkez: Etkileşim Alanı -->
+                    <div class="flex-1 flex flex-col items-center justify-center p-12 relative bg-gray-50">
+                        <div class="mb-8 text-center">
+                            <span class="text-gray-500 font-bold text-3xl">Genişlik: <span id="width-display"
+                                    class="text-magenta">1</span></span>
+                            <span class="mx-6 text-gray-300 text-3xl">|</span>
+                            <span class="text-gray-500 font-bold text-3xl">Yükseklik: <span id="height-display"
+                                    class="text-magenta">1</span></span>
+                            <br>
+                            <span class="text-gray-400 text-xl mt-4 block">Alanı değiştirmek için aşağıdaki
+                                çubukları kaydır.</span>
+                        </div>
+
+                        <!-- Grid -->
+                        <div id="grid-container"
+                            class="bg-white p-8 rounded-3xl shadow-inner border border-gray-200 mb-12 flex items-center justify-center overflow-auto"
+                            style="width: 100%; max-width: 900px; height: 500px;">
+                            <div id="dynamic-grid" class="grid-area"></div>
+                        </div>
+
+                        <!-- Sliders -->
+                        <div class="w-full max-w-2xl space-y-8">
+                            <div class="flex items-center gap-6">
+                                <label class="font-bold w-32 text-right text-gray-600 text-2xl">Genişlik:</label>
+                                <input type="range" min="1" max="15" value="1" id="width-slider"
+                                    class="flex-1 h-4 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-turquoise">
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <label class="font-bold w-32 text-right text-gray-600 text-2xl">Yükseklik:</label>
+                                <input type="range" min="1" max="15" value="1" id="height-slider"
+                                    class="flex-1 h-4 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-turquoise">
+                            </div>
+                        </div>
+
+                        <button onclick="Game.checkRectangle()"
+                            class="mt-12 px-16 py-6 text-2xl font-bold rounded-2xl text-white bg-turquoise shadow-lg hover:shadow-xl transition-transform hover:scale-105 active:scale-95">
+                            <i class="fas fa-check-circle mr-3"></i> PAKETİ OLUŞTUR
+                        </button>
+                    </div>
+                </main>
+
+                <!-- SORU ALANI -->
+                <main id="quiz-stage"
+                    class="hidden flex-1 w-full flex flex-col items-center justify-center bg-gray-50 p-8 relative">
+                    <div class="w-full max-w-4xl bg-white rounded-3xl overflow-hidden border border-gray-100">
+                        <div class="bg-turquoise p-6">
+                            <h2 class="text-2xl font-bold text-white text-center">Değerlendirme Sorusu <span
+                                    id="question-number">1</span>/3</h2>
+                        </div>
+                        <div class="p-12">
+                            <p class="text-2xl text-gray-700 font-medium mb-8 text-center" id="question-text">
+                                Soru
+                                metni...</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container"></div>
+                            <div id="feedback-area" class="mt-6 text-center hidden">
+                                <p class="text-lg font-bold" id="feedback-message"></p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 flex justify-end border-t border-gray-100">
+                            <button id="next-question-btn"
+                                class="px-6 py-3 rounded-lg font-bold text-white bg-turquoise opacity-50 cursor-not-allowed transition-all"
+                                disabled onclick="Game.nextQuestion()">
+                                Sonraki Soru <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </main>
+
+                <!-- Ara Geçiş Ekranı (Interstitial) -->
+                <div id="interstitial-screen"
+                    class="hidden absolute inset-0 bg-white/95 z-40 flex flex-col items-center justify-center text-center">
+                    <h2 class="text-4xl font-black text-turquoise mb-4">Harika İş Çıkardın!</h2>
+                    <p class="text-xl text-gray-600 mb-8 max-w-lg">Çikolata fabrikasındaki tüm modelleri buldun.
+                        Şimdi öğrendiklerini test etme zamanı.</p>
+                    <button
+                        class="px-8 py-4 rounded-xl font-bold text-white bg-magenta hover:bg-pink-700 shadow-xl text-lg hover:scale-105 transition-all"
+                        onclick="Game.startQuiz()">
+                        Değerlendirme Sorularına Geç <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+
+                <!-- CUSTOM ALERT MODAL (Moved Inside Scaler) -->
+                <div id="custom-alert-overlay"
+                    class="hidden absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity opacity-0">
+                    <div id="custom-alert-box"
+                        class="bg-white rounded-[2rem] shadow-2xl p-10 max-w-md w-full mx-4 transform scale-90 transition-transform duration-300 relative overflow-hidden">
+                        <!-- Decorative circle -->
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-gray-50 rounded-full opacity-50"></div>
+                        <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-gray-50 rounded-full opacity-50"></div>
+
+                        <div class="relative z-10 text-center">
+                            <div id="alert-icon-container"
+                                class="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 shadow-sm">
+                                <i id="alert-icon" class="text-4xl"></i>
+                            </div>
+                            <h3 id="alert-title" class="text-3xl font-black text-gray-800 mb-4 tracking-tight">Dikkat!
+                            </h3>
+                            <p id="alert-message" class="text-gray-600 text-xl mb-10 leading-relaxed">Mesaj...</p>
+                            <div id="alert-actions" class="flex justify-center gap-4">
+                                <!-- Buttons injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Hint Overlay (Inside Scaler) -->
+                <div id="custom-hint-overlay"
+                    class="hidden absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity opacity-0">
+                    <div id="custom-hint-box"
+                        class="bg-white rounded-[2rem] shadow-2xl p-10 max-w-lg w-full mx-4 transform scale-90 transition-transform duration-300 relative overflow-hidden ring-4 ring-yellow/50">
+                        <!-- Decorative bg -->
+                        <div class="absolute top-0 left-0 w-full h-2 bg-yellow"></div>
+
+                        <div class="relative z-10">
+                            <div class="flex items-center mb-6 text-yellow">
+                                <i class="fas fa-lightbulb text-4xl mr-4"></i>
+                                <h3 class="text-3xl font-black text-gray-800 tracking-tight">İpucu</h3>
+                            </div>
+
+                            <div id="modal-hint-text"
+                                class="text-gray-600 text-xl mb-10 leading-relaxed min-h-[100px] flex items-center">
+                                ...
+                            </div>
+
+                            <div class="flex justify-center">
+                                <button onclick="Game.closeHint()"
+                                    class="w-full py-4 rounded-xl font-bold text-white bg-yellow hover:bg-yellow-400 text-heading text-xl shadow-lg transform hover:scale-105 transition-all text-gray-800">
+                                    Anladım
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Close X top right -->
+                        <button onclick="Game.closeHint()"
+                            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div> <!-- End Scaler -->
+        </div> <!-- End Main App -->
+
+
+
+        <!-- Scriptler -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+        <script>
+            // --- OYUN MANTIĞI ---
+            window.Game = {
+                targetNumber: 12,
+                foundFactors: [],
+                currentStage: 'simulation',
+                currentQuestionIndex: 0,
+                expectedPairsCount: 3,
+                currentScore: 0,
+                questions: [
+                    {
+                        text: "12 sayısının doğal sayı çarpanlarından biri aşağıdakilerden hangisi DEĞİLDİR?",
+                        options: ["3", "4", "5", "6"],
+                        correct: 2,
+                        feedback: "Doğru! 5 sayısı 12'yi kalansız bölmez. 12 ÷ 5 = 2 kalan 2'dir."
+                    },
+                    {
+                        text: "Bir doğal sayının çarpanı aynı zamanda o sayının neyidir?",
+                        options: ["Katıdır", "Bölenidir", "Toplamıdır", "Karesidir"],
+                        correct: 1,
+                        feedback: "Harika! Bir sayının çarpanı, o sayıyı kalansız bölen sayıdır."
+                    },
+                    {
+                        text: "Ahmet 20 kişilik bir sınıfı eşit gruplara ayırmak istiyor. Hangi grup sayısı MÜMKÜN DEĞİLDİR?",
+                        options: ["2 kişilik gruplar", "4 kişilik gruplar", "5 kişilik gruplar", "6 kişilik gruplar"],
+                        correct: 3,
+                        feedback: "Tebrikler! 20 sayısı 6'ya tam bölünmez, bu yüzden 6'şarlı gruplar yapılamaz."
+                    }
+                ],
+
+                pendingAlertCallback: null,
+
+                // --- Articulate Storyline Helpers ---
+                getSLPlayer: function () {
+                    if (window.GetPlayer) return window.GetPlayer();
+                    if (window.parent && window.parent.GetPlayer) return window.parent.GetPlayer();
+                    return null;
+                },
+
+                updateSL: function (varName, val) {
+                    try {
+                        const player = this.getSLPlayer();
+                        if (player) player.SetVar(varName, val);
+                    } catch (e) {
+                        console.log(`[SL] Set ${varName} = ${val}`);
+                    }
+                },
+
+                incrementSL: function (varName) {
+                    try {
+                        const player = this.getSLPlayer();
+                        if (player) {
+                            const current = player.GetVar(varName);
+                            player.SetVar(varName, (typeof current === 'number' ? current : 0) + 1);
+                        }
+                    } catch (e) {
+                        console.log(`[SL] Increment ${varName}`);
+                    }
+                },
+
+                init: function () {
+                    this.cacheDOM();
+                    this.bindEvents();
+                    this.resetValues();
+                    this.updateGrid();
+                },
+
+                resetValues: function () {
+                    this.foundFactors = [];
+                    this.currentQuestionIndex = 0;
+                    this.currentScore = 0;
+                    this.dom.factorsList.innerHTML = '';
+                    this.dom.simulationStage.classList.remove('hidden');
+                    this.dom.quizStage.classList.add('hidden');
+                    this.dom.interstitialScreen.classList.add('hidden');
+                    this.dom.widthSlider.value = 1;
+                    this.dom.heightSlider.value = 1;
+                },
+
+                cacheDOM: function () {
+                    this.dom = {
+                        widthSlider: document.getElementById('width-slider'),
+                        heightSlider: document.getElementById('height-slider'),
+                        gridBox: document.getElementById('dynamic-grid'),
+                        widthDisplay: document.getElementById('width-display'),
+                        heightDisplay: document.getElementById('height-display'),
+                        factorsList: document.getElementById('found-factors-list'),
+                        interstitialScreen: document.getElementById('interstitial-screen'),
+                        simulationStage: document.getElementById('simulation-stage'),
+                        quizStage: document.getElementById('quiz-stage'),
+
+                        // Alert DOM
+                        alertOverlay: document.getElementById('custom-alert-overlay'),
+                        alertBox: document.getElementById('custom-alert-box'),
+                        alertTitle: document.getElementById('alert-title'),
+                        alertMessage: document.getElementById('alert-message'),
+                        alertIconContainer: document.getElementById('alert-icon-container'),
+                        alertIcon: document.getElementById('alert-icon'),
+                        alertActions: document.getElementById('alert-actions'),
+
+                        // Hint DOM
+                        hintOverlay: document.getElementById('custom-hint-overlay'),
+                        hintBox: document.getElementById('custom-hint-box')
+                    };
+                },
+
+                bindEvents: function () {
+                    this.dom.widthSlider.oninput = () => this.updateGrid();
+                    this.dom.heightSlider.oninput = () => this.updateGrid();
+                },
+
+                openHint: function () {
+                    this.dom.hintOverlay.classList.remove('hidden');
+                    // Trigger reflow
+                    void this.dom.hintOverlay.offsetWidth;
+                    this.dom.hintOverlay.classList.remove('opacity-0');
+                    this.dom.hintBox.classList.remove('scale-90');
+                    this.dom.hintBox.classList.add('scale-100');
+                },
+
+                closeHint: function () {
+                    this.dom.hintOverlay.classList.add('opacity-0');
+                    this.dom.hintBox.classList.remove('scale-100');
+                    this.dom.hintBox.classList.add('scale-90');
+
+                    setTimeout(() => {
+                        this.dom.hintOverlay.classList.add('hidden');
+                    }, 300);
+                },
+
+                updateGrid: function () {
+                    const w = parseInt(this.dom.widthSlider.value);
+                    const h = parseInt(this.dom.heightSlider.value);
+
+                    this.dom.widthDisplay.innerText = w;
+                    this.dom.heightDisplay.innerText = h;
+
+                    this.dom.gridBox.style.gridTemplateColumns = `repeat(${w}, 40px)`;
+                    this.dom.gridBox.style.gridTemplateRows = `repeat(${h}, 40px)`;
+                    this.dom.gridBox.innerHTML = '';
+
+                    const totalCells = w * h;
+                    for (let i = 0; i < totalCells; i++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'grid-cell bg-gray-300';
+                        if (totalCells === this.targetNumber) {
+                            cell.style.backgroundColor = '#0DBFC7';
+                            cell.style.borderColor = '#007f85';
+                        } else if (totalCells > this.targetNumber) {
+                            cell.style.backgroundColor = '#ffcce0';
+                        }
+                        this.dom.gridBox.appendChild(cell);
+                    }
+                },
+
+                checkRectangle: function () {
+                    const w = parseInt(this.dom.widthSlider.value);
+                    const h = parseInt(this.dom.heightSlider.value);
+                    const area = w * h;
+
+                    if (area === this.targetNumber) {
+                        const pairStr = w < h ? `${w} x ${h}` : `${h} x ${w}`;
+
+                        if (!this.foundFactors.includes(pairStr)) {
+                            this.foundFactors.push(pairStr);
+                            this.addFactorToList(w, h);
+                            this.incrementSL('correct'); // Articulate: Correct Action
+                            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+
+                            if (this.foundFactors.length >= this.expectedPairsCount) {
+                                this.updateSL('simulationCompleted', 1); // Articulate: Sim Completed
+                                setTimeout(() => {
+                                    this.dom.interstitialScreen.classList.remove('hidden');
+                                }, 1000);
+                            }
+                        } else {
+                            this.incrementSL('wrong'); // Articulate: Wrong Action (Duplicate)
+                            this.showAlert('Zaten Buldun', 'Bu dikdörtgen modelini zaten listeye ekledin. Farklı boyutlar dene!', 'warning');
+                        }
+                    } else {
+                        this.incrementSL('wrong'); // Articulate: Wrong Action (Wrong Area)
+                        if (area < this.targetNumber) {
+                            this.showAlert('Eksik Parça', 'Oluşturduğun şekil 12 parçadan az. Biraz daha büyütmelisin!', 'warning');
+                        }
+                        else {
+                            this.showAlert('Fazla Parça', 'Oluşturduğun şekil 12 parçadan fazla. Biraz küçültmelisin!', 'error');
+                        }
+                    }
+                },
+
+                addFactorToList: function (w, h) {
+                    const li = document.createElement('li');
+                    li.className = "bg-white border border-gray-200 p-3 rounded-lg shadow-sm flex items-center justify-between animate-[pulse_0.5s_ease-in-out]";
+                    li.innerHTML = `<span class="font-bold text-gray-700">${w} x ${h} = ${this.targetNumber}</span> <i class="fas fa-check text-green-500"></i>`;
+                    this.dom.factorsList.appendChild(li);
+                },
+
+                startQuiz: function () {
+                    this.currentStage = 'quiz';
+                    this.dom.interstitialScreen.classList.add('hidden');
+                    this.dom.simulationStage.classList.add('hidden');
+                    this.dom.quizStage.classList.remove('hidden');
+                    this.loadQuestion();
+                },
+
+                loadQuestion: function () {
+                    const q = this.questions[this.currentQuestionIndex];
+                    document.getElementById('question-number').innerText = this.currentQuestionIndex + 1;
+                    document.getElementById('question-text').innerText = q.text;
+
+                    const container = document.getElementById('options-container');
+                    container.innerHTML = '';
+
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    const nextBtn = document.getElementById('next-question-btn');
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtn.innerHTML = 'Sonraki Soru <i class="fas fa-arrow-right ml-2"></i>';
+
+                    q.options.forEach((opt, index) => {
+                        const btn = document.createElement('button');
+                        btn.className = "w-full p-4 text-left bg-white border-2 border-gray-200 rounded-xl hover:border-turquoise hover:bg-blue-50 transition-all font-bold text-gray-700 text-lg";
+                        btn.innerText = opt;
+                        btn.onclick = () => this.checkAnswer(index, btn);
+                        container.appendChild(btn);
+                    });
+                },
+
+                checkAnswer: function (selectedIndex, btnElement) {
+                    const container = document.getElementById('options-container');
+                    const buttons = container.getElementsByTagName('button');
+                    for (let btn of buttons) btn.disabled = true;
+
+                    const q = this.questions[this.currentQuestionIndex];
+                    const feedbackMsg = document.getElementById('feedback-message');
+                    document.getElementById('feedback-area').classList.remove('hidden');
+
+                    const pointsPerQ = 20 / this.questions.length;
+
+                    if (selectedIndex === q.correct) {
+                        btnElement.classList.remove('border-gray-200');
+                        btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                        feedbackMsg.innerText = q.feedback;
+                        feedbackMsg.className = "text-lg font-bold text-green-600";
+                        this.currentScore += pointsPerQ;
+
+                        // Articulate Update
+                        this.incrementSL('correct');
+                        this.updateSL('puan', Math.round(this.currentScore));
+                    } else {
+                        btnElement.classList.remove('border-gray-200');
+                        btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                        buttons[q.correct].classList.add('bg-green-50', 'border-green-300');
+                        feedbackMsg.innerText = "Yanlış cevap. " + q.feedback;
+                        feedbackMsg.className = "text-lg font-bold text-magenta";
+
+                        // Articulate Update
+                        this.incrementSL('wrong');
+                    }
+
+                    const nextBtn = document.getElementById('next-question-btn');
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    if (this.currentQuestionIndex === this.questions.length - 1) {
+                        nextBtn.innerHTML = 'Etkinliği Bitir <i class="fas fa-flag-checkered ml-2"></i>';
+                    }
+                },
+
+                nextQuestion: function () {
+                    if (this.currentQuestionIndex < this.questions.length - 1) {
+                        this.currentQuestionIndex++;
+                        this.loadQuestion();
+                    } else {
+                        // All questions finished
+                        this.updateSL('quizCompleted', 1);
+
+                        // Disable next button and show finished state
+                        const nextBtn = document.getElementById('next-question-btn');
+                        nextBtn.innerHTML = 'Etkinlik Tamamlandı <i class="fas fa-check-circle ml-2"></i>';
+                        nextBtn.disabled = true;
+                        nextBtn.classList.add('opacity-75', 'cursor-default');
+                        nextBtn.classList.remove('cursor-not-allowed'); // It was allowed before click
+                    }
+                },
+
+                // --- Custom Alert System ---
+                showAlert: function (title, message, type = 'info', onConfirm = null) {
+                    const iconMap = {
+                        'error': { icon: 'fa-times', color: 'text-white', bg: 'bg-magenta' },
+                        'warning': { icon: 'fa-exclamation', color: 'text-white', bg: 'bg-yellow' },
+                        'success': { icon: 'fa-check', color: 'text-white', bg: 'bg-green-500' },
+                        'info': { icon: 'fa-info', color: 'text-white', bg: 'bg-turquoise' },
+                        'question': { icon: 'fa-question', color: 'text-white', bg: 'bg-blue-500' }
+                    };
+
+                    const style = iconMap[type] || iconMap['info'];
+
+                    // Set Content
+                    this.dom.alertTitle.innerText = title;
+                    this.dom.alertTitle.className = `text-3xl font-black mb-4 tracking-tight ${type === 'error' ? 'text-magenta' : 'text-gray-800'}`;
+
+                    this.dom.alertMessage.innerText = message;
+
+                    this.dom.alertIcon.className = `fas ${style.icon} ${style.color}`;
+                    this.dom.alertIconContainer.className = `inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 shadow-lg ${style.bg} animate-[bounce_1s]`;
+
+                    // Set Buttons
+                    this.dom.alertActions.innerHTML = '';
+                    if (type === 'question') {
+                        // Confirm and Cancel
+                        const btnCancel = document.createElement('button');
+                        btnCancel.className = "flex-1 py-4 rounded-xl font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 transition text-xl";
+                        btnCancel.innerText = "İptal";
+                        btnCancel.onclick = () => this.closeAlert();
+                        this.dom.alertActions.appendChild(btnCancel);
+
+                        const btnOk = document.createElement('button');
+                        btnOk.className = "flex-1 py-4 rounded-xl font-bold text-white transition text-xl shadow-lg transform hover:scale-105";
+                        btnOk.innerText = "Evet";
+                        btnOk.style.backgroundColor = '#0DBFC7';
+                        btnOk.onclick = () => {
+                            this.closeAlert();
+                            if (onConfirm) onConfirm();
+                        };
+                        this.dom.alertActions.appendChild(btnOk);
+                    } else {
+                        // Only OK
+                        const btnOk = document.createElement('button');
+                        btnOk.className = "w-full py-4 rounded-xl font-bold text-white transition text-xl shadow-lg transform hover:scale-105";
+                        btnOk.innerText = "Tamam";
+                        btnOk.style.backgroundColor = type === 'error' ? '#E50069' : '#0DBFC7';
+                        btnOk.onclick = () => {
+                            this.closeAlert();
+                            if (onConfirm) onConfirm();
+                        };
+                        this.dom.alertActions.appendChild(btnOk);
+                    }
+
+                    // Show
+                    this.dom.alertOverlay.classList.remove('hidden');
+                    // Trigger reflow
+                    void this.dom.alertOverlay.offsetWidth;
+                    this.dom.alertOverlay.classList.remove('opacity-0');
+                    this.dom.alertBox.classList.remove('scale-90', 'opacity-0');
+                    this.dom.alertBox.classList.add('scale-100', 'opacity-100');
+                },
+
+                closeAlert: function () {
+                    this.dom.alertOverlay.classList.add('opacity-0');
+                    this.dom.alertBox.classList.remove('scale-100');
+                    this.dom.alertBox.classList.add('scale-90');
+
+                    setTimeout(() => {
+                        this.dom.alertOverlay.classList.add('hidden');
+                    }, 300);
+                },
+
+                toggleFullscreen: function () {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                        });
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
+                    }
+                }
+            };
+
+            // --- RESIZE & INIT ---
+            document.addEventListener('DOMContentLoaded', () => {
+                // Global Hint fonksiyonu - UI Loader olmadan manuel tanimlama
+                window.setHint = (text) => {
+                    const body = document.getElementById('modal-hint-text');
+                    if (body) body.innerHTML = text;
+                };
+
+                Game.init();
+
+                // Ilk ipucunu ver
+                window.setHint('Kaydırıcıları kullanarak istenilen alana sahip dikdörtgenler oluştur.');
+
+                // Resize Logic for Sticky Top/Bottom Fit
+                const gameScaler = document.getElementById('game-scaler');
+                const resizeGame = () => {
+                    const winW = window.innerWidth;
+                    const winH = window.innerHeight;
+
+                    // Calculate scale to FIT within viewport while maintaining ratio
+                    // But USER asked for sticky top/bottom. 
+                    // "Sticky top/bottom" strictly means scale = winH / 1080.
+                    // However, if winW is less than 1920 * scale, sides will be cut off.
+                    // Standard safe 'contain' is Math.min.
+                    // If user really wants sticky top/bottom regardless of width cut-off (pan & scan?), we use winH/1080.
+                    // Assuming user wants "maximize fit without cutoff". 
+                    // IF we want to force stick top/bottom, we might stretch? No, stretching is bad.
+                    // We will use Math.min, which ensures it FITS.
+                    // To ensure it visualy sticks, we remove margins.
+
+                    const scale = Math.min(winW / 1920, winH / 1080);
+
+                    // Apply transform
+                    if (gameScaler) {
+                        gameScaler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                    }
+                };
+
+                window.addEventListener('resize', resizeGame);
+                resizeGame();
+            });
+        </script>
+</body>
+
+</html>
