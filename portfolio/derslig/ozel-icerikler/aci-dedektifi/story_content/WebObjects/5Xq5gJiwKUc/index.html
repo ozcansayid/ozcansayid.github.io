@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Açı Dedektifi - Derslig</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        magenta: '#E50069',
+                        turquoise: '#0DBFC7',
+                        yellow: '#FCD638',
+                        slate: {
+                            850: '#1e293b', // Custom dark
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Reset & Layout */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        #main-app {
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f172a;
+            /* Slate 900 base */
+        }
+
+        /* Scaler: Centered Absolutely */
+        #game-scaler {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 1080px;
+            background-color: #0f172a;
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Styles (003 Style) */
+        #app-header {
+            width: 100%;
+            height: 100px;
+            background: #0DBFC7;
+            border-bottom: 3px solid #00acc1;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            justify-content: space-between;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-weight: 800;
+            color: white;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-controls .control-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-left: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-controls .control-btn.active {
+            color: #FCD638;
+            text-shadow: 0 0 10px rgba(252, 214, 56, 0.5);
+        }
+
+        .header-controls .control-btn:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: white;
+            margin-right: 20px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #0DBFC7;
+        }
+
+        /* SVG & Game Elements */
+        .road-group:hover rect.road-base {
+            fill: #475569;
+        }
+
+        .cursor-grab {
+            cursor: grab;
+        }
+
+        .cursor-grabbing {
+            cursor: grabbing;
+        }
+
+        .protractor-group {
+            filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Custom Animations */
+        @keyframes pulse-soft {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s infinite;
+        }
+
+        @keyframes zoom-in {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-zoom-in {
+            animation: zoom-in 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-app">
+        <div id="game-stage">
+            <div id="game-scaler">
+
+                <!-- HEADER -->
+                <header id="app-header">
+                    <div class="header-title">
+                        <i class="fas fa-search-location text-3xl"></i>
+                        <span>AÇI DEDEKTİFİ</span>
+                    </div>
+
+                    <div class="flex items-center">
+                        <!-- Navigation Buttons (Intro/Sim/Quiz phases) -->
+                        <button id="nav-sim" class="nav-btn hidden" onclick="Game.setPhase('sim')">
+                            <i class="fas fa-map-marked-alt"></i> Harita
+                        </button>
+                        <button id="nav-quiz" class="nav-btn hidden" onclick="Game.setPhase('quiz')">
+                            Görev Soruları <i class="fas fa-trophy"></i>
+                        </button>
+                    </div>
+
+                    <div class="header-controls">
+                        <button class="control-btn" onclick="location.reload()" title="Yeniden Başlat"><i
+                                class="fas fa-redo"></i></button>
+                        <button class="control-btn" onclick="Game.toggleHUD()" id="hud-toggle-btn"
+                            title="Bilgi Ekranı"><i class="fas fa-info-circle"></i></button>
+                        <button class="control-btn" onclick="Game.toggleFullscreen()" title="Tam Ekran"><i
+                                class="fas fa-expand"></i></button>
+                    </div>
+                </header>
+
+                <!-- MAIN CONTENT -->
+                <main class="flex-1 relative overflow-hidden bg-slate-950 text-slate-100 flex">
+
+                    <!-- INTRO PHASE -->
+                    <div id="phase-intro" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900">
+                        <div class="max-w-4xl text-center space-y-12 animate-zoom-in">
+                            <div
+                                class="inline-block p-10 bg-slate-800 rounded-[3rem] border border-slate-700 shadow-2xl">
+                                <i class="fas fa-magic text-yellow-400 text-6xl"></i>
+                            </div>
+                            <div class="space-y-6">
+                                <h2 class="text-7xl font-black italic uppercase text-white leading-tight">Şehir
+                                    Planlayıcısı</h2>
+                                <p class="text-slate-400 text-3xl leading-relaxed max-w-3xl mx-auto">
+                                    Dikey olan yolların ikisinden de tutarak döndürebilir, iletkiyi taşıyarak ölçüm
+                                    yapabilirsin!
+                                </p>
+                            </div>
+                            <button onclick="Game.setPhase('sim')"
+                                class="px-20 py-8 bg-[#0DBFC7] hover:bg-[#0aa5ac] text-white rounded-[2rem] font-black text-3xl transition-all flex items-center gap-6 mx-auto shadow-2xl hover:scale-105 active:scale-95">
+                                GÖREVE BAŞLA <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SIMULATION PHASE -->
+                    <div id="phase-sim" class="w-full h-full flex hidden">
+
+                        <!-- Sidebar Controls -->
+                        <aside
+                            class="w-[400px] flex-none bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 p-8 space-y-8 z-40 overflow-y-auto">
+
+                            <!-- Angle Display -->
+                            <div class="space-y-5">
+                                <h3 class="text-xs font-black text-[#0DBFC7] uppercase tracking-[0.3em]">Kavşak Analizi
+                                </h3>
+                                <div class="bg-slate-950 rounded-[2rem] p-6 border border-slate-800 shadow-2xl">
+                                    <div class="flex justify-between items-end mb-6">
+                                        <span class="text-6xl font-black text-blue-500" id="display-angle">65°</span>
+                                        <span class="text-3xl font-bold text-red-500"
+                                            id="display-supplement">115°</span>
+                                    </div>
+                                    <div class="h-4 w-full bg-slate-900 rounded-full overflow-hidden p-1">
+                                        <div id="angle-bar"
+                                            class="h-full bg-blue-500 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                                            style="width: 36%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tools -->
+                            <div class="space-y-4">
+                                <h3 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Planlama
+                                    Araçları</h3>
+
+                                <!-- Toggle Buttons -->
+                                <button onclick="Game.toggleTool('parallel')" id="btn-parallel"
+                                    class="w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-700">
+                                    <span class="flex items-center gap-3"><i class="fas fa-plus-circle"></i> Paralel Yol
+                                        Ekle</span>
+                                    <i class="fas fa-check-circle hidden check-icon"></i>
+                                </button>
+
+                                <button onclick="Game.toggleTool('transversal2')" id="btn-transversal2"
+                                    class="w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-700">
+                                    <span class="flex items-center gap-3"><i class="fas fa-map"></i> İkinci Kesen
+                                        Yol</span>
+                                    <i class="fas fa-check-circle hidden check-icon"></i>
+                                </button>
+
+                                <button onclick="Game.toggleTool('vertical')" id="btn-vertical"
+                                    class="w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-700">
+                                    <span class="flex items-center gap-3"><i class="fas fa-eye"></i> Ters Açılar</span>
+                                    <i class="fas fa-check-circle hidden check-icon"></i>
+                                </button>
+
+                                <button onclick="Game.toggleTool('protractor')" id="btn-protractor"
+                                    class="w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-700">
+                                    <span class="flex items-center gap-3"><i class="fas fa-ruler-combined"></i>
+                                        Açıölçer</span>
+                                    <i class="fas fa-check-circle hidden check-icon"></i>
+                                </button>
+                            </div>
+                        </aside>
+
+                        <!-- Simulation Area (SVG) -->
+                        <div id="sim-area" class="flex-1 relative overflow-hidden bg-slate-950 cursor-crosshair">
+
+                            <!-- HUD -->
+                            <div id="sim-hud"
+                                class="absolute top-6 right-6 flex items-center gap-4 bg-slate-900/95 backdrop-blur-2xl px-8 py-4 rounded-[1.5rem] border border-slate-700 shadow-2xl z-30 transition-all duration-500">
+                                <div
+                                    class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500/20 text-blue-400">
+                                    <i class="fas fa-arrows-alt animate-pulse"></i>
+                                </div>
+                                <span class="text-sm font-black tracking-tight uppercase text-slate-200">
+                                    Dikey yollardan tutarak döndür,<br>iletkiyi merkezinden tutarak taşı!
+                                </span>
+                                <button onclick="Game.toggleHUD(false)"
+                                    class="ml-2 text-slate-500 hover:text-white transition-colors">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <svg id="game-svg" viewBox="0 0 1920 1080" class="w-full h-full shadow-2xl"
+                                preserveAspectRatio="xMidYMid slice">
+                                <defs>
+                                    <pattern id="gridLarge" width="100" height="100" patternUnits="userSpaceOnUse">
+                                        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.02)"
+                                            strokeWidth="2" />
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#gridLarge)" />
+
+                                <!-- Static Horizontal Roads -->
+                                <g id="road-main-bg">
+                                    <rect x="-4000" y="630" width="10000" height="140" fill="#334155" stroke="#475569"
+                                        stroke-width="8" />
+                                    <line x1="-4000" y1="700" x2="6000" y2="700" stroke="#f59e0b" stroke-width="5"
+                                        stroke-dasharray="35,30" />
+                                </g>
+
+                                <g id="road-parallel-bg" class="hidden">
+                                    <rect x="-4000" y="280" width="10000" height="140" fill="#334155" stroke="#475569"
+                                        stroke-width="8" />
+                                    <line x1="-4000" y1="350" x2="6000" y2="350" stroke="#f59e0b" stroke-width="5"
+                                        stroke-dasharray="35,30" />
+                                </g>
+
+                                <!-- Dynamic Rotating Road 1 (Center) -->
+                                <g id="road1-group" transform="translate(960, 700) rotate(-65)" class="cursor-grab">
+                                    <rect x="-5000" y="-140" width="10000" height="280" fill="transparent" />
+                                    <!-- Hit area -->
+                                    <rect class="road-base" x="-5000" y="-70" width="10000" height="140" fill="#334155"
+                                        stroke="#475569" stroke-width="8" />
+                                    <line x1="-5000" y1="0" x2="5000" y2="0" stroke="white" stroke-width="2"
+                                        stroke-dasharray="20,20" opacity="0.4" />
+
+                                    <g transform="translate(-600, 0)">
+                                        <circle cx="0" cy="0" r="60" fill="#3b82f6" opacity="0.1" />
+                                        <circle cx="0" cy="0" r="45" fill="#3b82f6" stroke="white" stroke-width="5" />
+                                        <foreignObject x="-20" y="-20" width="40" height="40">
+                                            <div class="flex items-center justify-center w-full h-full text-white"><i
+                                                    class="fas fa-hand-paper fa-2x"></i></div>
+                                        </foreignObject>
+                                    </g>
+                                </g>
+
+                                <!-- Dynamic Rotating Road 2 (Offset) -->
+                                <g id="road2-group" class="hidden cursor-grab"
+                                    transform="translate(1510, 700) rotate(-65)">
+                                    <rect x="-5000" y="-140" width="10000" height="280" fill="transparent" />
+                                    <rect class="road-base" x="-5000" y="-70" width="10000" height="140" fill="#334155"
+                                        stroke="#475569" stroke-width="8" />
+                                    <line x1="-5000" y1="0" x2="5000" y2="0" stroke="white" stroke-width="2"
+                                        stroke-dasharray="20,20" opacity="0.4" />
+                                </g>
+
+                                <!-- Angle Arcs Layer (Dynamic Content) -->
+                                <g id="angles-layer"></g>
+
+                                <!-- Cars -->
+                                <!-- Simply using rects effectively for car placeholders as getting SVG path might be complex without source defs -->
+                                <g transform="translate(460, 740)" fill="#ef4444">
+                                    <rect x="-40" y="-22" width="80" height="44" rx="10" />
+                                    <rect x="-25" y="-18" width="35" height="36" rx="5" fill="rgba(0,0,0,0.7)" />
+                                </g>
+                                <g transform="translate(1460, 660)" fill="#60a5fa">
+                                    <rect x="-40" y="-22" width="80" height="44" rx="10" />
+                                    <rect x="-25" y="-18" width="35" height="36" rx="5" fill="rgba(0,0,0,0.7)" />
+                                </g>
+
+                                <!-- Protractor (Dynamic) -->
+                                <g id="protractor-group" class="hidden cursor-move" transform="translate(960, 500)">
+                                    <!-- Drawn via JS -->
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- QUIZ PHASE -->
+                    <div id="phase-quiz"
+                        class="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-12 hidden">
+                        <div
+                            class="max-w-4xl w-full bg-slate-900 rounded-[3rem] border border-slate-800 p-16 space-y-12 shadow-2xl">
+
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-2xl font-black text-slate-500 uppercase tracking-widest">Soru <span
+                                        id="quiz-q-num">1</span>/5</h3>
+                                <button onclick="Game.setPhase('sim')"
+                                    class="text-slate-500 hover:text-white flex items-center gap-4 text-xl font-black transition-all">
+                                    <i class="fas fa-arrow-left"></i> Haritaya Dön
+                                </button>
+                            </div>
+
+                            <h3 id="quiz-q-text" class="text-4xl font-black leading-tight text-white">Soru metni...</h3>
+
+                            <!-- Content Area (Options or Input) -->
+                            <div id="quiz-content" class="grid grid-cols-1 gap-6">
+                                <!-- Injected by JS -->
+                            </div>
+
+                            <!-- Feedback -->
+                            <div id="quiz-feedback"
+                                class="hidden p-8 rounded-[2rem] text-2xl font-black border bg-slate-800"></div>
+
+                            <!-- Next Button -->
+                            <button id="quiz-next-btn"
+                                class="hidden w-full py-6 bg-[#0DBFC7] hover:bg-[#0aa5ac] text-white rounded-[2rem] font-black text-2xl shadow-lg transition-all"
+                                onclick="Game.nextQuestion()">
+                                Sonraki Soru <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RESULT PHASE -->
+                    <div id="phase-result"
+                        class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900 hidden">
+                        <div
+                            class="text-center space-y-12 bg-slate-800 p-24 rounded-[4rem] border border-slate-700 shadow-2xl animate-zoom-in">
+                            <i
+                                class="fas fa-medal text-yellow-500 text-[10rem] drop-shadow-[0_0_40px_rgba(234,179,8,0.4)]"></i>
+                            <div class="space-y-4">
+                                <h2 class="text-6xl font-black uppercase tracking-tighter italic text-white">Görev
+                                    Tamamlandı!</h2>
+                                <p class="text-slate-400 text-2xl font-bold">Açı Dedektifi Uzmanlık Madalyası Kazanıldı
+                                </p>
+                            </div>
+                            <div class="text-[8rem] font-black leading-none text-white"><span id="result-score">0</span>
+                                <span class="text-3xl text-slate-500 align-middle ml-4">Puan</span>
+                            </div>
+                            <button onclick="location.reload()"
+                                class="w-full py-8 bg-[#0DBFC7] rounded-[2.5rem] font-black text-3xl hover:bg-[#0aa5ac] text-white transition-all shadow-2xl">
+                                BAŞTAN BAŞLA
+                            </button>
+                        </div>
+                    </div>
+
+                </main>
+
+                <!-- FOOTER -->
+                <footer
+                    class="h-10 flex-none px-12 border-t border-slate-800 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 bg-slate-900 z-50">
+                    <div>MAT.7.3.2 • Doğrular ve Açılar</div>
+                    <div class="flex items-center gap-8">
+                        <span class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                            Ana Açı
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                            Bütünler Açı
+                        </span>
+                    </div>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- GEOMETRY UTILS ---
+        const toRad = (deg) => (deg * Math.PI) / 180;
+        const CANVAS_W = 1920;
+        const CANVAS_H = 1080;
+        const CENTER_X = 960;
+        const CENTER_Y = 700;
+        const ROAD_WIDTH = 140;
+        const PARALLEL_GAP = 350;
+        const TRANSVERSAL_GAP = 550;
+
+        const QUESTIONS = [
+            {
+                id: 1,
+                type: "input",
+                text: "Kesişen iki doğru üzerinde oluşan açılardan biri 125° ise, bu açının tam karşısında yer alan (ters açı) diğer açının ölçüsü kaç derecedir?",
+                points: 20, // Re-calculated dynamically in logic
+                correctAnswers: ["125", "125°", "yüz yirmi beş"],
+                feedback: {
+                    correct: "Doğru! Ters açılar her zaman birbirine eşittir.",
+                    incorrect: "Yanlış. Ters açılar birbirine eşittir, değeri aynı kalmalıydı."
+                }
+            },
+            {
+                id: 2,
+                type: "choice",
+                text: "Paralel iki doğruyu kesen bir doğrunun oluşturduğu açılardan, aynı yöne bakan 'Yöndeş Açılar' için hangisi doğrudur?",
+                points: 20,
+                options: [
+                    { label: "Ölçüleri birbirine eşittir", correct: true, feedback: "Harika! Paralellik varsa yöndeş açılar daima eştir." },
+                    { label: "Toplamları 180 derecedir", correct: false, feedback: "Bu karşı durumlu açılar için geçerlidir." },
+                    { label: "Biri dar diğeri geniş açıdır", correct: false, feedback: "Hayır, yöndeş açılar aynı tür ve ölçüdedir." }
+                ]
+            },
+            {
+                id: 3,
+                type: "input",
+                text: "Z kuralı (İç Ters) gereği, paralel iki doǧrunun iç bölgesinde ve kesen doǧrunun zıt taraflarında kalan açılardan biri 55° ise, diğeri kaç derecedir?",
+                points: 20,
+                correctAnswers: ["55", "55°", "elli beş"],
+                feedback: {
+                    correct: "Mükemmel! İç ters açılar (Z kuralı) birbirine eştir.",
+                    incorrect: "Yanlış. Paralel doǧrular arasında iç ters açılar eşittir."
+                }
+            },
+            {
+                id: 4,
+                type: "choice",
+                text: "Paralel doǧruların dış bölgesinde kalan ve kesen doǧrunun zıt tarafında bulunan açılara ne ad verilir?",
+                points: 20,
+                options: [
+                    { label: "Dış Ters Açılar", correct: true, feedback: "Doğru! Bu açılar dış bölgededir ve zıt taraftadır." },
+                    { label: "İç Ters Açılar", correct: false, feedback: "Bu açılar doǧruların arasında kalır." },
+                    { label: "Komşu Açılar", correct: false, feedback: "Hayır, bu açılar kesen doǧrunun farklı uçlarındadır." }
+                ]
+            },
+            {
+                id: 5,
+                type: "input",
+                text: "Bir bütünler açı çiftinden biri 140° ise, diğeri (yani onu 180'e tamamlayan dar açı) kaç derecedir?",
+                points: 20,
+                correctAnswers: ["40", "40°", "kırk"],
+                feedback: {
+                    correct: "Tebrikler! Doǧru açı 180° olduǧundan 180 - 140 = 40 sonucuna ulaşırız.",
+                    incorrect: "Hata yaptın. Bütünler açılar birbirini 180 dereceye tamamlar."
+                }
+            }
+        ];
+
+        // --- GAME LOGIC ---
+        const Game = {
+            // State
+            angle: 65,
+            phase: 'intro', // intro, sim, quiz, result
+            tools: {
+                parallel: false,
+                vertical: false,
+                transversal2: false,
+                transversal2: false,
+                protractor: false
+            },
+            score: 0,
+            currentQuestionIdx: 0,
+            answeredQuestions: new Set(),
+            dragTarget: null,
+            dragOffset: { x: 0, y: 0 },
+            protractorPos: { x: 960, y: 500 },
+
+            // Articulate
+            getSLPlayer: function () {
+                if (window.GetPlayer) return window.GetPlayer();
+                if (window.parent && window.parent.GetPlayer) return window.parent.GetPlayer();
+                return null;
+            },
+            updateSL: function (varName, val) {
+                try {
+                    const player = this.getSLPlayer();
+                    if (player) player.SetVar(varName, val);
+                } catch (e) { console.log(`[SL] Set ${varName} = ${val}`); }
+            },
+            incrementSL: function (varName) {
+                try {
+                    const player = this.getSLPlayer();
+                    if (player) {
+                        const current = player.GetVar(varName);
+                        let val = parseFloat(current);
+                        if (isNaN(val)) val = 0;
+                        player.SetVar(varName, val + 1);
+                    }
+                } catch (e) { console.log(`[SL] Increment ${varName}`); }
+            },
+
+            init: function () {
+                this.cacheDOM();
+                this.bindEvents();
+                this.renderProtractorSVG();
+                this.updateVisualization();
+            },
+
+            cacheDOM: function () {
+                this.dom = {
+                    scaler: document.getElementById('game-scaler'),
+                    svg: document.getElementById('game-svg'),
+                    simArea: document.getElementById('sim-area'),
+                    road1: document.getElementById('road1-group'),
+                    road2: document.getElementById('road2-group'),
+                    protractor: document.getElementById('protractor-group'),
+                    angleDisplay: document.getElementById('display-angle'),
+                    supplementDisplay: document.getElementById('display-supplement'),
+                    angleBar: document.getElementById('angle-bar'),
+                    anglesLayer: document.getElementById('angles-layer'),
+
+                    phases: {
+                        intro: document.getElementById('phase-intro'),
+                        sim: document.getElementById('phase-sim'),
+                        quiz: document.getElementById('phase-quiz'),
+                        result: document.getElementById('phase-result')
+                    },
+
+                    quiz: {
+                        num: document.getElementById('quiz-q-num'),
+                        text: document.getElementById('quiz-q-text'),
+                        content: document.getElementById('quiz-content'),
+                        feedback: document.getElementById('quiz-feedback'),
+                        nextBtn: document.getElementById('quiz-next-btn'),
+                        inputVal: "" // temporary storage
+                    },
+
+                    navBtns: {
+                        sim: document.getElementById('nav-sim'),
+                        quiz: document.getElementById('nav-quiz')
+                    },
+
+                    // Tool buttons for styling
+                    btns: {
+                        parallel: document.getElementById('btn-parallel'),
+                        vertical: document.getElementById('btn-vertical'),
+                        transversal2: document.getElementById('btn-transversal2'),
+                        protractor: document.getElementById('btn-protractor')
+                    }
+                }
+            },
+
+            bindEvents: function () {
+                // Drag Handling
+                const onDragStart = (e, target) => {
+                    e.preventDefault();
+                    const pt = this.getEventPoint(e);
+                    this.dragTarget = target;
+                    if (target === 'protractor') {
+                        this.dragOffset = { x: pt.x - this.protractorPos.x, y: pt.y - this.protractorPos.y };
+                    }
+                };
+
+                this.dom.road1.addEventListener('mousedown', (e) => onDragStart(e, 'road1'));
+                this.dom.road1.addEventListener('touchstart', (e) => onDragStart(e, 'road1'));
+
+                this.dom.road2.addEventListener('mousedown', (e) => onDragStart(e, 'road2'));
+                this.dom.road2.addEventListener('touchstart', (e) => onDragStart(e, 'road2'));
+
+                this.dom.protractor.addEventListener('mousedown', (e) => onDragStart(e, 'protractor'));
+                this.dom.protractor.addEventListener('touchstart', (e) => onDragStart(e, 'protractor'));
+
+                window.addEventListener('mousemove', (e) => this.handleDrag(e));
+                window.addEventListener('touchmove', (e) => this.handleDrag(e), { passive: false });
+
+                window.addEventListener('mouseup', () => this.dragTarget = null);
+                window.addEventListener('touchend', () => this.dragTarget = null);
+
+                // Resize
+                window.addEventListener('resize', this.resize.bind(this));
+                this.resize();
+            },
+
+            getEventPoint: function (e) {
+                // We need coordinates relative to the 1920x1080 SVG
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                const rect = this.dom.svg.getBoundingClientRect();
+                const scaleX = 1920 / rect.width;
+                const scaleY = 1080 / rect.height;
+
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            },
+
+            handleDrag: function (e) {
+                if (!this.dragTarget) return;
+
+                const pt = this.getEventPoint(e);
+
+                if (this.dragTarget === 'protractor') {
+                    this.protractorPos = { x: pt.x - this.dragOffset.x, y: pt.y - this.dragOffset.y };
+                    this.updateVisualization();
+                } else if (this.dragTarget === 'road1' || this.dragTarget === 'road2') {
+                    const pivotX = this.dragTarget === 'road1' ? CENTER_X : CENTER_X + TRANSVERSAL_GAP;
+                    const dx = pt.x - pivotX;
+                    const dy = pt.y - CENTER_Y;
+
+                    // Calculate angle. Note: Y is flipped (up is negative in SVG coords relative to math)
+                    // But dragging math normally has Y down as positive in DOM.
+                    // Let's use standard atan2(dy, dx). 
+                    // In screen coords: Y increases downwards.
+                    // Horizontal line is Y=0 relative to pivot. 
+                    // We want angle 0 at right, 90 at top, 180 at left.
+                    // Screen atan2(y, x): 0 at right, 90 at bottom.
+                    // So we want negative of screen angle.
+
+                    let deg = Math.atan2(dy, dx) * (180 / Math.PI);
+
+                    // Our reference is rotated 180 if we want standard position.
+                    // React code used: Math.atan2(-y, x). That implies typical Cartesian where Y is Up.
+                    // Since Screen Y is Down, -y turns it into Cartesian Y.
+                    // Let's stick to React logic: setAngle(Math.round(calculated)).
+                    // calculated = mouseDeg. If < 0 += 180.
+                    let processedDeg = Math.atan2(-(pt.y - CENTER_Y), (pt.x - pivotX)) * (180 / Math.PI);
+                    if (processedDeg < 0) processedDeg += 180;
+
+                    // Clamp or just set
+                    this.angle = Math.round(processedDeg);
+                    this.updateVisualization();
+                }
+            },
+
+            updateVisualization: function () {
+                // 1. Text & Bar
+                this.dom.angleDisplay.innerText = this.angle + "°";
+                this.dom.supplementDisplay.innerText = (180 - this.angle) + "°";
+                this.dom.angleBar.style.width = ((this.angle / 180) * 100) + "%";
+
+                // 2. Rotate Roads
+                // Note: SVG Rotate is clockwise. 
+                // We calculated angle as counter-clockwise from X-axis.
+                // So rotate by -angle.
+                // Also Road 2 needs to rotate same as Road 1 for parallel?
+                // React code: "setAngle" sets ONE state.
+                // handleDrag on road1 sets angle. handleDrag on road2 ALSO sets angle.
+                // So they are linked. Both roads rotate together to keep angles consistent if parallel logic applies?
+                // React code: road1 uses `rotate(${-angle})`. road2 uses `rotate(${-angle})`.
+                // Yes, they are locked parallel if road2 exists.
+
+                this.dom.road1.setAttribute('transform', `translate(${CENTER_X}, ${CENTER_Y}) rotate(${-this.angle})`);
+
+                if (this.tools.transversal2) {
+                    this.dom.road2.setAttribute('transform', `translate(${CENTER_X + TRANSVERSAL_GAP}, ${CENTER_Y}) rotate(${-this.angle})`);
+                    this.dom.road2.classList.remove('hidden');
+                } else {
+                    this.dom.road2.classList.add('hidden');
+                }
+
+                // 3. Protractor Position
+                if (this.tools.protractor) {
+                    this.dom.protractor.setAttribute('transform', `translate(${this.protractorPos.x}, ${this.protractorPos.y})`);
+                    this.dom.protractor.classList.remove('hidden');
+                } else {
+                    this.dom.protractor.classList.add('hidden');
+                }
+
+                // 4. Parallel Road Background
+                const parallelBg = document.getElementById('road-parallel-bg');
+                if (this.tools.parallel) parallelBg.classList.remove('hidden');
+                else parallelBg.classList.add('hidden');
+
+                // 5. Draw Angles
+                this.drawAngles();
+
+                // 6. Buttons Styling
+                for (const [key, btn] of Object.entries(this.dom.btns)) {
+                    const check = btn.querySelector('.check-icon');
+                    if (this.tools[key]) {
+                        btn.className = "w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-[#0DBFC7]/10 border-[#0DBFC7] text-[#0DBFC7]";
+                        check.classList.remove('hidden');
+                    } else {
+                        btn.className = "w-full p-5 rounded-[1.5rem] border-2 flex items-center justify-between font-black transition-all text-lg bg-slate-950/50 border-slate-800 text-slate-500 hover:border-slate-700";
+                        check.classList.add('hidden');
+                    }
+                }
+
+                // 7. Update Dynamic Protractor Indicator
+                if (this.dom.protractorLine && this.dom.protractorCircle) {
+                    const R = 380;
+                    const rad = toRad(this.angle);
+
+                    // Line to (R+20)
+                    const xLine = Math.cos(rad) * (R + 20);
+                    const yLine = -Math.sin(rad) * (R + 20);
+                    this.dom.protractorLine.setAttribute('x2', xLine);
+                    this.dom.protractorLine.setAttribute('y2', yLine);
+
+                    // Circle at (R-25)
+                    const xCircle = Math.cos(rad) * (R - 25);
+                    const yCircle = -Math.sin(rad) * (R - 25);
+                    this.dom.protractorCircle.setAttribute('cx', xCircle);
+                    this.dom.protractorCircle.setAttribute('cy', yCircle);
+                }
+            },
+
+            drawAngles: function () {
+                this.dom.anglesLayer.innerHTML = '';
+                const r = 90;
+                const rad = toRad(this.angle);
+
+                const createAngleGroup = (cx, cy) => {
+                    if (isNaN(cx) || isNaN(cy)) return;
+                    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    g.setAttribute('transform', `translate(${cx}, ${cy})`);
+                    g.setAttribute('pointer-events', 'none');
+
+                    // Angle 1: Primary (Bottom Right in standard, but rotated...)
+                    // The logic in React:
+                    // Path 1 (Blue): M 0 0 L r 0 A r r 0 0 0 ...
+                    // That draws an arc from 0 to -angle (since Sin is neg in SVG Y).
+
+                    const x1 = r * Math.cos(rad);
+                    const y1 = -r * Math.sin(rad);
+
+                    // Blue Angle
+                    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path1.setAttribute('d', `M 0 0 L ${r} 0 A ${r} ${r} 0 0 0 ${x1} ${y1} Z`);
+                    path1.setAttribute('fill', '#3b82f6');
+                    path1.setAttribute('fill-opacity', '0.6');
+                    path1.setAttribute('stroke', '#3b82f6');
+                    path1.setAttribute('stroke-width', '3');
+                    g.appendChild(path1);
+
+                    const text1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text1.setAttribute('x', r + 25);
+                    text1.setAttribute('y', -25);
+                    text1.setAttribute('class', 'font-black fill-blue-400 text-3xl');
+                    text1.setAttribute('style', 'paint-order: stroke; stroke: #0f172a; stroke-width: 6px');
+                    text1.textContent = this.angle + "°";
+                    g.appendChild(text1);
+
+                    // Red Angle (Supplement)
+                    // Path 2: From (x1, y1) to (-r, 0).
+                    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path2.setAttribute('d', `M 0 0 L ${x1} ${y1} A ${r} ${r} 0 0 0 ${-r} 0 Z`);
+                    path2.setAttribute('fill', '#ef4444');
+                    path2.setAttribute('fill-opacity', '0.6');
+                    path2.setAttribute('stroke', '#ef4444');
+                    path2.setAttribute('stroke-width', '3');
+                    g.appendChild(path2);
+
+                    const text2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text2.setAttribute('x', -r - 90);
+                    text2.setAttribute('y', -25);
+                    text2.setAttribute('class', 'font-black fill-red-400 text-3xl');
+                    text2.setAttribute('style', 'paint-order: stroke; stroke: #0f172a; stroke-width: 6px');
+                    text2.textContent = (180 - this.angle) + "°";
+                    g.appendChild(text2);
+
+                    // Vertical Angles (Opposite)
+                    if (this.tools.vertical) {
+                        // Opposite Blue
+                        const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        path3.setAttribute('d', `M 0 0 L ${-r} 0 A ${r} ${r} 0 0 0 ${-x1} ${-y1} Z`);
+                        path3.setAttribute('fill', '#3b82f6');
+                        path3.setAttribute('fill-opacity', '0.6');
+                        path3.setAttribute('stroke', '#3b82f6');
+                        path3.setAttribute('stroke-width', '3');
+                        g.appendChild(path3);
+
+                        // Opposite Red
+                        const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        path4.setAttribute('d', `M 0 0 L ${-x1} ${-y1} A ${r} ${r} 0 0 0 ${r} 0 Z`);
+                        path4.setAttribute('fill', '#ef4444');
+                        path4.setAttribute('fill-opacity', '0.6');
+                        path4.setAttribute('stroke', '#ef4444');
+                        path4.setAttribute('stroke-width', '3');
+                        g.appendChild(path4);
+                    }
+
+                    this.dom.anglesLayer.appendChild(g);
+                };
+
+                // 1. Center Intersection
+                createAngleGroup(CENTER_X, CENTER_Y);
+
+                // 2. Parallel Intersection
+                if (this.tools.parallel) {
+                    // Delta X calculation based on tan
+                    // tan(alpha) = dy / dx -> dx = dy / tan(alpha)
+                    // angle is from horizontal. 
+                    // parallel gap is vertical distance.
+                    // x_offset = gap / tan(rad)
+                    const dx = PARALLEL_GAP / Math.tan(rad);
+                    createAngleGroup(CENTER_X + dx, CENTER_Y - PARALLEL_GAP);
+                }
+
+                // 3. Second Transversal Intersection
+                if (this.tools.transversal2) {
+                    createAngleGroup(CENTER_X + TRANSVERSAL_GAP, CENTER_Y);
+                }
+
+                // 4. Double Intersection
+                if (this.tools.parallel && this.tools.transversal2) {
+                    const dx = PARALLEL_GAP / Math.tan(rad);
+                    createAngleGroup(CENTER_X + TRANSVERSAL_GAP + dx, CENTER_Y - PARALLEL_GAP);
+                }
+            },
+
+            renderProtractorSVG: function () {
+                const R = 380;
+                const g = this.dom.protractor;
+                g.innerHTML = ''; // clear
+
+                // Background
+                const bg = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                bg.setAttribute('d', `M -${R + 30} 0 A ${R + 30} ${R + 30} 0 0 1 ${R + 30} 0 Z`);
+                bg.setAttribute('fill', 'rgba(255,255,255,0.92)');
+                bg.setAttribute('stroke', '#94a3b8');
+                bg.setAttribute('stroke-width', '5');
+                g.appendChild(bg);
+
+                // Baseline
+                const bl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                bl.setAttribute('x1', -(R + 30));
+                bl.setAttribute('y1', 0);
+                bl.setAttribute('x2', R + 30);
+                bl.setAttribute('y2', 0);
+                bl.setAttribute('stroke', '#94a3b8');
+                bl.setAttribute('stroke-width', '5');
+                g.appendChild(bl);
+
+                // Ticks
+                for (let i = 0; i <= 180; i++) {
+                    const rad = toRad(i);
+                    let len = 15;
+                    let sw = 1.5;
+                    if (i % 10 === 0) { len = 45; sw = 3.5; }
+                    else if (i % 5 === 0) { len = 25; sw = 2; }
+
+                    const x1 = Math.cos(rad) * R;
+                    const y1 = -Math.sin(rad) * R;
+                    const x2 = Math.cos(rad) * (R - len);
+                    const y2 = -Math.sin(rad) * (R - len);
+
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.setAttribute('stroke', '#334155');
+                    line.setAttribute('stroke-width', sw);
+                    g.appendChild(line);
+
+                    if (i % 10 === 0) {
+                        // Outer (Main)
+                        const tx = Math.cos(rad) * (R - 75);
+                        const ty = -Math.sin(rad) * (R - 75);
+                        const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        txt.setAttribute('x', tx);
+                        txt.setAttribute('y', ty);
+                        txt.setAttribute('text-anchor', 'middle');
+                        txt.setAttribute('dominant-baseline', 'middle');
+                        txt.setAttribute('font-size', '20');
+                        txt.setAttribute('font-weight', '900');
+                        txt.setAttribute('fill', '#1e293b');
+                        txt.setAttribute('transform', `rotate(${-i + 90}, ${tx}, ${ty})`);
+                        txt.textContent = i;
+                        g.appendChild(txt);
+
+                        // Inner (Supplement)
+                        const tx2 = Math.cos(rad) * (R - 110);
+                        const ty2 = -Math.sin(rad) * (R - 110);
+                        const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        txt2.setAttribute('x', tx2);
+                        txt2.setAttribute('y', ty2);
+                        txt2.setAttribute('text-anchor', 'middle');
+                        txt2.setAttribute('dominant-baseline', 'middle');
+                        txt2.setAttribute('font-size', '16');
+                        txt2.setAttribute('font-weight', '700');
+                        txt2.setAttribute('fill', '#64748b');
+                        txt2.setAttribute('transform', `rotate(${-i + 90}, ${tx2}, ${ty2})`);
+                        txt2.textContent = 180 - i;
+                        g.appendChild(txt2);
+                    }
+                }
+
+                // Center Marker
+                const centerC = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                centerC.setAttribute('cx', 0);
+                centerC.setAttribute('cy', 0);
+                centerC.setAttribute('r', 10);
+                centerC.setAttribute('fill', 'white');
+                centerC.setAttribute('stroke', '#334155');
+                centerC.setAttribute('stroke-width', 4);
+                g.appendChild(centerC);
+
+                // --- DYNAMIC INDICATOR ---
+                const dynGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                dynGroup.setAttribute('opacity', '0.8');
+
+                // Dynamic Line
+                const dLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                dLine.setAttribute('x1', 0);
+                dLine.setAttribute('y1', 0);
+                dLine.setAttribute('stroke', '#3b82f6');
+                dLine.setAttribute('stroke-width', '6');
+                dLine.setAttribute('stroke-linecap', 'round');
+                dLine.classList.add('transition-all', 'duration-75'); // Smooth transition
+                dynGroup.appendChild(dLine);
+                this.dom.protractorLine = dLine;
+
+                // Dynamic Circle
+                const dCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                dCircle.setAttribute('r', '12');
+                dCircle.setAttribute('fill', '#3b82f6');
+                dCircle.classList.add('animate-pulse');
+                dynGroup.appendChild(dCircle);
+                this.dom.protractorCircle = dCircle;
+
+                g.appendChild(dynGroup);
+            },
+
+            setPhase: function (newPhase) {
+                this.phase = newPhase;
+
+                // Hide all
+                Object.values(this.dom.phases).forEach(el => el.classList.add('hidden'));
+
+                // Show current
+                this.dom.phases[newPhase].classList.remove('hidden');
+
+                // Nav Buttons
+                if (newPhase === 'sim' || newPhase === 'quiz') {
+                    this.dom.navBtns.sim.classList.remove('hidden');
+                    this.dom.navBtns.quiz.classList.remove('hidden');
+
+                    if (newPhase === 'sim') {
+                        this.dom.navBtns.sim.classList.add('active');
+                        this.dom.navBtns.quiz.classList.remove('active');
+                    } else {
+                        this.dom.navBtns.quiz.classList.add('active');
+                        this.dom.navBtns.sim.classList.remove('active');
+                    }
+                } else {
+                    this.dom.navBtns.sim.classList.add('hidden');
+                    this.dom.navBtns.quiz.classList.add('hidden');
+                }
+
+                // Header Controls visibility could change, but keeping them global is fine.
+
+                if (newPhase === 'quiz') {
+                    this.startQuiz();
+                }
+            },
+
+            toggleHUD: function (forceState) {
+                const hud = document.getElementById('sim-hud');
+                if (forceState !== undefined) {
+                    if (forceState) hud.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+                    else hud.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+                } else {
+                    if (hud.classList.contains('opacity-0')) {
+                        hud.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+                    } else {
+                        hud.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+                    }
+                }
+            },
+
+            toggleTool: function (toolName) {
+                this.tools[toolName] = !this.tools[toolName];
+                this.updateVisualization();
+            },
+
+            // --- QUIZ ---
+            startQuiz: function () {
+                // Resume logic: don't reset index/score
+                this.loadQuestion();
+            },
+
+            loadQuestion: function () {
+                const q = QUESTIONS[this.currentQuestionIdx];
+                this.dom.quiz.num.innerText = `${this.currentQuestionIdx + 1}`;
+                this.dom.quiz.text.innerText = q.text;
+
+                this.dom.quiz.feedback.classList.add('hidden');
+                this.dom.quiz.nextBtn.classList.add('hidden');
+
+                this.dom.quiz.content.innerHTML = '';
+
+                if (q.type === 'choice') {
+                    q.options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = "w-full p-8 bg-slate-800 border-2 border-slate-700 rounded-[2rem] text-left text-2xl font-black hover:border-[#0DBFC7] hover:bg-slate-800/50 transition-all text-white";
+                        btn.innerText = opt.label;
+                        btn.onclick = () => this.checkAnswer(opt, btn);
+                        this.dom.quiz.content.appendChild(btn);
+                    });
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "space-y-6";
+
+                    const inp = document.createElement('input');
+                    inp.type = "text";
+                    inp.placeholder = "Cevabınızı buraya yazın...";
+                    inp.className = "w-full p-8 bg-slate-800 border-2 border-slate-700 rounded-[2rem] text-3xl font-black focus:border-[#0DBFC7] focus:outline-none text-white";
+
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.className = "w-full py-8 bg-[#0DBFC7] rounded-[2rem] font-black text-2xl flex items-center justify-center gap-6 shadow-lg shadow-blue-600/20 text-white hover:bg-[#0aa5ac]";
+                    confirmBtn.innerHTML = 'CEVABI ONAYLA <i class="fas fa-paper-plane"></i>';
+                    confirmBtn.onclick = () => this.checkInput(inp.value, q);
+
+                    wrapper.appendChild(inp);
+                    wrapper.appendChild(confirmBtn);
+                    this.dom.quiz.content.appendChild(wrapper);
+                }
+            },
+
+            checkAnswer: function (opt, btn) {
+                // Disable all
+                const btns = this.dom.quiz.content.querySelectorAll('button');
+                btns.forEach(b => b.disabled = true);
+
+                const isCorrect = opt.correct;
+                this.showFeedback(isCorrect, opt.feedback);
+
+                if (isCorrect) {
+                    btn.classList.add('bg-emerald-900/50', 'border-emerald-500', 'text-emerald-400');
+                    this.addScore();
+                } else {
+                    btn.classList.add('bg-red-900/50', 'border-red-500', 'text-red-400');
+                }
+            },
+
+            checkInput: function (val, q) {
+                const isCorrect = q.correctAnswers.some(ans => ans.toLowerCase() === val.trim().toLowerCase());
+                const fb = isCorrect ? q.feedback.correct : q.feedback.incorrect;
+
+                this.showFeedback(isCorrect, fb);
+                if (isCorrect) this.addScore();
+            },
+
+            addScore: function () {
+                if (this.answeredQuestions.has(this.currentQuestionIdx)) return;
+                this.answeredQuestions.add(this.currentQuestionIdx);
+
+                // Points per question calc
+                const points = 20 / QUESTIONS.length;
+                this.score += points;
+
+                // Format decimal if needed, but 20/5 = 4 so it's clean.
+                this.updateSL('puan', Math.round(this.score));
+                this.incrementSL('correct');
+            },
+
+            showFeedback: function (isCorrect, text) {
+                const fbEl = this.dom.quiz.feedback;
+                fbEl.classList.remove('hidden', 'bg-emerald-900/20', 'text-emerald-400', 'border-emerald-800', 'bg-red-900/20', 'text-red-400', 'border-red-800');
+
+                if (isCorrect) {
+                    fbEl.className = "p-8 rounded-[2rem] text-2xl font-black border bg-emerald-900/20 text-emerald-400 border-emerald-800 animate-pulse-soft";
+                } else {
+                    fbEl.className = "p-8 rounded-[2rem] text-2xl font-black border bg-red-900/20 text-red-400 border-red-800";
+                    this.incrementSL('wrong');
+                }
+
+                fbEl.innerText = text;
+                this.dom.quiz.nextBtn.classList.remove('hidden');
+            },
+
+            nextQuestion: function () {
+                if (this.currentQuestionIdx < QUESTIONS.length - 1) {
+                    this.currentQuestionIdx++;
+                    this.loadQuestion();
+                } else {
+                    this.setPhase('result');
+                    document.getElementById('result-score').innerText = this.score;
+                    this.updateSL('quizCompleted', 1);
+                }
+            },
+
+            // --- FULLSCREEN & RESIZE ---
+            toggleFullscreen: function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => console.log(e));
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            },
+
+            resize: function () {
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                const scale = Math.min(winW / 1920, winH / 1080);
+                if (this.dom.scaler) {
+                    this.dom.scaler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                }
+            }
+        };
+
+        // Start
+        document.addEventListener('DOMContentLoaded', () => Game.init());
+
+    </script>
+</body>
+
+</html>
