@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekrarlı Toplamadan Çarpmaya - Derslig</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Link removed or replaced, actually we can just keep Nunito only -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        magenta: '#E50069',
+                        turquoise: '#0DBFC7',
+                        yellow: '#FCD638',
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        poppins: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Reset & Layout */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0f172a;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        #main-app {
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        /* Scaler: Centered Absolutely */
+        #game-scaler {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 1080px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 60%, #8BC34A 60%, #4CAF50 100%);
+            /* background from oyun.html */
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        #app-header {
+            width: 100%;
+            height: 100px;
+            background: #0DBFC7;
+            border-bottom: 3px solid #00acc1;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            justify-content: space-between;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-weight: 800;
+            color: white;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-controls .control-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-left: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-controls .control-btn:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* --- GAME CSS FROM oyun.html ADAPTED --- */
+        :root {
+            --magenta: #e50069;
+            --turkuaz: #00b2bb;
+            --sari: #ffd51c;
+            --beyaz: #ffffff;
+            --gokyuzu: #87CEEB;
+        }
+
+        /* Decor */
+        .sun {
+            position: absolute;
+            top: 50px;
+            /* Adapted from 5vh */
+            right: 100px;
+            /* Adapted from 5vw */
+            width: 120px;
+            /* Scaled up */
+            height: 120px;
+            background: var(--sari);
+            border-radius: 50%;
+            box-shadow: 0 0 50px var(--sari);
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            z-index: 1;
+            animation: moveClouds linear infinite;
+        }
+
+        @keyframes moveClouds {
+            from {
+                transform: translateX(-300px);
+            }
+
+            to {
+                transform: translateX(2200px);
+            }
+
+            /* Adapted for 1920px width */
+        }
+
+        /* Screens */
+        #intro-screen,
+        #final-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .card {
+            background: white;
+            padding: 60px;
+            border-radius: 50px;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            border: 10px solid var(--sari);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: var(--magenta);
+            font-size: 48px;
+            margin: 0 0 30px 0;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .card p {
+            font-size: 28px;
+            color: #555;
+            line-height: 1.5;
+            font-weight: 600;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* Game Container */
+        #game-container {
+            flex: 1;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            /* Changed from center */
+            z-index: 10;
+            padding: 40px 20px;
+            /* Increased vertical padding to avoid edge touch */
+        }
+
+        /* Visual Area */
+        #visual-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            margin-top: 120px;
+            /* Added margin to push down from potential top overlays */
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            min-height: 200px;
+        }
+
+        .group-box {
+            background: rgba(255, 255, 255, 0.95);
+            border: 5px solid var(--sari);
+            border-radius: 30px;
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .item {
+            font-size: 48px;
+            /* Reduced from 64px */
+        }
+
+        /* Inputs */
+        .input-group {
+            background: white;
+            padding: 20px;
+            /* Reduced from 30px */
+            border-radius: 30px;
+            /* Reduced from 40px */
+            border: 5px solid var(--turkuaz);
+            /* Reduced from 6px */
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            /* Reduced from 0 15px 30px */
+            display: none;
+            width: 90%;
+            /* Increased from 80% */
+            max-width: 900px;
+            /* Reduced from 1000px */
+        }
+
+        .input-group.active {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .inputs-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .game-input {
+            width: 80px;
+            /* Reduced from 100px */
+            height: 80px;
+            /* Reduced from 100px */
+            border: 4px solid var(--turkuaz);
+            /* Reduced from 5px */
+            border-radius: 15px;
+            /* Reduced from 20px */
+            text-align: center;
+            font-size: 32px;
+            /* Reduced from 40px */
+            font-weight: 800;
+            color: var(--magenta);
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .game-input:focus {
+            border-color: var(--magenta);
+            background: #FFF9C4;
+        }
+
+        .symbol {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--magenta);
+        }
+
+        /* Buttons */
+        .btn-turkuaz {
+            background-color: var(--turkuaz);
+            color: var(--beyaz);
+            border: none;
+            border-radius: 50px !important;
+            min-height: 60px;
+            padding: 0 40px;
+            font-size: 24px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            display: inline-block;
+            /* Changed from block */
+            margin-top: 20px;
+            /* Managed by parent text-align */
+            width: auto;
+            max-width: 90%;
+            box-shadow: 0 6px 0 #008c92;
+            overflow: visible;
+        }
+
+        .btn-turkuaz:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #008c92;
+        }
+
+        /* Balloon Stage */
+        #balloon-stage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(79, 195, 247, 0.95);
+            display: none;
+            z-index: 500;
+            overflow: hidden;
+        }
+
+        .operation-display {
+            background: white;
+            padding: 20px 50px;
+            border-radius: 100px;
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--magenta);
+            border: 8px solid var(--sari);
+            margin: 50px auto;
+            display: inline-block;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .balloon {
+            position: absolute;
+            width: 160px;
+            height: 210px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 56px;
+            cursor: pointer;
+            box-shadow: inset -15px -15px 30px rgba(0, 0, 0, 0.2);
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* Score & Feedback */
+        #score-display {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 5px solid var(--magenta);
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--magenta);
+            z-index: 200;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        #feedback {
+            position: fixed;
+            top: 120px;
+            /* Adjusted top position to sit in general area but allow content below */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px 50px;
+            border-radius: 100px;
+            color: white;
+            font-weight: 800;
+            font-size: 32px;
+            display: none;
+            z-index: 1100;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            min-width: 500px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .hint-box {
+            color: #d32f2f;
+            font-weight: 800;
+            margin-top: 15px;
+            font-size: 24px;
+            min-height: 40px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .question-info {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 800;
+            color: var(--turkuaz);
+            font-size: 28px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-app">
+        <div id="game-stage">
+            <div id="game-scaler">
+
+                <!-- HEADER from Template -->
+                <header id="app-header">
+                    <div class="header-title">
+                        <i class="fas fa-calculator text-3xl"></i>
+                        <span>TEKRARLI TOPLAMADAN ÇARPMAYA</span>
+                    </div>
+
+                    <div class="header-controls">
+                        <button class="control-btn" onclick="location.reload()" title="Yeniden Başlat"><i
+                                class="fas fa-redo"></i></button>
+                        <button class="control-btn" onclick="Game.toggleHelp()" title="Yardım"><i
+                                class="fas fa-question-circle"></i></button>
+                        <button class="control-btn" onclick="Game.toggleFullscreen()" title="Tam Ekran"><i
+                                class="fas fa-expand"></i></button>
+                    </div>
+                </header>
+
+                <!-- MAIN CONTENT (Game) -->
+                <main class="flex-1 relative overflow-hidden w-full h-full flex flex-col">
+
+                    <!-- Decor -->
+                    <div class="sun"></div>
+                    <div class="cloud" style="width:200px; height:80px; top:15%; left:-300px; animation-duration: 40s;">
+                    </div>
+                    <div class="cloud"
+                        style="width:280px; height:100px; top:30%; left:-400px; animation-duration: 60s; animation-delay: 4s;">
+                    </div>
+
+                    <!-- Intro Screen -->
+                    <div id="intro-screen">
+                        <div class="card">
+                            <h2>Hoş Geldin!</h2>
+                            <p>Nesneleri say, önce toplama işlemi olarak yaz sonra da çarpma işlemine
+                                dönüştür.<br>Bakalım kaç puan toplayacaksın?</p>
+                            <button class="btn-turkuaz" onclick="Game.startGame()">Oyuna Başla</button>
+                        </div>
+                    </div>
+
+                    <!-- Game Area -->
+                    <div id="game-container">
+                        <div id="game-play"
+                            style="display:none; width: 100%; flex-direction: column; align-items: center;">
+                            <div id="visual-area"></div>
+
+                            <div id="interaction-area"
+                                style="width:100%; display:flex; flex-direction:column; align-items:center;">
+                                <div id="addition-step" class="input-group">
+                                    <p
+                                        style="margin:0 0 20px 0; font-weight:800; font-size:32px; font-family:'Nunito',sans-serif; color:#333;">
+                                        Toplama işlemini yaz:</p>
+                                    <div id="addition-inputs" class="inputs-container"></div>
+                                    <div id="add-hint" class="hint-box"></div>
+                                    <button class="btn-turkuaz" onclick="Game.checkAddition()">Kontrol Et</button>
+                                </div>
+
+                                <div id="multiplication-step" class="input-group">
+                                    <p
+                                        style="margin:0 0 20px 0; font-weight:800; font-size:32px; font-family:'Nunito',sans-serif; color:#333;">
+                                        Çarpma işlemine dönüştür:</p>
+                                    <div class="inputs-container">
+                                        <input type="number" id="mult-1" class="game-input" inputmode="numeric" min="0"
+                                            oninput="Game.validMin(this)">
+                                        <span class="symbol">x</span>
+                                        <input type="number" id="mult-2" class="game-input" inputmode="numeric" min="0"
+                                            oninput="Game.validMin(this)">
+                                    </div>
+                                    <div id="mult-hint" class="hint-box"></div>
+                                    <button class="btn-turkuaz" onclick="Game.checkMultiplication()">Devam Et</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="score-display">Puan: 0</div>
+                        <div id="question-count" class="question-info">Soru: 1 / 5</div>
+                        <div id="feedback"></div>
+                    </div>
+
+                    <!-- Balloon Stage (Overlay) -->
+                    <div id="balloon-stage">
+                        <div style="text-align:center; width:100%; padding:0 20px;">
+                            <div class="operation-display" id="op-text">3 x 2 = ?</div>
+                            <p
+                                style="color:white; font-size:40px; font-weight:800; text-shadow:2px 2px 4px rgba(0,0,0,0.5); margin:0; font-family:'Nunito',sans-serif;">
+                                Sonucu taşıyan balonu patlat!</p>
+                        </div>
+                        <div id="balloon-container"></div>
+                    </div>
+
+                    <!-- Final Screen -->
+                    <div id="final-screen" style="display:none;">
+                        <div class="card">
+                            <h2 id="final-title">Tebrikler!</h2>
+                            <div id="star-reward" style="font-size: 120px; margin: 20px;">🏆</div>
+                            <p id="total-result-text" style="font-size: 40px; font-weight: 800; margin-bottom:30px;">
+                            </p>
+                            <button class="btn-turkuaz" onclick="location.reload()">Tekrar Oyna</button>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const Game = {
+            items: ['🍎', '🍓', '🥕', '⭐', '🎈', '🍭', '🍄', '🐝'],
+            currentLevelNum: 0, // max 5
+            maxLevels: 5,
+            totalScore: 0,
+            triesAtStep: 0,
+            currentQ: null,
+            balloonAnims: [],
+
+            // Storyline Integration
+            getSLPlayer: function () {
+                if (window.GetPlayer) return window.GetPlayer();
+                if (window.parent && window.parent.GetPlayer) return window.parent.GetPlayer();
+                return null;
+            },
+            updateSL: function (varName, val) {
+                try {
+                    const player = this.getSLPlayer();
+                    if (player) player.SetVar(varName, val);
+                } catch (e) { console.log(`[SL] Set ${varName} = ${val}`); }
+            },
+            incrementSL: function (varName) {
+                try {
+                    const player = this.getSLPlayer();
+                    if (player) {
+                        const current = player.GetVar(varName);
+                        let val = parseFloat(current);
+                        if (isNaN(val)) val = 0;
+                        player.SetVar(varName, val + 1);
+                    }
+                } catch (e) { console.log(`[SL] Increment ${varName}`); }
+            },
+
+            // Fullscreen
+            toggleFullscreen: function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch((e) => console.log(e));
+                } else {
+                    document.exitFullscreen();
+                }
+            },
+
+            // Help
+            toggleHelp: function () {
+                this.showFeedback("Grupları say, toplama ve çarpma olarak yaz!", true);
+            },
+
+            // Game Logic
+            validMin: function (el) {
+                if (el.value < 0) el.value = 0;
+            },
+
+            init: function () {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                SoundEffects.init();
+            },
+
+            resize: function () {
+                const scaler = document.getElementById('game-scaler');
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                const scale = Math.min(winW / 1920, winH / 1080);
+                scaler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            },
+
+            startGame: function () {
+                SoundEffects.init();
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('game-play').style.display = 'flex';
+                this.totalScore = 0;
+                this.updateSL("puan", 0);
+                this.currentLevelNum = 0;
+                this.updateScoreUI();
+                this.nextQuestion();
+            },
+
+            generateQuestion: function () {
+                const groups = Math.floor(Math.random() * 4) + 2;
+                const perGroup = Math.floor(Math.random() * 4) + 2;
+                const item = this.items[Math.floor(Math.random() * this.items.length)];
+                return { groups, perGroup, item, result: groups * perGroup };
+            },
+
+            nextQuestion: function () {
+                if (this.currentLevelNum >= this.maxLevels) {
+                    this.showFinal();
+                    return;
+                }
+                this.currentLevelNum++;
+                this.currentQ = this.generateQuestion();
+                this.triesAtStep = 0;
+                document.getElementById('question-count').innerText = `Soru: ${this.currentLevelNum} / 5`;
+                this.renderAdditionStep();
+            },
+
+            renderAdditionStep: function () {
+                const visualArea = document.getElementById('visual-area');
+                const addInputsArea = document.getElementById('addition-inputs');
+
+                visualArea.innerHTML = '';
+                for (let i = 0; i < this.currentQ.groups; i++) {
+                    const box = document.createElement('div');
+                    box.className = 'group-box';
+                    for (let j = 0; j < this.currentQ.perGroup; j++) {
+                        const span = document.createElement('span');
+                        span.className = 'item';
+                        span.textContent = this.currentQ.item;
+                        box.appendChild(span);
+                    }
+                    visualArea.appendChild(box);
+                }
+
+                addInputsArea.innerHTML = '';
+                for (let i = 0; i < this.currentQ.groups; i++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.inputMode = 'numeric';
+                    input.className = 'game-input';
+                    input.min = "0";
+                    input.oninput = function () { Game.validMin(this); };
+                    input.id = `add-in-${i}`;
+                    addInputsArea.appendChild(input);
+                    if (i < this.currentQ.groups - 1) {
+                        const s = document.createElement('span');
+                        s.className = 'symbol';
+                        s.textContent = '+';
+                        addInputsArea.appendChild(s);
+                    }
+                }
+
+                this.triesAtStep = 0;
+                document.getElementById('game-play').style.display = 'flex';
+                document.getElementById('balloon-stage').style.display = 'none';
+                document.getElementById('addition-step').classList.add('active');
+                document.getElementById('multiplication-step').classList.remove('active');
+                document.getElementById('add-hint').textContent = "";
+            },
+
+            checkAddition: function () {
+                let allCorrect = true;
+                for (let i = 0; i < this.currentQ.groups; i++) {
+                    const el = document.getElementById(`add-in-${i}`);
+                    const val = parseInt(el.value);
+                    if (val !== this.currentQ.perGroup) allCorrect = false;
+                }
+
+                if (allCorrect) {
+                    // Only award point on first try? Logic from oyun.html says yes.
+                    if (this.triesAtStep === 0) {
+                        this.totalScore += 1;
+                        this.updateSL("puan", this.totalScore);
+                        // this.incrementSL("correct"); // Moved to final stage only
+                    } else {
+                        // If they eventually get it right after error, do we count correct?
+                        // Usually "correct" variable tracks first-try success or just completion. 
+                        // User request: "her soru doğru yapıldığında...". 
+                        // I'll consider it correct if they pass the step, but maybe only increment "correct" if first try?
+                        // To be safe, let's increment "correct" whenever they succeed a step? 
+                        // Or maybe "correct" increments per "Question"? 
+                        // Logic in previous games usually track "Questions Correct".
+                        // This game has 3 sub-steps (Addition, Multiplication, Balloon).
+                        // I'll increment "correct" at the end of the full question (Balloon stage) to align closer to "1 Question = 1 Correct".
+                        // BUT, user demand says "dogru yapinca", maybe step based?
+                        // Let's increment "correct" at the end of the question (Balloon).
+                        // However, I will increment "puan" as requested "her soru doğru yapıldığında puan artır". 
+                        // Actually, let's follow standard: Correct = Question Solved. Wrong = Mistakes made.
+                    }
+                    this.updateScoreUI();
+                    SoundEffects.play('correct');
+                    this.showFeedback("Harika! +1 Puan!", true);
+                    setTimeout(() => this.renderMultiplicationStep(), 800);
+                } else {
+                    this.triesAtStep++;
+                    this.incrementSL("wrong"); // Mistake made
+                    SoundEffects.play('wrong');
+                    if (this.triesAtStep === 1) {
+                        document.getElementById('add-hint').textContent = "İpucu: Her gruptaki nesneleri say.";
+                        this.showFeedback("Tekrar dene!", false);
+                    } else {
+                        // Auto fix
+                        for (let i = 0; i < this.currentQ.groups; i++) document.getElementById(`add-in-${i}`).value = this.currentQ.perGroup;
+                        this.showFeedback("Doğrusunu gösterdim.", false);
+                        setTimeout(() => this.renderMultiplicationStep(), 2000);
+                    }
+                }
+            },
+
+            renderMultiplicationStep: function () {
+                this.triesAtStep = 0;
+                document.getElementById('addition-step').classList.remove('active');
+                document.getElementById('multiplication-step').classList.add('active');
+                document.getElementById('mult-hint').textContent = "";
+                document.getElementById('mult-1').value = "";
+                document.getElementById('mult-2').value = "";
+            },
+
+            checkMultiplication: function () {
+                const m1 = parseInt(document.getElementById('mult-1').value);
+                const m2 = parseInt(document.getElementById('mult-2').value);
+
+                if (m1 === this.currentQ.groups && m2 === this.currentQ.perGroup) {
+                    if (this.triesAtStep === 0) {
+                        this.totalScore += 1;
+                        this.updateSL("puan", this.totalScore);
+                        // Still inside same question
+                    }
+                    this.updateScoreUI();
+                    SoundEffects.play('correct');
+                    this.showFeedback("Süper! +1 Puan!", true);
+                    setTimeout(() => this.startBalloonStage(), 800);
+                } else {
+                    this.triesAtStep++;
+                    this.incrementSL("wrong");
+                    SoundEffects.play('wrong');
+                    if (this.triesAtStep === 1) {
+                        document.getElementById('mult-hint').textContent = "Kaç grup var? X Grupta kaç tane var?";
+                        this.showFeedback("Tekrar düşün!", false);
+                    } else {
+                        document.getElementById('mult-1').value = this.currentQ.groups;
+                        document.getElementById('mult-2').value = this.currentQ.perGroup;
+                        this.showFeedback("Doğru işlem buydu.", false);
+                        setTimeout(() => this.startBalloonStage(), 2000);
+                    }
+                }
+            },
+
+            startBalloonStage: function () {
+                this.triesAtStep = 0;
+                document.getElementById('game-play').style.display = 'none';
+                const stage = document.getElementById('balloon-stage');
+                const container = document.getElementById('balloon-container');
+                stage.style.display = 'block';
+                container.innerHTML = '';
+
+                document.getElementById('op-text').textContent = `${this.currentQ.groups} x ${this.currentQ.perGroup} = ?`;
+
+                const correct = this.currentQ.result;
+                const choices = [correct, correct + 1, correct + 2, correct - 2].filter(v => v > 0).sort(() => Math.random() - 0.5);
+
+                // Colors
+                const colors = ['#E50069', '#0DBFC7', '#FCD638', '#ff9800'];
+
+                this.balloonAnims.forEach(a => clearInterval(a));
+                this.balloonAnims = [];
+
+                choices.forEach((val, i) => {
+                    const b = document.createElement('div');
+                    b.className = 'balloon';
+                    b.textContent = val;
+                    b.style.backgroundColor = colors[i % colors.length];
+                    b.style.left = (10 + i * 22) + '%';
+                    b.style.top = '100%';
+
+                    b.onclick = () => {
+                        if (val === correct) {
+                            if (this.triesAtStep === 0) {
+                                this.totalScore += 2;
+                                this.updateSL("puan", this.totalScore);
+                            }
+                            // Question fully complete
+                            this.incrementSL("correct");
+
+                            this.updateScoreUI();
+                            SoundEffects.play('pop');
+                            SoundEffects.play('correct');
+                            this.showFeedback("GÜM! Doğru balon! +2 Puan!", true);
+                            b.style.transform = "scale(2)";
+                            b.style.opacity = "0";
+                            this.balloonAnims.forEach(a => clearInterval(a));
+                            setTimeout(() => this.nextQuestion(), 1500);
+                        } else {
+                            this.triesAtStep++;
+                            this.incrementSL("wrong");
+                            SoundEffects.play('wrong');
+                            this.showFeedback("O balon yanlış!", false);
+                            b.style.display = 'none';
+                        }
+                    };
+                    container.appendChild(b);
+
+                    let pos = 100;
+                    let speed = 0.12 + Math.random() * 0.1;
+                    const anim = setInterval(() => {
+                        pos -= speed;
+                        b.style.top = pos + '%';
+                        if (pos < -20) pos = 110;
+                    }, 20);
+                    this.balloonAnims.push(anim);
+                });
+            },
+
+            updateScoreUI: function () {
+                document.getElementById('score-display').textContent = "Puan: " + this.totalScore;
+            },
+
+            showFinal: function () {
+                SoundEffects.play('victory');
+                document.getElementById('balloon-stage').style.display = 'none';
+                const final = document.getElementById('final-screen');
+                final.style.display = 'flex';
+
+                let reward = "⭐";
+                if (this.totalScore >= 18) reward = "⭐⭐⭐";
+                else if (this.totalScore >= 12) reward = "⭐⭐";
+
+                document.getElementById('star-reward').textContent = reward;
+                document.getElementById('total-result-text').textContent = `Puanın: ${this.totalScore} / 20`;
+
+                this.updateSL("quizCompleted", 1);
+            },
+
+            showFeedback: function (msg, success) {
+                const f = document.getElementById('feedback');
+                f.textContent = msg;
+                f.style.backgroundColor = success ? '#4CAF50' : '#F44336';
+                f.style.display = 'block';
+                setTimeout(() => f.style.display = 'none', 2000);
+            }
+        };
+
+        const SoundEffects = {
+            context: null,
+            init() {
+                if (!this.context) this.context = new (window.AudioContext || window.webkitAudioContext)();
+            },
+            play(type) {
+                this.init();
+                const now = this.context.currentTime;
+
+                if (type === 'correct') {
+                    this.playTone(523, now, 0.1, 'sine'); // C5
+                    this.playTone(659, now + 0.1, 0.1, 'sine'); // E5
+                    this.playTone(783, now + 0.2, 0.2, 'sine'); // G5
+                } else if (type === 'wrong') {
+                    this.playTone(220, now, 0.1, 'sawtooth');
+                    this.playTone(164, now + 0.1, 0.2, 'sawtooth');
+                } else if (type === 'pop') {
+                    const osc = this.context.createOscillator();
+                    const gain = this.context.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.context.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'victory') {
+                    [523, 659, 783, 1046].forEach((f, i) => this.playTone(f, now + i * 0.15, 0.3, 'triangle'));
+                }
+            },
+            playTone(freq, time, duration, type) {
+                const osc = this.context.createOscillator();
+                const gain = this.context.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, time);
+                gain.gain.setValueAtTime(0.1, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+                osc.connect(gain);
+                gain.connect(this.context.destination);
+                osc.start(time);
+                osc.stop(time + duration);
+            }
+        };
+
+        // Init
+        window.addEventListener('load', () => Game.init());
+    </script>
+</body>
+
+</html>
