@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derslig Game Builder (Standalone)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0bb0b8;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Nunito', sans-serif;
+            background: #1a1a1a;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .toolbar {
+            height: 60px;
+            background: #252526;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-run {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-run:hover {
+            background: #099aa1;
+        }
+
+        .btn-new {
+            background: #444;
+            color: white;
+        }
+
+        .btn-new:hover {
+            background: #555;
+        }
+
+        /* MAIN LAYOUT */
+        .workspace {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* EDITOR */
+        .editor-pane {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #333;
+            background: #1e1e1e;
+        }
+
+        .editor-header {
+            padding: 10px;
+            background: #252526;
+            font-size: 12px;
+            color: #aaa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+        }
+
+        textarea {
+            flex: 1;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+        }
+
+        /* PREVIEW */
+        .preview-pane {
+            width: 60%;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-image: radial-gradient(#444 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .device-frame {
+            width: 960px;
+            height: 540px;
+            background: white;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        iframe {
+            width: 1920px;
+            height: 1080px;
+            border: none;
+            transform: scale(0.5);
+            transform-origin: 0 0;
+            background: white;
+        }
+
+        .status-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 5px 20px;
+            background: #007acc;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toolbar">
+        <div class="brand">
+            <i class="fas fa-magic"></i> Derslig Builder
+        </div>
+        <div class="actions">
+            <!-- Mode Toggle: Standalone vs Linked -->
+            <label style="font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                <input type="checkbox" id="inlineAssets" checked> Standalone Mod (Dosyaları Göm)
+            </label>
+            <button class="btn-new" onclick="downloadCode()"><i class="fas fa-download"></i> İndir</button>
+            <button class="btn-run" onclick="runCode()"><i class="fas fa-play"></i> Oluştur</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <div class="editor-pane">
+            <div class="editor-header">
+                <span>Oyun Kodu (HTML)</span>
+                <span id="assetStatus" style="color: #4cd964; font-size: 10px;">✔ Core Assets Embedded</span>
+            </div>
+            <textarea id="codeInput" placeholder="<!-- Gemini'den gelen kodu buraya yapıştırın -->"></textarea>
+        </div>
+        <div class="preview-pane">
+            <div class="device-frame">
+                <iframe id="previewFrame"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BUILT-IN ASSETS (HARDCODED FOR RELIABILITY) ---
+
+        const CORE_CSS = `
+/* Derslig Oyun Standart Stilleri v2.5 */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+:root { --header-height: 100px; --primary-color: #0bb0b8; --secondary-color: #e50069; --accent-color: #fcd638; --text-color: #2c3e50; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { margin: 0; width: 100vw; height: 100vh; background-color: #2c3e50; overflow: hidden; position: relative; font-family: 'Nunito', sans-serif; }
+#game-wrapper {
+    position: absolute; top: 50%; left: 50%;
+    width: 1920px; height: 1080px;
+    background-color: white; overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    font-family: 'Nunito', sans-serif;
+    transform-origin: center center;
+    transform: translate(-50%, -50%);
+}
+#derslig-header {
+    position: absolute; top: 0; left: 0; width: 100%; height: var(--header-height);
+    background: var(--primary-color); box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 40px; z-index: 9999;
+}
+.header-left, .header-right { display: flex; align-items: center; gap: 20px; }
+.game-title { font-size: 36px; font-weight: 800; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.ctrl-btn {
+    background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.5); border-radius: 12px;
+    width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 28px; color: white; transition: all 0.2s; font-family: 'Nunito', sans-serif;
+}
+.ctrl-btn:hover { background: white; color: var(--primary-color); transform: translateY(-3px); }
+#game-area {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 140px 40px 40px 40px; overflow: hidden; z-index: 1;
+}
+#next-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44,62,80,0.85);
+    display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px);
+}
+.final-modal-content {
+    background: white; width: 800px; padding: 60px; border-radius: 30px; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 5px solid var(--primary-color); animation: slideUp 0.5s;
+}
+@keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.final-title { font-size: 64px; font-weight: 800; color: var(--primary-color); margin-bottom: 20px; }
+.final-text { font-size: 32px; color: #555; margin-bottom: 50px; }
+.next-btn {
+    background: var(--primary-color); color: white; font-size: 36px; font-weight: 800; padding: 20px 80px;
+    border: none; border-radius: 50px; cursor: pointer; display: inline-flex; align-items: center; gap: 15px;
+}
+.modal-backdrop {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44,62,80,0.8);
+    z-index: 10001; display: none; justify-content: center; align-items: center;
+}
+.info-content {
+    background: white; padding: 50px; border-radius: 20px; max-width: 900px; text-align: center;
+    font-size: 24px; border-top: 10px solid var(--accent-color);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    color: var(--text-color);
+}
+.info-content h3 { font-size: 40px; margin-bottom: 20px; color: var(--primary-color);font-weight:800;}
+.info-content p { font-size: 28px; line-height: 1.5; margin-bottom: 30px; }
+.modal-close-btn {
+    background: var(--secondary-color); color: white;
+    border: none; padding: 15px 50px; border-radius: 50px;
+    font-size: 24px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 5px 0 #b00050; transition: all 0.2s;
+}
+.modal-close-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #b00050; }
+.modal-close-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b00050; }
+`;
+
+        const CORE_JS = `
+/** DERSLIG CORE JS v1.0 (Embedded) */
+const Derslig = (function () {
+    const CONFIG = { maxScore: 20, width: 1920, height: 1080 };
+    let state = { totalQuestions: 0, pointsPerQuestion: 0, currentScore: 0, correctCount: 0, wrongCount: 0, isCompleted: false, gameTitle: "Derslig Etkinlik", gameInfo: "Başarılar!" };
+    
+    // Storyline Mock
+    function getPlayer() {
+        if (typeof window.GetPlayer === 'function') return window.GetPlayer();
+        if (window.parent && typeof window.parent.GetPlayer === 'function') return window.parent.GetPlayer();
+        return { SetVar: (n, v) => {}, GetVar: (n) => {} };
+    }
+    const player = getPlayer();
+
+    function init(options) {
+        state.gameTitle = options.title || "Etkinlik";
+        state.gameInfo = options.info || "Info yok";
+        state.totalQuestions = options.soruSayisi || 1;
+        state.pointsPerQuestion = CONFIG.maxScore / state.totalQuestions;
+        _createUI();
+        _startScaler();
+        player.SetVar("puan", 0);
+        console.log("Derslig Başlatıldı");
+    }
+
+    function dogru() { state.correctCount++; state.currentScore += state.pointsPerQuestion; _updateStoryline(); }
+    function yanlis() { state.wrongCount++; _updateStoryline(); }
+    function bitir() { 
+        if(state.isCompleted) return; 
+        state.isCompleted = true; 
+        player.SetVar("quizCompleted", 1); 
+        _showNextButton(); 
+    }
+    function _updateStoryline() { player.SetVar("puan", state.currentScore); }
+    
+    function _createUI() {
+        // Restart logic: If in iframe, message parent. If standalone, reload.
+        const restartAction = (window.self !== window.top) 
+            ? "window.parent.postMessage('reload-preview', '*')" 
+            : "location.reload()";
+
+        const headerHTML = \`
+            <div id="derslig-header">
+                <div class="header-left"><div class="game-title">\${state.gameTitle}</div></div>
+                <div class="header-right">
+                    <button class="ctrl-btn" onclick="\${restartAction}"><i class="fas fa-sync-alt"></i></button>
+                    <button class="ctrl-btn" onclick="document.getElementById('info-modal').style.display='flex'"><i class="fas fa-question"></i></button>
+                </div>
+            </div>
+            <div id="info-modal" class="modal-backdrop">
+                <div class="info-content">
+                    <h3>Nasıl Oynanır?</h3>
+                    <p>\${state.gameInfo}</p>
+                    <button class="modal-close-btn" onclick="document.getElementById('info-modal').style.display='none'">TAMAM</button>
+                </div>
+            </div>
+            <div id="next-overlay"><div class="final-modal-content"><h2 class="final-title">Tebrikler!</h2><button class="next-btn" onclick="Derslig.goNext()">İLERLE</button></div></div>
+        \`;
+        
+        const exist = document.getElementById('derslig-header');
+        if(exist) exist.remove();
+        
+        document.getElementById('game-wrapper').insertAdjacentHTML('afterbegin', headerHTML);
+    }
+    
+    function _showNextButton() { document.getElementById('next-overlay').style.display = 'flex'; if(window.confetti) confetti(); }
+    function goNext() { console.log("Next Slide"); }
+
+    function _startScaler() {
+        const wrapper = document.getElementById('game-wrapper');
+        const resize = () => {
+            const scale = Math.min(window.innerWidth / CONFIG.width, window.innerHeight / CONFIG.height);
+            wrapper.style.transform = \`translate(-50%, -50%) scale(\${scale})\`;
+        };
+        window.addEventListener('resize', resize);
+        resize(); // Init
+        setTimeout(resize, 100);
+    }
+
+    return { baslat: init, dogru: dogru, yanlis: yanlis, bitir: bitir, goNext: goNext };
+})();
+`;
+
+        // --- ŞABLON ---
+        const getTemplate = () => `<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Derslig Etkinlik</title>
+    
+    <!-- FONTS & ICONS (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <style id="core-css">${CORE_CSS}</style>
+    <style id="user-css">
+        /* USER STYLES */
+        body { margin: 0; background-color: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <div id="game-wrapper">
+        <!-- HEADER WILL BE INJECTED BY JS -->
+        <div id="game-area">
+            <!-- USER CONTENT -->
+        </div>
+    </div>
+
+    <!-- LIB SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"><\/script>
+
+    <!-- CORE JS -->
+    <script id="core-js">${CORE_JS}<\/script>
+
+    <!-- USER JS -->
+    <script id="user-js">
+        /* USER JS WILL BE INJECTED HERE */
+    <\/script>
+
+</body>
+</html>`;
+
+        // --- PARSER & BUILDER ---
+        function buildGame(userCode) {
+            const parser = new DOMParser();
+
+            // Eğer boş veya null gelirse işlem yapma
+            if (!userCode.trim()) return "";
+
+            const doc = parser.parseFromString(userCode, "text/html");
+
+            // 1. EXTRACT CSS
+            let userCSS = "";
+            doc.querySelectorAll("style").forEach(el => {
+                userCSS += el.innerHTML + "\n";
+                el.remove();
+            });
+
+            // 2. EXTRACT JS
+            let userJS = "";
+            doc.querySelectorAll("script:not([src])").forEach(el => {
+                userJS += el.innerHTML + "\n";
+                el.remove();
+            });
+            // Link ve Script src'leri temizle
+            doc.querySelectorAll("link[rel='stylesheet']").forEach(el => el.remove());
+            doc.querySelectorAll("script[src]").forEach(el => el.remove());
+
+            // 3. EXTRACT HTML
+            let userHTML = "";
+            const gameArea = doc.querySelector("#game-area");
+
+            if (gameArea) {
+                const dumbHeader = gameArea.querySelector("#derslig-header");
+                if (dumbHeader) dumbHeader.remove();
+                userHTML = gameArea.innerHTML;
+            } else {
+                const wrapper = doc.querySelector("#game-wrapper");
+                if (wrapper) {
+                    const dumbHeader = wrapper.querySelector("#derslig-header");
+                    if (dumbHeader) dumbHeader.remove();
+                    userHTML = wrapper.innerHTML;
+                } else {
+                    userHTML = doc.body ? doc.body.innerHTML : userCode;
+                }
+            }
+
+            // 4. MERGE
+            let finalString = getTemplate();
+
+            finalString = finalString.replace("/* USER STYLES */", userCSS);
+            finalString = finalString.replace("<!-- USER CONTENT -->", userHTML);
+            finalString = finalString.replace("/* USER JS WILL BE INJECTED HERE */", userJS);
+
+            return finalString;
+        }
+
+        // --- ACTIONS ---
+        function runCode() {
+            const code = document.getElementById("codeInput").value;
+            const finalHTML = buildGame(code);
+
+            const iframe = document.getElementById("previewFrame");
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+            doc.open();
+            doc.write(finalHTML);
+            doc.close();
+        }
+
+        function downloadCode() {
+            const code = document.getElementById("codeInput").value;
+            const finalHTML = buildGame(code);
+
+            const blob = new Blob([finalHTML], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "index.html";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function openNewTab() {
+            const code = document.getElementById("codeInput").value;
+            const finalHTML = buildGame(code);
+
+            const win = window.open();
+            win.document.write(finalHTML);
+            win.document.close();
+        }
+
+        // --- PARENT LISTENER (For Restart Command) ---
+        window.addEventListener('message', function (event) {
+            if (event.data === 'reload-preview') {
+                console.log("Triggering reload from iframe...");
+                runCode(); // Re-build and re-write the iframe
+            }
+        });
+    </script>
+</body>
+
+</html>
