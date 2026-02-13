@@ -1,4 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/Quicksand-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Quicksand-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Quicksand-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Quicksand-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Quicksand-Bold.ttf') format('truetype');
+}
 
 :root {
     --primary-color: #FF9F1C;
@@ -12,13 +45,14 @@
     --bg-color: #CBF3F0;
     /* Açık Mavi Arkaplan */
     --card-bg: #ffffff;
-    --font-main: 'Nunito', sans-serif;
+    --font-main: 'Quicksand', sans-serif;
 }
 
 body {
     background-color: var(--bg-color);
     font-family: var(--font-main);
     color: #333;
+    font-weight: 500;
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -55,7 +89,7 @@ h4,
 h5,
 h6 {
     font-family: var(--font-main);
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     /* Force bold headers */
     color: #2b2b2b;
 }
@@ -95,7 +129,7 @@ h6 {
 
 .lives-label {
     font-size: 0.9rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #6c757d;
     /* Muted text color */
     text-transform: uppercase;
@@ -162,7 +196,7 @@ h6 {
 
 .game-title {
     font-size: 1.8rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #343a40;
     /* Dark gray, soft black */
     margin: 0;
@@ -192,8 +226,8 @@ h6 {
 }
 
 .btn-nav-flat:hover {
-    background-color: #4be4d6;
-    /* Lighter turquoise */
+    background-color: var(--secondary-color);
+    filter: brightness(1.1);
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 6px 0 rgba(0, 0, 0, 0.1);
@@ -202,6 +236,16 @@ h6 {
 .btn-nav-flat:active {
     transform: translateY(2px);
     box-shadow: none;
+    filter: brightness(1.0);
+}
+
+.btn-nav-home {
+    background-color: #4CC9F0 !important;
+}
+
+.btn-nav-home:hover {
+    background-color: #4CC9F0 !important;
+    filter: brightness(1.1);
 }
 
 .game-board {
@@ -236,7 +280,7 @@ h6 {
     padding: 15px 40px;
     /* Slightly larger for 1920x1080 scale */
     font-size: 1.5rem;
-    font-weight: 800;
+    font-weight: 700;
     border: none;
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.1s;
@@ -297,7 +341,7 @@ h6 {
     padding: 20px;
     text-align: center;
     border-bottom: none;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
 }
 
 /* --- Grid Items (Dashboard) --- */
@@ -369,4 +413,29 @@ h6 {
 
 .animate-pop {
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lead {
+    font-weight: 500 !important;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(46, 196, 182, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
 }

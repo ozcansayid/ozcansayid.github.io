@@ -12,143 +12,555 @@
     <!-- Custom Kid Theme -->
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Reset body styles for dashboard, as style.css is optimized for fixed game screens */
+        html,
         body {
-            width: auto;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #fff;
+            /* White */
+        }
+
+        #scale-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/img/index_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform-origin: center center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Top Controls */
+        .top-controls {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-control {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-control:hover {
+            transform: scale(1.1);
+            background-color: #fff;
+        }
+
+        .btn-control.active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Card Overrides */
+        .card-kid {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+
+        .card-kid:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .card-header-kid {
+            font-size: 1.4rem !important;
+            padding: 10px !important;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            color: #000 !important;
+            /* Spacing between icon and text */
+        }
+
+        .game-thumb-icon {
+            font-size: 5rem;
+        }
+
+        h1.display-5 {
+            text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.8);
+            color: #2c3e50 !important;
+        }
+
+        p.lead {
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        /* Header Container */
+        .header-container {
+            background-color: rgba(255, 255, 255, 0.75);
+            /* Increased transparency */
+            padding: 20px 40px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            margin-bottom: 30px;
+        }
+
+
+        /* Audio Slider Styles */
+        .audio-slider-popup {
+            position: absolute;
+            top: 110%;
+            /* Below the button */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
             height: auto;
-            overflow: auto;
-            display: block;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 200;
+            border: 1px solid #ddd;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            top: 125%;
+        }
+
+        /* Arrow pointing up */
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 6px 6px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255, 255, 255, 0.95) transparent;
+        }
+
+        #volume-val-display {
+            color: #333;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #FFD700 50%, #ccc 50%);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+            border: 2px solid #FFD700;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container py-5">
-        <!-- Header -->
-        <div class="text-center mb-5 animate-pop">
-            <h1 class="display-4" style="color: var(--primary-color);">🌼 Etkinlik Bahçesi 🌼</h1>
-            <p class="lead">Hadi öğrenmeye başlayalım!</p>
+    <div id="scale-wrapper">
+
+        <!-- Controls -->
+        <div class="top-controls">
+            <!-- Audio Container -->
+            <div class="position-relative d-flex justify-content-center me-3">
+                <!-- Slider Popup -->
+                <div id="audio-slider-container" class="audio-slider-popup">
+                    <div id="volume-val-display">30</div>
+                    <div class="slider-track-wrapper">
+                        <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                    </div>
+                </div>
+
+                <button id="btn-audio-toggle" class="btn-control" title="Ses Ayarı">
+                    <i class="bi bi-volume-up-fill"></i>
+                </button>
+            </div>
+
+            <button id="btn-fullscreen" class="btn-control" title="Tam Ekran">
+                <i class="bi bi-arrows-fullscreen"></i>
+            </button>
         </div>
 
-        <!-- Games Grid -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-
-            <!-- Card: Sualtı Harf Avı -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: #4CC9F0;">
-                        <i class="bi bi-water"></i> Harf Avı
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3" style="background-color: #e0faff; color: #4CC9F0;">
-                            <i class="bi bi-airplane-engines"></i> <!-- Fish icon substitute or just generic -->
-                            <span style="font-size: 4rem;">🐡</span>
-                        </div>
-                        <p class="card-text">Uçan balonlardaki doğru harfleri yakala!</p>
-                        <a href="games/baloncuk/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
-                    </div>
+        <div class="container h-100 d-flex flex-column justify-content-center">
+            <!-- Header -->
+            <div class="text-center mb-4 animate-pop">
+                <div class="header-container">
+                    <h1 class="display-3 fw-bold mb-2">Okuma Yazma Öğreniyorum</h1>
+                    <p class="lead mb-0 fs-2">1. Sınıf Okuma Yazma Etkinlikleri</p>
                 </div>
             </div>
 
-            <!-- Card: Harf Yazma Atölyesi -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: #FF9F1C;">
-                        <i class="bi bi-pencil-fill"></i> Harf Yazma
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3" style="background-color: #fff8e1; color: #FF9F1C;">
-                            <span style="font-size: 4rem;">✍️</span>
+            <!-- Games Grid -->
+            <!-- Forced 4 columns -->
+            <div class="row row-cols-4 g-4 px-4 justify-content-center">
+
+                <!-- 1. Sesi Hissedelim -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white"
+                            style="background-color: var(--danger-color);">
+                            <i class="bi bi-music-note-beamed"></i>
+                            <span>Sesi Hissedelim</span>
                         </div>
-                        <p class="card-text">Harfleri doğru şekilde çizmeyi öğren!</p>
-                        <a href="games/a_harf_yazma/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #ffe5e5; color: var(--danger-color); height: 160px;">
+                                <i class="bi bi-ear-fill game-thumb-icon"></i>
+                            </div>
+                            <a href="games/sesi_hissedelim/index.html" onclick="updateStorylineVariable(1);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card: Cümle Yılanı -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: #06D6A0;">
-                        <i class="bi bi-translate"></i> Cümle Yılanı
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3" style="background-color: #e3fff9; color: #06D6A0;">
-                            <span style="font-size: 4rem;">🐍</span>
+                <!-- 2. Harfi Tanıyalım -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #4CC9F0;">
+                            <i class="bi bi-balloon-heart-fill"></i>
+                            <span>Harfi Tanıyalım</span>
                         </div>
-                        <p class="card-text">Yılanı yönet ve İngilizce cümleleri kur!</p>
-                        <a href="games/yilan_cumle/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #e0faff; color: #4CC9F0; height: 160px;">
+                                <i class="bi bi-balloon-fill game-thumb-icon"></i>
+                            </div>
+                            <a href="games/harfi_taniyalim/index.html" onclick="updateStorylineVariable(2);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card: Sesi Bul -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: var(--danger-color);">
-                        <i class="bi bi-music-note-beamed"></i> Sesi Bul
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3"
-                            style="background-color: #ffe5e5; color: var(--danger-color);">
-                            <span style="font-size: 4rem;">👂</span>
+                <!-- 3. Harfi Yazalım -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #FF9F1C;">
+                            <i class="bi bi-pencil-fill"></i>
+                            <span>Harfi Yazalım</span>
                         </div>
-                        <p class="card-text">İsminde 'E' sesi olan nesneleri bul!</p>
-                        <a href="games/sesi_bul/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #fff8e1; color: #FF9F1C; height: 160px;">
+                                <i class="bi bi-pencil-square game-thumb-icon"></i>
+                            </div>
+                            <a href="games/harfi_yazalim/index.html" onclick="updateStorylineVariable(3);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card: Kar Üzerine Yazı Yaz -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: #00B4D8;">
-                        <i class="bi bi-snow2"></i> Kar Yazı
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3" style="background-color: #e0f7fa; color: #00B4D8;">
-                            <span style="font-size: 4rem;">❄️</span>
+                <!-- 4. Karda Yazalım -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #00B4D8;">
+                            <i class="bi bi-snow2"></i>
+                            <span>Karda Yazalım</span>
                         </div>
-                        <p class="card-text">Kar üzerine yazı yaz veya resim çiz!</p>
-                        <a href="games/kar_yazi/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #e0f7fa; color: #00B4D8; height: 160px;">
+                                <i class="bi bi-snow game-thumb-icon"></i>
+                            </div>
+                            <a href="games/karda_yazalim/index.html" onclick="updateStorylineVariable(4);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card: Çark Etkinliği -->
-            <div class="col">
-                <div class="card card-kid h-100">
-                    <div class="card-header-kid" style="background-color: #F15BB5;">
-                        <i class="bi bi-pie-chart-fill"></i> Çark Etkinliği
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="game-thumb rounded mb-3" style="background-color: #ffe0f5; color: #F15BB5;">
-                            <span style="font-size: 4rem;">🎡</span>
+                <!-- 5. Hece-Sözcük (Elektrik) -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold"
+                            style="background-color: #ffd166; font-size: 1.1rem !important;">
+                            <i class="bi bi-lightning-fill"></i>
+                            <span>Hece-Sözcük Oluşturalım</span>
                         </div>
-                        <p class="card-text">Çarkı çevir ve kelimeleri öğren!</p>
-                        <a href="games/cark_etkinligi/index.html" class="btn btn-kid btn-primary-kid w-100">
-                            OYNA <i class="bi bi-play-fill"></i>
-                        </a>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #fff9e6; color: #ffd166; height: 160px;">
+                                <i class="bi bi-lightbulb-fill game-thumb-icon"></i>
+                            </div>
+                            <a href="games/hece_sozcuk_olusturalim/index.html" onclick="updateStorylineVariable(5);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+                <!-- 6. Sözcük (Yılan) -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #06D6A0;">
+                            <i class="bi bi-type"></i>
+                            <span>Sözcük Oluşturalım</span>
+                        </div>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #e3fff9; color: #06D6A0; height: 160px;">
+                                <i class="bi bi-fonts game-thumb-icon"></i>
+                            </div>
+                            <a href="games/sozcuk_olusturalim/index.html" onclick="updateStorylineVariable(6);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Okuyalım (Çark) -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #F15BB5;">
+                            <i class="bi bi-pie-chart-fill"></i>
+                            <span>Okuyalım</span>
+                        </div>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #ffe0f5; color: #F15BB5; height: 160px;">
+                                <i class="bi bi-disc-fill game-thumb-icon"></i>
+                            </div>
+                            <a href="games/okuyalim/index.html" onclick="updateStorylineVariable(7);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Ritmik Okuma -->
+                <div class="col">
+                    <div class="card card-kid h-100 border-0">
+                        <div class="card-header-kid py-3 fw-bold text-white" style="background-color: #9D4EDD;">
+                            <i class="bi bi-music-note-list"></i>
+                            <span>Ritmik Okuma</span>
+                        </div>
+                        <div class="card-body text-center p-4">
+                            <div class="game-thumb rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="background-color: #f3e5f5; color: #9D4EDD; height: 160px;">
+                                <i class="bi bi-collection-play-fill game-thumb-icon"></i>
+                            </div>
+                            <a href="games/ritmik_okuma/index.html" onclick="updateStorylineVariable(8);"
+                                class="btn btn-kid btn-primary-kid w-100">
+                                OYNA <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Interactions Script -->
+    <script>
+        // Storyline Interaction
+        function updateStorylineVariable(id) {
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("game_id", id);
+                    console.log("Storyline variable 'game_id' updated to: " + id);
+                }
+            } catch (e) {
+                console.warn("Storyline communication error:", e);
+            }
+        }
+
+        // Fullscreen Logic
+        // Fullscreen Toggle (Storyline Variable)
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const isFull = player.GetVar("fullscreen");
+                        const newState = !isFull;
+                        player.SetVar("fullscreen", newState);
+
+                        if (newState) {
+                            btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                        } else {
+                            btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                        }
+                    }
+                } catch (e) { }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        // Check if initialized in this session
+                        if (!sessionStorage.getItem('bg_music_init')) {
+                            // First time load: Set to 0
+                            player.SetVar("bg_music", 0);
+                            range.value = 0;
+                            sessionStorage.setItem('bg_music_init', 'true');
+                        } else {
+                            // Subsequent loads: Read variable
+                            const savedVol = player.GetVar("bg_music");
+                            if (typeof savedVol === 'number') {
+                                range.value = savedVol;
+                            }
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+
+                // Style specific to Index Page
+                const color = "#FFD700";
+                const empty = "#ccc";
+                range.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${percent}%, ${empty} ${percent}%, ${empty} 100%)`;
+
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Toggle Icon
+                if (btn) {
+                    if (Number(val) === 0) {
+                        btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                    }
+                }
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+
+
+        // Scaling
+        function resize() {
+            const wrapper = document.getElementById('scale-wrapper');
+            const targetWidth = 1920;
+            const targetHeight = 1080;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const scale = Math.min(windowWidth / targetWidth, windowHeight / targetHeight);
+            // Use Min to ensure fit within window
+
+            wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('load', resize);
+    </script>
 </body>
 
 </html>

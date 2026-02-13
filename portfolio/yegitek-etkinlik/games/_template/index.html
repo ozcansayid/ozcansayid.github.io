@@ -12,139 +12,307 @@
     <link rel="stylesheet" href="../../assets/css/style.css">
     <!-- Confetti Library for Rewards -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
 </head>
 
 <body>
 
-    <body>
+    <div class="game-container-fixed">
 
-        <div class="game-container-fixed">
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
 
-            <!-- Sidebar (Left) -->
-            <div class="sidebar-kid">
-
-                <!-- Top: Lives Indicator -->
-                <div class="lives-container" id="livesDisplay">
-                    <!-- SVG Hearts will be injected here by JS -->
-                </div>
-
-                <!-- Bottom: Navigation Buttons -->
-                <div class="nav-buttons-container">
-
-                    <!-- Instructions Button -->
-                    <button class="btn btn-kid btn-info-kid btn-icon-only" data-bs-toggle="modal"
-                        data-bs-target="#instructionsModal" title="Yönerge">
-                        <i class="bi bi-question-lg"></i>
-                    </button>
-
-                    <!-- Reload/Retry Button -->
-                    <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
-                        title="Yeniden Başlat">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-
-                    <!-- Home Button -->
-                    <a href="../index.html" class="btn btn-kid btn-danger btn-icon-only" title="Anasayfa">
-                        <i class="bi bi-house-fill"></i>
-                    </a>
-                </div>
-
+            <!-- Top: Lives Indicator -->
+            <div class="lives-container" id="livesDisplay">
+                <!-- SVG Hearts will be injected here by JS -->
             </div>
 
-            <!-- Main Content (Right) -->
-            <div class="main-content-kid">
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
 
-                <!-- New Top Header -->
-                <div class="game-header">
-                    <h2 class="game-title">Etkinlik Başlığı</h2>
-                    <div class="game-nav">
-                        <button class="btn-nav-flat" title="Önceki">
-                            <i class="bi bi-chevron-left"></i>
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <!-- Instructions Button -->
+                <button class="btn btn-kid btn-info-kid btn-icon-only" data-bs-toggle="modal"
+                    data-bs-target="#instructionsModal" title="Yönerge">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Reload/Retry Button -->
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <!-- Home Button -->
+                <a href="../index.html" class="btn btn-kid btn-danger btn-icon-only" title="Anasayfa">
+                    <i class="bi bi-house-fill"></i>
+                </a>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- New Top Header -->
+            <div class="game-header">
+                <h2 class="game-title">Etkinlik Başlığı</h2>
+                <div class="game-nav">
+                    <button class="btn-nav-flat" title="Önceki">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board">
+                <div class="text-center">
+                    <p class="lead mb-5 text-muted">Burası Etkinlik Alanı (Game Board)</p>
+
+                    <div class="d-flex gap-4 justify-content-center">
+                        <!-- Correct Button -->
+                        <button class="btn btn-kid btn-success-kid px-5 py-4" onclick="GameEngine.showCorrect()">
+                            <i class="bi bi-check-lg" style="font-size: 3rem;"></i><br>
+                            Doğru
                         </button>
-                        <button class="btn-nav-flat" title="Sonraki">
-                            <i class="bi bi-chevron-right"></i>
+
+                        <!-- Wrong Button -->
+                        <button class="btn btn-kid btn-danger px-5 py-4" onclick="GameEngine.decreaseLife()">
+                            <i class="bi bi-x-lg" style="font-size: 3rem;"></i><br>
+                            Yanlış
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Inner Game Board -->
-                <div class="game-board">
-                    <div class="text-center">
-                        <p class="lead mb-5 text-muted">Burası Etkinlik Alanı (Game Board)</p>
+        </div>
 
-                        <div class="d-flex gap-4 justify-content-center">
-                            <!-- Correct Button -->
-                            <button class="btn btn-kid btn-success-kid px-5 py-4" onclick="GameEngine.showCorrect()">
-                                <i class="bi bi-check-lg" style="font-size: 3rem;"></i><br>
-                                Doğru
-                            </button>
+    </div>
 
-                            <!-- Wrong Button -->
-                            <button class="btn btn-kid btn-danger px-5 py-4" onclick="GameEngine.decreaseLife()">
-                                <i class="bi bi-x-lg" style="font-size: 3rem;"></i><br>
-                                Yanlış
-                            </button>
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-kid" style="border-color: #4CC9F0;">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6">Nasıl Oynanır?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-info-circle-fill text-info" style="font-size: 6rem;"></i>
+                        </div>
+                        <div class="col-8 text-start">
+                            <p class="lead">Buraya oyunun adım adım yönergeleri gelecek.</p>
+                            <ul class="list-unstyled" style="font-size: 1.2rem;">
+                                <li class="mb-2">👉 <strong>Adım 1:</strong> Soruyu dikkatlice oku/dinle.</li>
+                                <li class="mb-2">👉 <strong>Adım 2:</strong> Doğru olan seçeneği sürükle.</li>
+                                <li class="mb-2">👉 <strong>Adım 3:</strong> Yıldızları topla!</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-
-        <!-- Instructions Modal -->
-        <div class="modal fade" id="instructionsModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content modal-content-kid" style="border-color: #4CC9F0;">
-                    <div class="modal-header">
-                        <h5 class="modal-title display-6">Nasıl Oynanır?</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-5">
-                        <div class="row align-items-center">
-                            <div class="col-4 text-center">
-                                <i class="bi bi-info-circle-fill text-info" style="font-size: 6rem;"></i>
-                            </div>
-                            <div class="col-8 text-start">
-                                <p class="lead">Buraya oyunun adım adım yönergeleri gelecek.</p>
-                                <ul class="list-unstyled" style="font-size: 1.2rem;">
-                                    <li class="mb-2">👉 <strong>Adım 1:</strong> Soruyu dikkatlice oku/dinle.</li>
-                                    <li class="mb-2">👉 <strong>Adım 2:</strong> Doğru olan seçeneği sürükle.</li>
-                                    <li class="mb-2">👉 <strong>Adım 3:</strong> Yıldızları topla!</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-kid btn-primary-kid"
-                            data-bs-dismiss="modal">Anladım</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Anladım</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Hidden Feedback Modal -->
-        <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title display-6" id="feedbackModalLabel">Feedback</h5>
-                    </div>
-                    <div class="modal-body" id="feedbackModalBody">
-                        <!-- Dynamic Content -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Tamam</button>
-                    </div>
+    <!-- Hidden Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title display-6" id="feedbackModalLabel">Feedback</h5>
+                </div>
+                <div class="modal-body" id="feedbackModalBody">
+                    <!-- Dynamic Content -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-kid btn-primary-kid" data-bs-dismiss="modal">Tamam</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>window.ASSETS_PATH = '../../assets/';</script>
-        <script src="../../assets/js/main.js"></script>
-    </body>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+    <script>
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value); });
+                // Init
+                updateVolume(range.value);
+            }
+
+            function updateVolume(val) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        player.SetVar("Player.BackgroundAudioVolume", Number(val));
+                    }
+                } catch (e) { }
+            }
+        })();
+
+        // Fullscreen Toggle
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => console.log(e));
+                    btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                    }
+                }
+            });
+        }
+    </script>
+</body>
 
 </html>

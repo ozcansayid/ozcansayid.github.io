@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çark Etkinliği</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti Library for Rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        .wheel-container {
+            position: relative;
+            width: 450px;
+            /* Reduced from 600px -> 500px -> 450px */
+            height: 450px;
+            /* Reduced from 600px -> 500px -> 450px */
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #FFFFFF;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            /* Ease-out will be handled in JS for more control */
+            background-color: #FFD93D;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .segment {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 50%;
+            transform-origin: 0% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .segment span {
+            position: absolute;
+            left: -100%;
+            width: 200%;
+            text-align: center;
+            transform: rotate(45deg) translate(20px, 80px);
+            /* Adjust based on segment size */
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        #pointer {
+            position: absolute;
+            top: 50%;
+            left: -25px;
+            /* Moved to left */
+            right: auto;
+            transform: translateY(-50%) rotate(-90deg);
+            /* Rotate to point right */
+            width: 40px;
+            height: 50px;
+            background-color: #FF512F;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
+            filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6));
+        }
+
+        .modern-spin-btn {
+            background: linear-gradient(45deg, #FF512F 0%, #DD2476 51%, #FF512F 100%);
+            background-size: 200% auto;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            padding: 15px 50px;
+            font-size: 2rem;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .modern-spin-btn:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .modern-spin-btn:disabled {
+            background: #95a5a6 !important;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Checkbox customization in Sidebar */
+        .sidebar-settings {
+            width: 100%;
+            background-color: #f2f2f2;
+            /* Light cyan matching some theme elements */
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            width: 1.5em;
+            height: 1.5em;
+            cursor: pointer;
+            float: none;
+            /* Center it */
+            margin-right: 5px;
+        }
+
+        .form-check-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #242424;
+            /* Stack */
+            margin-top: 5px;
+        }
+
+        /* Border Radius Restoration */
+        .main-content-kid {
+            /* Default form style.css is border-radius: 40px */
+            /* We previously removed it, now we just let it be or ensure it's there */
+            border-radius: 40px !important;
+        }
+
+        .game-board {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../../assets/img/okuyalim_bg.jpg') no-repeat center center;
+            background-size: cover;
+            border-radius: 0px 0px 30px 30px;
+            /* Slight radius for inner board if needed, or inherit */
+            margin: 0;
+            /* REMOVED margin to allow full cover */
+            width: 100%;
+            height: 100%;
+            flex-grow: 1;
+            overflow: hidden;
+            /* Ensure rounded corners clip content */
+        }
+
+        #result-display {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            /* Right of the wheel */
+            transform: translateY(-50%) translateX(20px) scale(0);
+            background: linear-gradient(135deg, #FF9F1C, #FF595E);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 2.5rem;
+            font-weight: 900;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+            border: 4px solid #fff;
+        }
+
+        #result-display.show {
+            transform: translateY(-50%) translateX(35px) scale(1);
+            opacity: 1;
+        }
+
+        /* Toggle Button Styles */
+        .round-toggle-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #95a5a6;
+            /* Default Gray */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1.1;
+        }
+
+        .round-toggle-btn.active {
+            background-color: #FFC107;
+            /* Yellow */
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+            color: #333;
+        }
+
+        .round-toggle-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .round-toggle-btn i {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        /* Mobile responsiveness for result */
+        @media (max-width: 1200px) {
+            #result-display {
+                left: 50%;
+                top: auto;
+                bottom: -80px;
+                transform: translateX(-50%) scale(0);
+            }
+
+            #result-display.show {
+                transform: translateX(-50%) scale(1);
+            }
+
+            .wheel-container {
+                margin-bottom: 100px;
+                /* Space for result */
+            }
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+            background: white;
+            padding: 2rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed" style="overflow: hidden; margin: 0 auto;">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Settings -->
+            <div class="sidebar-settings"
+                style="background: transparent; padding: 0; display: flex; justify-content: center; width: 100%;">
+                <button id="btn-toggle-delete" class="round-toggle-btn" title="Bölme Silinsin">
+                    <i class="bi bi-eraser-fill"></i>
+                    Silinsin
+                </button>
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <!-- Reload/Retry Button -->
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <!-- Instructions Button -->
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="OkuyalimInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="main-content-kid">
+
+            <!-- New Top Header -->
+            <div class="game-header">
+                <h2 class="game-title">Okuyalım</h2>
+                <div class="game-nav">
+
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board"
+                style="padding: 0; position: relative; display: flex; align-items: center; justify-content: center;">
+                <!-- Changed padding to 0 and centered to allow BG to fill -->
+
+                <div class="wheel-wrapper d-flex flex-column align-items-center justify-content-center w-100 h-100">
+                    <div class="wheel-container">
+                        <div id="pointer"></div>
+                        <div id="result-display">SONUÇ</div>
+                        <canvas id="wheelCanvas" width="450" height="450"></canvas> <!-- Updated size -->
+                    </div>
+
+                    <!-- Button centered below -->
+                    <button id="spinBtn" class="modern-spin-btn">
+                        ÇEVİR <i class="bi bi-arrow-repeat"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <!-- Custom Modal Structure (Hidden by default) -->
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <div id="custom-modal-template" style="display: none;">
+        <div class="custom-modal-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+            <div class="custom-modal-content"
+                style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                <div class="modal-body-content mb-5" style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                <div class="mt-4">
+                    <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="closeCustomModal()">TAMAM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="intro.js"></script>
+    <script src="instruction.js"></script>
+
+    <script>
+        // Start Overlay Logic
+        window.addEventListener('load', function () {
+            // Updated to use independent Intro Module
+            OkuyalimIntro.init();
+
+            // Canvas resize logic
+            const container = document.getElementById('canvasContainer');
+            if (container) {
+                // resizeCanvas(); // If needed for this game's canvas
+            }
+
+            // Initialize Game Engine for Scaling
+            if (window.GameEngine && window.GameEngine.init) {
+                window.GameEngine.init();
+            } else {
+                // Manual fallback check
+                console.warn("GameEngine not found, running manual resize");
+                resizeGame();
+                window.addEventListener('resize', resizeGame);
+            }
+        });
+
+        function resizeGame() {
+            const targetW = 1920;
+            const targetH = 1080;
+            const container = document.querySelector('.game-container-fixed');
+            if (!container) return;
+            const windowW = window.innerWidth;
+            const windowH = window.innerHeight;
+            const scale = Math.min(windowW / targetW, windowH / targetH);
+            container.style.transform = `scale(${scale})`;
+            container.style.transformOrigin = 'center center';
+        }
+
+
+        function stopInstruction() {
+            if (instructionAudioObj) {
+                instructionAudioObj.pause();
+                instructionAudioObj.currentTime = 0;
+            }
+        }
+
+        // --- Custom Modal Helpers ---
+        function showCustomModal(title, content) {
+            const wrapper = document.querySelector('.game-board') || document.querySelector('.game-board-wrapper') || document.body;
+            if (!wrapper) return;
+
+            // Remove existing if any
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+
+            // Template Handling
+            const templateEl = document.getElementById('custom-modal-template');
+            if (!templateEl) { console.warn('Modal template missing'); return; }
+
+            const template = templateEl.firstElementChild.cloneNode(true);
+            template.id = 'active-custom-modal';
+            template.querySelector('.modal-title').innerText = title;
+            template.querySelector('.modal-body-content').innerHTML = content;
+
+            const modalBox = template.querySelector('.custom-modal-content');
+
+            // STANDARD SIZE LOGIC
+            if (title === "Nasıl Oynanır?") {
+                // Large Rectangle
+                modalBox.style.width = '900px';
+                modalBox.style.maxWidth = '95%';
+                modalBox.style.minHeight = '550px';
+                modalBox.style.height = 'auto';
+                modalBox.style.display = 'block'; // Default block for text flow
+                modalBox.style.padding = '3rem';
+            } else {
+                // Feedback / Success / Fail (Square-ish)
+                modalBox.style.width = '500px';
+                modalBox.style.maxWidth = '90%';
+                modalBox.style.height = '500px';
+                modalBox.style.display = 'flex';
+                modalBox.style.flexDirection = 'column';
+                modalBox.style.justifyContent = 'center';
+                modalBox.style.alignItems = 'center';
+                modalBox.style.padding = '2rem';
+            }
+
+            wrapper.appendChild(template);
+            if (typeof isPaused !== 'undefined') isPaused = true;
+        }
+
+        function closeCustomModal() {
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+            if (typeof stopInstruction === 'function') stopInstruction();
+            if (typeof isPaused !== 'undefined') isPaused = false;
+        }
+
+        function showInstructionModal() {
+            playInstruction();
+            const content = `
+                <div class="row align-items-center">
+                    <div class="col-4 text-center">
+                        <i class="bi bi-pie-chart-fill text-info" style="font-size: 6rem;"></i>
+                    </div>
+                    <div class="col-8 text-start">
+                        <ul class="list-unstyled" style="font-size: 1.2rem;">
+                            <li class="mb-2">👉 <strong>Adım 1:</strong> Çarkı çevirmek için butona bas.</li>
+                            <li class="mb-2">👉 <strong>Adım 2:</strong> Gelen kelimeyi oku.</li>
+                            <li class="mb-2">👉 <strong>İpucu:</strong> "Bölme silinsin" kutusunu işaretlersen,
+                                gelen kelime çarktan silinir!</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            showCustomModal("Nasıl Oynanır?", content);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const spinBtn = document.getElementById('spinBtn');
+            const btnToggleDelete = document.getElementById('btn-toggle-delete'); // New Button
+            const resultDisplay = document.getElementById('result-display');
+
+
+
+            // Audio
+            const spinAudio = new Audio('../../assets/audio/cark.wav');
+            spinAudio.loop = true;
+            spinAudio.volume = 1.0;
+            spinAudio.load(); // Preload
+            spinAudio.onerror = (e) => console.error("Audio Load Error:", e);
+
+            let segments = ["nane", "nene", "annene", "en", "ne", "anne"];
+            // Vibrant modern colors - Green replaced with Orange
+            const colors = ['#6A4C93', '#E0D4FC']; // Dark Purple, Light Purple
+
+            let currentAngle = 0;
+            let isSpinning = false;
+            let spinSpeed = 0;
+            let lastTimestamp = 0;
+            let pendingDeletionIndex = -1;
+
+            // Initialize Toggle Button
+            if (btnToggleDelete) {
+                btnToggleDelete.addEventListener('click', () => {
+                    btnToggleDelete.classList.toggle('active');
+                });
+            }
+
+            function drawWheel() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = canvas.width / 2 - 15; // Margin
+                const arcSize = (2 * Math.PI) / segments.length;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (segments.length === 0) {
+                    ctx.font = "bold 50px Quicksand";
+                    ctx.fillStyle = "#333";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("Bitti!", centerX, centerY);
+                    return;
+                }
+
+                // Drop shadow for the whole wheel
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = "rgba(0,0,0,0.2)";
+                ctx.shadowColor = "rgba(0,0,0,0.5)";
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetX = 10;
+                ctx.shadowOffsetY = 10;
+                ctx.fill();
+                ctx.restore();
+
+                segments.forEach((segment, index) => {
+                    const angle = currentAngle + index * arcSize;
+
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
+
+                    // Gradient Fill
+                    let grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                    grad.addColorStop(0, '#ffffff');
+
+                    // Zebra Pattern: Dark (0) / Light (1)
+                    let colorIndex = index % 2;
+                    let segmentColor = colors[colorIndex];
+
+                    grad.addColorStop(0.3, segmentColor);
+                    grad.addColorStop(1, adjustColor(segmentColor, -20)); // Darken edge
+
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // White separator/stroke
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+
+                    ctx.save();
+
+                    // Text
+                    ctx.translate(centerX, centerY);
+                    ctx.rotate(angle + arcSize / 2);
+                    ctx.textAlign = "right";
+
+                    // Contrast Text Color
+                    // Dark Background -> White Text, Light Background -> Black Text
+                    let textColor = (colorIndex === 0) ? "#ffffff" : "#333333";
+                    ctx.fillStyle = textColor;
+                    ctx.font = "bold 32px Quicksand";
+
+                    // Shadow tuning
+                    if (colorIndex === 0) {
+                        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                    } else {
+                        ctx.shadowColor = "rgba(255, 255, 255, 0.0)";
+                    }
+
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                    ctx.fillText(segment, radius - 40, 10);
+                    ctx.restore();
+                });
+
+                // Center Cap (Modern)
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
+                let centerGrad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 40);
+                centerGrad.addColorStop(0, '#ffffff');
+                centerGrad.addColorStop(1, '#e0e0e0');
+                ctx.fillStyle = centerGrad;
+                ctx.fill();
+
+                ctx.strokeStyle = "#ddd";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Center Star or Icon
+                ctx.fillStyle = "#FFD700";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "24px Arial";
+                ctx.fillText("★", centerX, centerY + 2);
+            }
+
+            // Helper to darken color
+            function adjustColor(color, amount) {
+                return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+            }
+
+            function spin() {
+                if (isSpinning) return;
+
+                // Clear previous result
+                resultDisplay.classList.remove('show');
+                resultDisplay.innerText = "";
+
+                // Handle pending deletion from previous turn
+                if (pendingDeletionIndex !== -1) {
+                    segments.splice(pendingDeletionIndex, 1);
+                    pendingDeletionIndex = -1; // Reset
+
+                    if (segments.length === 0) {
+                        drawWheel(); // Show "Bitti"
+                        spinBtn.disabled = true;
+                        return; // Stop here if empty
+                    }
+                }
+
+                spinSpeed = 15 + Math.random() * 10;
+                isSpinning = true;
+                spinBtn.disabled = true;
+                spinAudio.currentTime = 0;
+                spinAudio.play().catch(e => console.log("Audio play failed interaction required", e));
+
+                lastTimestamp = performance.now();
+                requestAnimationFrame(animate);
+            }
+
+            function stopSpin() {
+                isSpinning = false;
+                spinBtn.disabled = false;
+                spinAudio.pause();
+                spinAudio.currentTime = 0;
+
+                const arcSize = (2 * Math.PI) / segments.length;
+                const target = 0; // Right side (0 radians)
+                let normalizedAngle = currentAngle % (2 * Math.PI);
+                let relativeAngle = (target - currentAngle) % (2 * Math.PI);
+                if (relativeAngle < 0) relativeAngle += 2 * Math.PI;
+
+                const winningIndex = Math.floor(relativeAngle / arcSize) % segments.length;
+                const winningWord = segments[winningIndex];
+
+                // Show Result
+                resultDisplay.innerText = winningWord;
+                resultDisplay.classList.add('show');
+
+                // Confetti
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+
+                // Handle Delete Logic
+                if (btnToggleDelete && btnToggleDelete.classList.contains('active')) {
+                    pendingDeletionIndex = winningIndex;
+
+                    // Check for Victory (Game ends when down to 1 item, so after spinning with 2 items)
+                    if (segments.length === 2) {
+                        setTimeout(victory, 1500);
+                    }
+                } else {
+                    pendingDeletionIndex = -1;
+                }
+            }
+
+            function animate(timestamp) {
+                if (!isSpinning) return;
+
+                const deltaTime = (timestamp - lastTimestamp) / 1000; // seconds
+                lastTimestamp = timestamp;
+
+                spinSpeed *= Math.pow(0.5, deltaTime);
+
+                if (spinSpeed < 0.1) {
+                    stopSpin();
+                    return;
+                }
+
+                currentAngle += spinSpeed * deltaTime;
+                drawWheel();
+                requestAnimationFrame(animate);
+            }
+
+            function victory() {
+                // Hide Spin Button
+                spinBtn.style.display = 'none';
+
+                // Play Sound
+                const winAudio = new Audio('../../assets/audio/harikasin.mp3');
+                winAudio.play().catch(e => console.error(e));
+
+                // Show Modal
+                showCustomModal("Harikasın!", "Çarkı başarıyla tamamladın.");
+                // const victoryModal = new bootstrap.Modal(document.getElementById('victoryModal'));
+                // victoryModal.show();
+            }
+
+            spinBtn.addEventListener('click', spin);
+
+            // Initial draw
+            document.fonts.ready.then(() => {
+                drawWheel();
+            });
+
+        });
+    </script>
+
+    <!-- Victory Modal -->
+
+
+    <!-- Combined Navigation Logic -->
+    <script>
+        const GAMES_ORDER_NAMES = [
+            'sesi_hissedelim',
+            'harfi_taniyalim',
+            'harfi_yazalim',
+            'karda_yazalim',
+            'hece_sozcuk_olusturalim',
+            'sozcuk_olusturalim',
+            'okuyalim',
+            'ritmik_okuma'
+        ];
+
+        function getCurrentGameIndex() {
+            const currentPath = window.location.pathname;
+            // Handle both / and \ separators
+            for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                if (currentPath.includes(GAMES_ORDER_NAMES[i])) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function navigateHome() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("homepage", true);
+                    console.log("Storyline variable 'homepage' set to true");
+                }
+            } catch (e) { console.warn("Storyline (homepage) access failed:", e); }
+
+            // Local Logic
+            window.location.href = '../../index.html';
+        }
+
+        function navigateNext() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId + 1);
+                        console.log("Storyline variable 'game_id' incremented");
+                    }
+                }
+            } catch (e) { console.warn("Storyline (next) access failed:", e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+            } else {
+                console.log("Last game or index not found.");
+            }
+        }
+
+        function navigatePrev() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId - 1);
+                        console.log("Storyline variable 'game_id' decremented");
+                    }
+                }
+            } catch (e) { console.warn("Storyline (prev) access failed:", e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx > 0) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+            } else {
+                console.log("First game or index not found.");
+            }
+        }
+    </script>
+
+
+    <!-- Fullscreen & Audio Logic -->
+    <script>
+        // Fullscreen Toggle
+        // Fullscreen Toggle (Storyline Variable)
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const isFull = player.GetVar("fullscreen");
+                        const newState = !isFull;
+                        player.SetVar("fullscreen", newState);
+
+                        if (newState) {
+                            btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                        } else {
+                            btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                        }
+                    }
+                } catch (e) { }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const savedVol = player.GetVar("bg_music");
+                        if (typeof savedVol === 'number') {
+                            range.value = savedVol;
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Toggle Icon
+                if (btn) {
+                    if (Number(val) === 0) {
+                        btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                    }
+                }
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

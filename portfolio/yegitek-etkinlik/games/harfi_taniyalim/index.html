@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E/e Harflerini Tanıyalım</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Game Specific Styles */
+        .game-board {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: url('../../assets/img/harfi_taniyalim_bg.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+            /* Fallback color if image missing */
+            background-color: #0077be;
+        }
+
+        /* Overlay Screens */
+        .game-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 40px;
+            text-align: center;
+            border: 5px solid var(--primary-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* Bubbles */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5));
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-family: 'Quicksand', sans-serif !important;
+            /* Force Nunito */
+            cursor: pointer;
+            box-shadow: inset -5px -5px 15px rgba(255, 255, 255, 0.3),
+                inset 5px 5px 15px rgba(0, 0, 0, 0.1);
+            color: #1e3a8a;
+            user-select: none;
+            z-index: 5;
+            -webkit-tap-highlight-color: transparent;
+            left: 0;
+            top: 0;
+        }
+
+        .fish {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+            will-change: transform;
+            line-height: 1;
+            /* Fix vertical alignment */
+        }
+
+        /* Floating Score Effect */
+        .floating-feedback {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 50;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        .feedback-correct {
+            color: #a4d13a;
+            text-shadow: 2px 2px 0 #fff;
+        }
+
+        .feedback-wrong {
+            color: #FF4D6D;
+            text-shadow: 2px 2px 0 #fff;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-50px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Sidebar Box Override to reuse style for score */
+        .sidebar-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            background-color: #f1f3f5;
+            border-radius: 20px;
+            padding: 15px 5px;
+            box-shadow: none;
+            border: none;
+        }
+
+        .sidebar-label {
+            font-size: 0.8rem;
+            /* Slightly smaller for longer text */
+            font-weight: 700;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top Section -->
+            <div class="d-flex flex-column align-items-center gap-3 w-100">
+
+                <!-- Lives Indicator -->
+                <div class="lives-container" id="livesDisplay">
+                    <!-- Injected by main.js -->
+                </div>
+
+                <!-- Score Indicator -->
+                <div class="sidebar-box">
+                    <div class="sidebar-label">Avlanan<br>Harf</div>
+                    <div style="font-size: 2rem; color: var(--success-color); font-weight: 700;" id="scoreDisplay">0
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <!-- Reload Button -->
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="HarfiInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- Header -->
+            <div class="game-header">
+                <h2 class="game-title">E/e Harflerini Tanıyalım</h2>
+                <div class="game-nav">
+
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board" id="game-board">
+
+                <!-- Result Screen -->
+                <div id="game-over-screen" class="game-overlay hidden">
+                    <h2 class="display-4 mb-4" id="end-title" style="color: var(--primary-color);"> Harika İş Çıkardın!
+                    </h2>
+                    <p class="lead mb-4" id="end-message">Gayretin için tebrikler.</p>
+
+                    <div class="d-flex justify-content-center gap-4 mb-4">
+                        <div class="text-center">
+                            <h3 class="text-muted">Avlanan Harf</h3>
+                            <div class="display-3 text-success fw-bold" id="final-score">0</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-kid btn-primary-kid" onclick="location.reload()">
+                        Tekrar Oyna <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <!-- Custom Modal Structure (Hidden by default) -->
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <div id="custom-modal-template" style="display: none;">
+        <div class="custom-modal-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+            <div class="custom-modal-content"
+                style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                <div class="modal-body-content mb-5" style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                <div class="mt-4">
+                    <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="closeCustomModal()">TAMAM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Feedback Modal (For GameEngine compatibility but mostly unused due to custom pop) -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel"></h5>
+                </div>
+                <div class="modal-body" id="feedbackModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="intro.js"></script>
+    <script src="instruction.js"></script>
+
+    <script>
+        /**
+         * "Harfi Tanıyalım" Game Logic - Auto E/e
+         */
+        const letters = ['A', 'N', 'E', 'T', 'İ', 'K'];
+        // Strict Fish Emojis - No Crabs
+        const fishEmojis = ['🐟', '🐠', '🐡'];
+
+        const targetChar = 'E';
+        let gameScore = 0;
+        let gameActive = false;
+        let bubbles = [];
+        let decorativeFish = [];
+        let animationFrameId;
+        let spawnIntervalId;
+        let eSoundInterval;
+        let speedMultiplier = 1.0;
+
+        const container = document.getElementById('game-board');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const endTitle = document.getElementById('end-title');
+        const endMessage = document.getElementById('end-message');
+        const finalScore = document.getElementById('final-score');
+
+        // Automatically start game after load
+        window.addEventListener('load', function () {
+            // Intro.js handles the overlay and startup
+        });
+
+        let instructionAudio = null;
+
+        function startGame() {
+            // Actual Init
+            initGame();
+        }
+
+        function stopInstruction() {
+            if (instructionAudio) {
+                instructionAudio.pause();
+                instructionAudio.currentTime = 0;
+            }
+        }
+
+
+        function startESoundLoop() {
+            stopESoundLoop(); // Clear any existing
+
+            // Play immediately when game starts
+            if (gameActive) {
+                const initialE = new Audio('../../assets/audio/e.mp3');
+                initialE.play().catch(e => console.warn("Initial e.mp3 error", e));
+            }
+
+            eSoundInterval = setInterval(() => {
+                if (!gameActive) return;
+                const eAudio = new Audio('../../assets/audio/e.mp3');
+                eAudio.play().catch(e => console.warn("Periodic e.mp3 error", e));
+            }, 8000);
+        }
+
+        function stopESoundLoop() {
+            if (eSoundInterval) {
+                clearInterval(eSoundInterval);
+                eSoundInterval = null;
+            }
+        }
+
+        function initGame() {
+            if (gameActive) return; // Prevent double init
+            gameActive = true;
+            GameEngine.lives = 3;
+            GameEngine.updateLivesDisplay();
+            gameScore = 0;
+            speedMultiplier = 1.0;
+            updateScoreUI();
+
+            gameLoop();
+            startESoundLoop();
+
+            // Spawn Logic
+            spawnIntervalId = setInterval(() => {
+                if (!gameActive) return;
+
+                // Ensure container dimensions are valid
+                if (container.offsetWidth < 100) return;
+
+                // Max bubbles on screen
+                if (bubbles.length < 10) {
+                    bubbles.push(new Bubble());
+                }
+                // Max fish
+                if (decorativeFish.length < 4 && Math.random() < 0.2) {
+                    decorativeFish.push(new Fish());
+                }
+            }, 800);
+        }
+
+        function playInstruction() {
+            if (instructionAudio) {
+                instructionAudio.pause();
+                instructionAudio.currentTime = 0;
+            }
+            instructionAudio = new Audio('../../assets/audio/harfi_taniyalim_instruction.mp3');
+            const btnStart = document.getElementById('btnStartGame');
+
+            instructionAudio.onended = () => {
+                const eAudio = new Audio('../../assets/audio/e.mp3');
+                eAudio.play().catch(e => console.log("e.mp3 missing", e));
+
+                if (btnStart) {
+                    btnStart.disabled = false;
+                    btnStart.style.opacity = '1';
+                    btnStart.style.cursor = 'pointer';
+                    btnStart.classList.add('pulse-animation');
+                }
+            };
+
+            // Fallback Timer
+            setTimeout(() => {
+                if (btnStart && btnStart.disabled) {
+                    btnStart.disabled = false;
+                    btnStart.style.opacity = '1';
+                    btnStart.style.cursor = 'pointer';
+                }
+            }, 12000);
+
+            instructionAudio.play().catch(e => {
+                console.log("Audio logic check", e);
+                // If play fails, enable button
+                if (btnStart) {
+                    btnStart.disabled = false;
+                    btnStart.style.opacity = '1';
+                    btnStart.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        function updateScoreUI() {
+            scoreDisplay.innerText = gameScore;
+
+            // Difficulty Progression
+            if (gameScore >= 60) speedMultiplier = 2.0;
+            else if (gameScore >= 40) speedMultiplier = 1.6;
+            else if (gameScore >= 20) speedMultiplier = 1.3;
+            else speedMultiplier = 1.0;
+        }
+
+        // --- Custom Modal Helpers ---
+        function showCustomModal(title, content) {
+            const wrapper = document.querySelector('.game-board') || document.querySelector('.game-board-wrapper') || document.body;
+            if (!wrapper) return;
+
+            // Remove existing if any
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+
+            // Template Handling
+            const templateEl = document.getElementById('custom-modal-template');
+            if (!templateEl) { console.warn('Modal template missing'); return; }
+
+            const template = templateEl.firstElementChild.cloneNode(true);
+            template.id = 'active-custom-modal';
+            template.querySelector('.modal-title').innerText = title;
+            template.querySelector('.modal-body-content').innerHTML = content;
+
+            const modalBox = template.querySelector('.custom-modal-content');
+
+            // STANDARD SIZE LOGIC
+            if (title === "Nasıl Oynanır?") {
+                // Large Rectangle
+                modalBox.style.width = '900px';
+                modalBox.style.maxWidth = '95%';
+                modalBox.style.minHeight = '550px';
+                modalBox.style.height = 'auto';
+                modalBox.style.display = 'block'; // Default block for text flow
+                modalBox.style.padding = '3rem';
+            } else {
+                // Feedback / Success / Fail (Square-ish)
+                modalBox.style.width = '500px';
+                modalBox.style.maxWidth = '90%';
+                modalBox.style.height = '500px';
+                modalBox.style.display = 'flex';
+                modalBox.style.flexDirection = 'column';
+                modalBox.style.justifyContent = 'center';
+                modalBox.style.alignItems = 'center';
+                modalBox.style.padding = '2rem';
+            }
+
+            wrapper.appendChild(template);
+            if (typeof isPaused !== 'undefined') isPaused = true;
+        }
+
+        function closeCustomModal() {
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+            if (typeof stopInstruction === 'function') stopInstruction();
+            if (typeof isPaused !== 'undefined') isPaused = false;
+        }
+
+        function showInstructionModal() {
+            playInstruction();
+            const content = `
+                <div class="row align-items-center">
+                    <div class="col-4 text-center">
+                        <span style="font-size: 6rem;">🐡</span>
+                    </div>
+                    <div class="col-8 text-start">
+                        <ul class="list-unstyled" style="font-size: 1.3rem;">
+                            <li class="mb-3">👉 <strong>Görev:</strong> Denizden çıkan <strong>E</strong> ve <strong>e</strong> harflerini bul.</li>
+                            <li class="mb-3">👉 <strong>Dikkat:</strong> Sadece E/e harflerine tıkla.</li>
+                            <li class="mb-3">⚠️ Diğer harflere tıklarsan canın azalır!</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            showCustomModal("Nasıl Oynanır?", content);
+        }
+
+        // --- Classes ---
+
+        class Fish {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'fish';
+                this.element.innerText = fishEmojis[Math.floor(Math.random() * fishEmojis.length)];
+
+                const fromRight = Math.random() > 0.5;
+                this.size = 60 + Math.random() * 50; // Bigger fish
+                this.element.style.fontSize = `${this.size}px`;
+
+                const containerH = container.offsetHeight;
+                const containerW = container.offsetWidth;
+
+                // Restrict Y so they don't overlap too much with bottom/top UI
+                this.y = 100 + Math.random() * (containerH - 200);
+                this.vx = fromRight ? -(0.5 + Math.random()) : (0.5 + Math.random());
+                this.x = fromRight ? containerW + 50 : -150;
+
+                this.updateFlip();
+                container.appendChild(this.element);
+            }
+
+            updateFlip() {
+                // Emojis usually face left natively (🐟).
+                // If moving right (vx > 0), flip to face right (scaleX(-1)).
+                // If moving left (vx < 0), default face (scaleX(1)).
+                if (this.vx > 0) {
+                    this.element.style.transform = 'scaleX(-1)';
+                } else {
+                    this.element.style.transform = 'scaleX(1)';
+                }
+            }
+
+            update() {
+                this.x += this.vx;
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+
+                // Bounds Cleanup
+                if ((this.vx > 0 && this.x > container.offsetWidth + 100) ||
+                    (this.vx < 0 && this.x < -200)) {
+                    return false;
+                }
+                return true;
+            }
+
+            remove() { this.element.remove(); }
+        }
+
+        class Bubble {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'bubble';
+
+                // 40% chance it's E or e
+                const isTarget = Math.random() < 0.4;
+                let char;
+
+                if (isTarget) {
+                    char = targetChar; // E
+                } else {
+                    char = letters[Math.floor(Math.random() * letters.length)];
+                }
+
+                // Random case
+                this.char = Math.random() > 0.5 ? char : char.toLocaleLowerCase('tr-TR');
+                this.isTarget = (this.char.toLocaleUpperCase('tr-TR') === targetChar);
+
+                this.element.innerText = this.char;
+
+                // Physics
+                this.size = 90 + Math.random() * 40;
+                this.element.style.width = `${this.size}px`;
+                this.element.style.height = `${this.size}px`;
+                this.element.style.fontSize = `${this.size * 0.5}px`;
+
+                // Spawn at bottom
+                // Ensure spawn is within bounds
+                const maxX = Math.max(0, container.offsetWidth - this.size);
+                this.x = Math.random() * maxX;
+
+                this.y = container.offsetHeight + 10;
+
+                // Vertical Speed: Ensure they move up fast enough
+                this.vy = -(1.5 + Math.random() * 2) * speedMultiplier;
+                // Horizontal Drift: Gentle
+                this.vx = (Math.random() - 0.5) * 0.5;
+
+                // Interaction
+                const handlePop = (e) => {
+                    e.preventDefault();
+                    // Capture input coordinates for visual effect
+                    const rect = this.element.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    this.pop(centerX, centerY);
+                };
+                this.element.onmousedown = handlePop;
+                this.element.ontouchstart = handlePop;
+
+                container.appendChild(this.element);
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wall bounce (container-based)
+                if (this.x <= 0) {
+                    this.x = 0;
+                    this.vx = Math.abs(this.vx);
+                } else if (this.x + this.size >= container.offsetWidth) {
+                    this.x = container.offsetWidth - this.size;
+                    this.vx = -Math.abs(this.vx);
+                }
+
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+
+                // Out of bounds (top)
+                // Remove when fully off screen (-size)
+                if (this.y < -this.size - 50) {
+                    this.remove();
+                    return false;
+                }
+                return true;
+            }
+
+            pop(clickX, clickY) {
+                if (!gameActive || this.popped) return;
+                this.popped = true;
+
+                if (this.isTarget) {
+                    // Correct!
+                    gameScore++;
+                    updateScoreUI();
+
+                    // Sound
+                    if (GameEngine.sounds && GameEngine.sounds.correct) {
+                        GameEngine.sounds.correct.currentTime = 0;
+                        GameEngine.sounds.correct.play().catch(e => console.error(e));
+                    }
+
+                    // Visual Feedback on Bubble: Turn Green
+                    this.element.style.background = "rgba(164, 209, 58, 0.9)";
+
+                    // Visual Pop animation
+                    this.element.style.transform += " scale(1.5)";
+                    this.element.style.opacity = "0";
+                    this.element.style.transition = "all 0.15s ease-out";
+
+                    if (window.confetti) {
+                        confetti({
+                            particleCount: 20,
+                            spread: 40,
+                            origin: {
+                                x: clickX / window.innerWidth,
+                                y: clickY / window.innerHeight
+                            }
+                        });
+                    }
+                } else {
+                    // Wrong!
+                    showFloatFeedback(clickX, clickY, "❌", "feedback-wrong");
+
+                    // Sound
+                    if (GameEngine.sounds && GameEngine.sounds.wrong) {
+                        GameEngine.sounds.wrong.currentTime = 0;
+                        GameEngine.sounds.wrong.play().catch(e => console.error(e));
+                    }
+
+                    // Visual Feedback on Bubble: Turn Red
+                    this.element.style.background = "rgba(255, 77, 109, 0.8)";
+
+                    // MANUAL Life - No Modal
+                    if (GameEngine.lives > 0) {
+                        GameEngine.lives--;
+                        GameEngine.updateLivesDisplay();
+                    }
+
+                    if (GameEngine.lives <= 0) {
+                        endGame("Harika İş Çıkardın!", "Gayretin için tebrikler. Tekrar denemeye ne dersin?");
+                    }
+                }
+
+                // Remove logic
+                setTimeout(() => this.remove(), 200);
+            }
+
+            remove() {
+                if (this.element.parentNode) this.element.remove();
+                bubbles = bubbles.filter(b => b !== this);
+            }
+        }
+
+        function showFloatFeedback(x, y, text, cssClass) {
+            const el = document.createElement('div');
+            el.className = `floating-feedback ${cssClass}`;
+            el.innerText = text;
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            // Update Bubbles
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                bubbles[i].update();
+            }
+
+            // Update Fish
+            for (let i = decorativeFish.length - 1; i >= 0; i--) {
+                if (!decorativeFish[i].update()) {
+                    decorativeFish[i].remove();
+                    decorativeFish.splice(i, 1);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function endGame(title = "Harika İş Çıkardın!", msg = "Gayretin için tebrikler.") {
+            gameActive = false;
+            clearInterval(spawnIntervalId);
+            stopESoundLoop();
+            cancelAnimationFrame(animationFrameId);
+
+            // Cleanup
+            bubbles.forEach(b => b.remove());
+            bubbles = [];
+
+            // Set Text
+            endTitle.innerText = title;
+            endMessage.innerText = msg;
+            finalScore.innerText = gameScore; // Show collected count
+
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        // Auto Start handled by window.load
+
+    </script>
+
+    <!-- Combined Navigation Logic -->
+    <script>
+        const GAMES_ORDER_NAMES = [
+            'sesi_hissedelim',
+            'harfi_taniyalim',
+            'harfi_yazalim',
+            'karda_yazalim',
+            'hece_sozcuk_olusturalim',
+            'sozcuk_olusturalim',
+            'okuyalim',
+            'ritmik_okuma'
+        ];
+
+        function getCurrentGameIndex() {
+            const currentPath = window.location.pathname;
+            // Handle both / and \ separators
+            for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                if (currentPath.includes(GAMES_ORDER_NAMES[i])) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function navigateHome() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("homepage", true);
+                    console.log("Storyline variable 'homepage' set to true");
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            window.location.href = '../../index.html';
+        }
+
+        function navigateNext() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId + 1);
+                        console.log("Storyline variable 'game_id' incremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+            } else {
+                console.log("Last game or index not found.");
+            }
+        }
+
+        function navigatePrev() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId - 1);
+                        console.log("Storyline variable 'game_id' decremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx > 0) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+            } else {
+                console.log("First game or index not found.");
+            }
+        }
+    </script>
+
+
+    <!-- Fullscreen & Audio Logic -->
+    <script>
+        // Fullscreen Toggle
+        // Fullscreen Toggle (Storyline Variable)
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const isFull = player.GetVar("fullscreen");
+                        const newState = !isFull;
+                        player.SetVar("fullscreen", newState);
+
+                        if (newState) {
+                            btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                        } else {
+                            btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                        }
+                    }
+                } catch (e) { }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const savedVol = player.GetVar("bg_music");
+                        if (typeof savedVol === 'number') {
+                            range.value = savedVol;
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Toggle Icon
+                if (btn) {
+                    if (Number(val) === 0) {
+                        btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                    }
+                }
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

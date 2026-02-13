@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritmik Okuma</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti Library for Rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)), url('../../assets/img/ritmik_okuma_bg.jpg') no-repeat center center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Rhythm Container */
+        .rhythm-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .rhythm-box {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border: 4px solid #fff;
+            border-radius: 20px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+        }
+
+        .rhythm-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .rhythm-box.active {
+            background: #FFD166;
+            color: #fff;
+            transform: scale(1.1);
+            border-color: #FFD166;
+            box-shadow: 0 0 30px rgba(255, 209, 102, 0.6);
+        }
+
+        /* Unique colors for last box if needed, or keeping uniform */
+        .rhythm-box:last-child {
+            border-color: #118AB2;
+            color: #118AB2;
+        }
+
+        .rhythm-box:last-child.active {
+            background: #118AB2;
+            color: #fff;
+            border-color: #118AB2;
+        }
+
+        /* Level Navigation */
+        .level-nav-container {
+            display: flex;
+            justify-content: space-between;
+            width: 60%;
+            margin-top: 20px;
+        }
+
+        .btn-level-nav {
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-level-nav:hover:not(:disabled) {
+            background: #4CC9F0;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .btn-level-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #e0e0e0;
+        }
+
+        /* Toggle Button Styles (Sidebar) */
+        .round-toggle-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #95a5a6;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1.1;
+        }
+
+        .round-toggle-btn.active {
+            background-color: #06D6A0;
+            /* Green for Play */
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(6, 214, 160, 0.6);
+            color: #fff;
+        }
+
+        .round-toggle-btn i {
+            font-size: 2rem;
+            margin-bottom: 2px;
+        }
+
+        /* Border Radius Restoration */
+        .main-content-kid {
+            /* Default form style.css is border-radius: 40px */
+            /* We previously removed it, now we just let it be or ensure it's there */
+            border-radius: 40px !important;
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+            background: white;
+            padding: 2rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed" style="overflow: hidden; margin: 0 auto;">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Settings -->
+            <div class="sidebar-settings"
+                style="background: transparent; padding: 0; display: flex; justify-content: center; width: 100%;">
+                <button id="btn-auto-play" class="round-toggle-btn" title="Otomatik Oynat">
+                    <i class="bi bi-play-fill" id="auto-play-icon"></i>
+                    <span>Oynat</span>
+                </button>
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="RitmikOkumaInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content-kid">
+
+            <!-- Header -->
+            <div class="game-header">
+                <h2 class="game-title">Ritmik Okuma</h2>
+                <div class="game-nav">
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Board -->
+            <div class="game-board">
+
+                <div class="rhythm-container" id="rhythm-container">
+                    <!-- Boxes will be injected here -->
+                </div>
+
+                <!-- Internal Level Navigation -->
+                <div class="level-nav-container">
+                    <button class="btn-level-nav" id="btn-prev-level" onclick="changeLevel(-1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <!-- Current Page Indicator could go here -->
+                    <span id="page-indicator"
+                        style="font-size: 1.5rem; font-weight: bold; color: white; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 15px;">1
+                        / 4</span>
+                    <button class="btn-level-nav" id="btn-next-level" onclick="changeLevel(1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <!-- Custom Modal Structure (Hidden by default) -->
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <div id="custom-modal-template" style="display: none;">
+        <div class="custom-modal-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+            <div class="custom-modal-content"
+                style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                <div class="modal-body-content mb-5" style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                <div class="mt-4">
+                    <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="closeCustomModal()">TAMAM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="intro.js"></script>
+    <script src="instruction.js"></script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        // --- GAME LOGIC ---
+        const levels = [
+            {
+                text: ["na", "na", "na", "ana"],
+                audio: ["ritmik_oku_na.mp3", "ritmik_oku_na.mp3", "ritmik_oku_na.mp3", "ritmik_oku_ana.mp3"]
+            },
+            {
+                text: ["ne", "ne", "ne", "anne"],
+                audio: ["ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_anne.mp3"]
+            },
+            {
+                text: ["ne", "ne", "ne", "nane"],
+                audio: ["ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_nane.mp3"]
+            },
+            {
+                text: ["ne", "ne", "ne", "nene"],
+                audio: ["ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_ne.mp3", "ritmik_oku_nene.mp3"]
+            }
+        ];
+
+        let currentLevel = 0;
+        let isAutoPlaying = false;
+        let activeAudio = null;
+        let autoPlayTimeouts = [];
+
+        const container = document.getElementById('rhythm-container');
+        const btnAutoPlay = document.getElementById('btn-auto-play');
+        const pageIndicator = document.getElementById('page-indicator');
+        const btnPrev = document.getElementById('btn-prev-level');
+        const btnNext = document.getElementById('btn-next-level');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // initLevel(0); // Removing auto-init for start overlay logic
+            // Auto Play Toggle
+            btnAutoPlay.addEventListener('click', toggleAutoPlay);
+        });
+
+        window.startGame = function () {
+            initLevel(0);
+        };
+
+        // Start Overlay Logic
+        window.addEventListener('load', function () {
+            RitmikOkumaIntro.init();
+
+            // Initialize Game Engine for Scaling
+            if (window.GameEngine && window.GameEngine.init) {
+                window.GameEngine.init();
+            } else {
+                // Manual fallback
+                const container = document.querySelector('.game-container-fixed');
+                if (container) {
+                    const targetW = 1920;
+                    const targetH = 1080;
+                    const scale = Math.min(window.innerWidth / targetW, window.innerHeight / targetH);
+                    container.style.transform = `scale(${scale})`;
+                }
+            }
+        });
+
+        // --- Custom Modal Helpers ---
+        function showCustomModal(title, content) {
+            const wrapper = document.querySelector('.game-board') || document.querySelector('.game-board-wrapper') || document.body;
+            if (!wrapper) return;
+
+            // Remove existing if any
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+
+            // Template Handling
+            const templateEl = document.getElementById('custom-modal-template');
+            if (!templateEl) { console.warn('Modal template missing'); return; }
+
+            const template = templateEl.firstElementChild.cloneNode(true);
+            template.id = 'active-custom-modal';
+            template.querySelector('.modal-title').innerText = title;
+            template.querySelector('.modal-body-content').innerHTML = content;
+
+            const modalBox = template.querySelector('.custom-modal-content');
+
+            // STANDARD SIZE LOGIC
+            if (title === "Nasıl Oynanır?") {
+                // Large Rectangle
+                modalBox.style.width = '900px';
+                modalBox.style.maxWidth = '95%';
+                modalBox.style.minHeight = '550px';
+                modalBox.style.height = 'auto';
+                modalBox.style.display = 'block'; // Default block for text flow
+                modalBox.style.padding = '3rem';
+            } else {
+                // Feedback / Success / Fail (Square-ish)
+                modalBox.style.width = '500px';
+                modalBox.style.maxWidth = '90%';
+                modalBox.style.height = '500px';
+                modalBox.style.display = 'flex';
+                modalBox.style.flexDirection = 'column';
+                modalBox.style.justifyContent = 'center';
+                modalBox.style.alignItems = 'center';
+                modalBox.style.padding = '2rem';
+            }
+
+            wrapper.appendChild(template);
+            if (typeof isPaused !== 'undefined') isPaused = true;
+        }
+
+        function closeCustomModal() {
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+            if (typeof stopInstruction === 'function') stopInstruction();
+            if (typeof isPaused !== 'undefined') isPaused = false;
+        }
+
+        function showInstructionModal() {
+            playInstruction();
+            const content = `
+                <div class="row align-items-center">
+                    <div class="col-4 text-center">
+                        <i class="bi bi-music-note-list text-info" style="font-size: 6rem;"></i>
+                    </div>
+                    <div class="col-8 text-start">
+                        <ul class="list-unstyled" style="font-size: 1.2rem;">
+                            <li class="mb-2">👉 Kutucuklara tek tek tıklayarak sesleri dinle ve tekrar et.</li>
+                            <li class="mb-2">👉 <strong>"Oynat"</strong> butonuna basarsan tüm sesler sırayla
+                                okunur.</li>
+                            <li class="mb-2">👉 Alt taraftaki okları kullanarak diğer sayfaya geçebilirsin.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            showCustomModal("Nasıl Oynanır?", content);
+        }
+
+        function initLevel(index) {
+            stopAutoPlay(); // Stop any previous sequence
+            currentLevel = index;
+
+            // Update Navigation UI
+            pageIndicator.innerText = `${currentLevel + 1} / ${levels.length}`;
+            btnPrev.disabled = (currentLevel === 0);
+            btnNext.disabled = (currentLevel === levels.length - 1);
+
+            // Render Boxes
+            container.innerHTML = '';
+            const levelData = levels[currentLevel];
+
+            levelData.text.forEach((word, idx) => {
+                const box = document.createElement('div');
+                box.className = 'rhythm-box animate-pop';
+                box.innerText = word;
+                box.setAttribute('data-index', idx);
+                box.onclick = () => playBox(box, levelData.audio[idx]);
+                container.appendChild(box);
+            });
+
+            // Auto Play reset UI
+            updateAutoPlayUI(false);
+        }
+
+        function changeLevel(delta) {
+            const newIndex = currentLevel + delta;
+            if (newIndex >= 0 && newIndex < levels.length) {
+                initLevel(newIndex);
+            }
+        }
+
+        function playBox(element, audioFile) {
+            // Stop current if playing
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+            }
+
+            // Reset all active classes
+            document.querySelectorAll('.rhythm-box').forEach(b => b.classList.remove('active'));
+
+            // Activate current
+            element.classList.add('active');
+
+            const assetPath = window.ASSETS_PATH || '../../assets/';
+            activeAudio = new Audio(`${assetPath}audio/${audioFile}`);
+
+            activeAudio.onended = () => {
+                element.classList.remove('active');
+            };
+
+            activeAudio.play().catch(e => console.error(e));
+        }
+
+        function toggleAutoPlay() {
+            if (isAutoPlaying) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        }
+
+        function startAutoPlay() {
+            isAutoPlaying = true;
+            updateAutoPlayUI(true);
+
+            const boxes = document.querySelectorAll('.rhythm-box');
+            let delay = 0;
+            const levelData = levels[currentLevel];
+
+            // We need a sequential chain, not simple timeouts, because audio lengths differ.
+            // But for simplicity if audio lengths are short, timeouts work. 
+            // Better: Recursive chain.
+
+            playSequenceStep(0, boxes, levelData);
+        }
+
+        function playSequenceStep(index, boxes, levelData) {
+            if (!isAutoPlaying) return;
+            if (index >= boxes.length) {
+                stopAutoPlay();
+                return;
+            }
+
+            const box = boxes[index];
+            const audioFile = levelData.audio[index];
+
+            // visual active
+            document.querySelectorAll('.rhythm-box').forEach(b => b.classList.remove('active'));
+            box.classList.add('active');
+
+            // Play
+            if (activeAudio) {
+                activeAudio.pause();
+            }
+
+            const assetPath = window.ASSETS_PATH || '../../assets/';
+            activeAudio = new Audio(`${assetPath}audio/${audioFile}`);
+
+            activeAudio.onended = () => {
+                box.classList.remove('active');
+                if (isAutoPlaying) {
+                    // Small pause between words?
+                    setTimeout(() => {
+                        playSequenceStep(index + 1, boxes, levelData);
+                    }, 300);
+                }
+            };
+
+            activeAudio.play().catch(e => {
+                console.error("Auto play error", e);
+                stopAutoPlay();
+            });
+        }
+
+        function stopAutoPlay() {
+            isAutoPlaying = false;
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+            }
+            document.querySelectorAll('.rhythm-box').forEach(b => b.classList.remove('active'));
+            updateAutoPlayUI(false);
+        }
+
+        function updateAutoPlayUI(isActive) {
+            const icon = document.getElementById('auto-play-icon');
+            const span = btnAutoPlay.querySelector('span');
+
+            if (isActive) {
+                btnAutoPlay.classList.add('active');
+                icon.className = 'bi bi-pause-fill';
+                span.innerText = "Durdur";
+            } else {
+                btnAutoPlay.classList.remove('active');
+                icon.className = 'bi bi-play-fill';
+                span.innerText = "Oynat";
+            }
+        }
+
+    </script>
+
+    <!-- Combined Navigation Logic (Standard) -->
+    <script>
+        const GAMES_ORDER_NAMES = [
+            'sesi_hissedelim',
+            'harfi_taniyalim',
+            'harfi_yazalim',
+            'karda_yazalim',
+            'hece_sozcuk_olusturalim',
+            'sozcuk_olusturalim',
+            'okuyalim',
+            'ritmik_okuma'
+        ];
+
+        function getCurrentGameIndex() {
+            const currentPath = window.location.pathname;
+            for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                if (currentPath.includes(GAMES_ORDER_NAMES[i])) return i;
+            }
+            return -1;
+        }
+
+        function navigateHome() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("homepage", true);
+                    console.log("Storyline variable 'homepage' set to true");
+                }
+            } catch (e) { console.warn("Storyline (home) error:", e); }
+
+            // Local Logic
+            window.location.href = '../../index.html';
+        }
+
+        function navigateNext() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId + 1);
+                        console.log("Storyline variable 'game_id' incremented");
+                    }
+                }
+            } catch (e) { console.warn("Storyline (next) error:", e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+            } else {
+                console.log("Last game or index not found.");
+            }
+        }
+
+        function navigatePrev() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId - 1);
+                        console.log("Storyline variable 'game_id' decremented");
+                    }
+                }
+            } catch (e) { console.warn("Storyline (prev) error:", e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx > 0) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+            } else {
+                console.log("First game or index not found.");
+            }
+        }
+    </script>
+
+
+    <!-- Fullscreen & Audio Logic -->
+    <script>
+        // Fullscreen Toggle
+        // Fullscreen Toggle (Storyline Variable)
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const isFull = player.GetVar("fullscreen");
+                        const newState = !isFull;
+                        player.SetVar("fullscreen", newState);
+
+                        if (newState) {
+                            btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                        } else {
+                            btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                        }
+                    }
+                } catch (e) { }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const savedVol = player.GetVar("bg_music");
+                        if (typeof savedVol === 'number') {
+                            range.value = savedVol;
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Toggle Icon
+                if (btn) {
+                    if (Number(val) === 0) {
+                        btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                    }
+                }
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

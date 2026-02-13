@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harfi Yazalım</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .game-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../../assets/img/harfi_yazalim_bg.jpg') no-repeat center center;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .canvas-container-custom {
+            position: relative;
+            width: 96%;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 4px solid #f0f0f0;
+            overflow: hidden;
+            touch-action: none;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 26px;
+            /* Inner radius matching border */
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #mask-canvas {
+            z-index: 10;
+            /* Guide on top */
+            opacity: 1;
+            /* Fully visible, controlled by context globalAlpha */
+            pointer-events: none;
+            /* Allow clicks to pass through to drawing canvas */
+        }
+
+        #drawing-canvas {
+            z-index: 20;
+            /* Drawing on top of guide to be fully opaque */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23000000"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>') 0 24, crosshair;
+        }
+
+        .controls-area {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-tool {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            background: #fff;
+            color: #666;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-tool.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 159, 28, 0.3);
+        }
+
+        .btn-action {
+            height: 60px;
+            padding: 0 30px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+            background: white;
+            padding: 2rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Lives Indicator -->
+            <!-- Top: Lives Indicator Removed -->
+
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container"
+                style="position: relative; overflow: visible !important; margin-top: auto;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <!-- Reload/Retry Button -->
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <!-- Instructions Button -->
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="HarfiYazalimInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- Top Header -->
+            <div class="game-header">
+                <h2 class="game-title">Harfi Yazalım</h2>
+                <div class="game-nav">
+
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <!-- Placeholder nav buttons matching template -->
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board">
+                <div class="game-wrapper">
+
+                    <!-- Canvas Area -->
+                    <!-- Canvas Area -->
+                    <div class="canvas-container-custom" id="canvas-container">
+                        <canvas id="mask-canvas"></canvas>
+                        <canvas id="drawing-canvas"></canvas>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="controls-area">
+                        <button id="btn-pen" class="btn-tool active" onclick="setTool('pen')" title="Kalem">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button id="btn-eraser" class="btn-tool" onclick="setTool('eraser')" title="Silgi">
+                            <i class="bi bi-eraser-fill"></i>
+                        </button>
+
+                        <div class="vr mx-2"></div>
+
+                        <button class="btn btn-outline-secondary btn-action"
+                            style="border: 2px solid #e0e0e0; color: #666;" onclick="clearCanvas()">
+                            <i class="bi bi-trash"></i> Temizle
+                        </button>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <!-- Custom Modal Structure (Hidden by default) -->
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <div id="custom-modal-template" style="display: none;">
+        <div class="custom-modal-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+            <div class="custom-modal-content"
+                style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                <div class="modal-body-content mb-5" style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                <div class="mt-4">
+                    <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="closeCustomModal()">TAMAM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="intro.js"></script>
+    <script src="instruction.js"></script>
+
+    <script>
+        // Global Canvas Refs
+        var maskCanvas, drawingCanvas, mctx, dctx;
+        var currentMaskData = null;
+        var isDrawing = false;
+        var lastPos = { x: 0, y: 0 };
+
+        var tool = 'pen';
+        var guideIcon = new Image();
+        guideIcon.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23F44336"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+
+
+        window.addEventListener('load', function () {
+            // Intro.js handles the overlay
+
+            maskCanvas = document.getElementById('mask-canvas');
+            drawingCanvas = document.getElementById('drawing-canvas');
+
+            if (maskCanvas && drawingCanvas) {
+                // Resize internal resolution
+                var w = document.getElementById('canvas-container').clientWidth;
+                var h = document.getElementById('canvas-container').clientHeight;
+                maskCanvas.width = w;
+                maskCanvas.height = h;
+                drawingCanvas.width = w;
+                drawingCanvas.height = h;
+
+                mctx = maskCanvas.getContext('2d', { willReadFrequently: true });
+                dctx = drawingCanvas.getContext('2d', { willReadFrequently: true });
+
+                loadContent();
+                setupEvents();
+            }
+        });
+
+
+        // --- Custom Modal Helpers ---
+        function showCustomModal(title, content) {
+            const wrapper = document.querySelector('.game-board') || document.querySelector('.game-board-wrapper') || document.body;
+            if (!wrapper) return;
+
+            // Remove existing if any
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+
+            // Template Handling
+            const templateEl = document.getElementById('custom-modal-template');
+            if (!templateEl) { console.warn('Modal template missing'); return; }
+
+            const template = templateEl.firstElementChild.cloneNode(true);
+            template.id = 'active-custom-modal';
+            template.querySelector('.modal-title').innerText = title;
+            template.querySelector('.modal-body-content').innerHTML = content;
+
+            const modalBox = template.querySelector('.custom-modal-content');
+
+            // STANDARD SIZE LOGIC
+            if (title === "Nasıl Oynanır?") {
+                // Large Rectangle
+                modalBox.style.width = '900px';
+                modalBox.style.maxWidth = '95%';
+                modalBox.style.minHeight = '550px';
+                modalBox.style.height = 'auto';
+                modalBox.style.display = 'block'; // Default block for text flow
+                modalBox.style.padding = '3rem';
+            } else {
+                // Feedback / Success / Fail (Square-ish)
+                modalBox.style.width = '500px';
+                modalBox.style.maxWidth = '90%';
+                modalBox.style.height = '500px';
+                modalBox.style.display = 'flex';
+                modalBox.style.flexDirection = 'column';
+                modalBox.style.justifyContent = 'center';
+                modalBox.style.alignItems = 'center';
+                modalBox.style.padding = '2rem';
+            }
+
+            wrapper.appendChild(template);
+            if (typeof isPaused !== 'undefined') isPaused = true;
+        }
+
+        function closeCustomModal() {
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+            if (typeof stopInstruction === 'function') stopInstruction();
+            if (typeof isPaused !== 'undefined') isPaused = false;
+        }
+
+
+
+        function loadContent() {
+            var imgBig = new Image();
+            var imgSmall = new Image();
+            imgBig.src = '../../assets/img/e_buyuk.png';
+            imgSmall.src = '../../assets/img/e_kucuk.png';
+
+            // Wait for both
+            Promise.all([
+                new Promise(resolve => imgBig.onload = resolve),
+                new Promise(resolve => imgSmall.onload = resolve)
+            ]).then(() => {
+                drawScene(imgBig, imgSmall);
+            });
+        }
+
+        function drawScene(imgBig, imgSmall) {
+            mctx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+
+            // Guide Lines Configuration
+            var padTop = 100;
+            var padBot = 100;
+            var guideTop = padTop;
+            var guideBot = maskCanvas.height - padBot;
+            var guideMid = (guideTop + guideBot) / 2;
+
+            // Adjusted transparency 
+            // CSS opacity is now 1, so this value is the true opacity.
+            // 0.4 is a good balance for seeing through lines.
+            mctx.globalAlpha = 1.0;
+
+            // 1. Draw Lines
+            mctx.beginPath();
+            mctx.strokeStyle = '#4444ff';
+            mctx.lineWidth = 2;
+            mctx.setLineDash([15, 15]);
+
+            // Top
+            mctx.moveTo(0, guideTop);
+            mctx.lineTo(maskCanvas.width, guideTop);
+            // Mid
+            mctx.moveTo(0, guideMid);
+            mctx.lineTo(maskCanvas.width, guideMid);
+            // Bot
+            mctx.moveTo(0, guideBot);
+            mctx.lineTo(maskCanvas.width, guideBot);
+
+            mctx.stroke();
+
+            // 2. Draw Big E (Left, Top to Bot)
+            // Fit height to guideTop -> guideBot
+            var hBig = guideBot - guideTop;
+            var scaleBig = hBig / imgBig.height;
+            var wBig = imgBig.width * scaleBig;
+            var xBig = (maskCanvas.width / 4) - (wBig / 2); // Center in left half
+            var yBig = guideTop;
+
+            mctx.drawImage(imgBig, xBig, yBig, wBig, hBig);
+
+            // 3. Draw Small e (Right, Mid to Bot)
+
+            // MANUEL AYAR: Küçük e boyutunu değiştirmek için burayı değiştirin.
+            // Örnek: 1.0 (Tam sığdır), 1.2 (%20 Büyük), 0.9 (%10 Küçük)
+            var manualSizeFactor = 1.04;
+
+            var hSmall = (guideBot - guideMid) * manualSizeFactor;
+
+            // Scale width proportionally
+            var scaleSmall = hSmall / imgSmall.height;
+            var wSmall = imgSmall.width * scaleSmall;
+
+            var xSmall = (3 * maskCanvas.width / 4) - (wSmall / 2);
+            // Manual adjustment: Move up by 20px to ensure visual top touches the line (handling image padding)
+            var ySmall = guideMid - 5;
+
+            mctx.drawImage(imgSmall, xSmall, ySmall, wSmall, hSmall);
+
+
+
+
+            mctx.restore();
+
+            // Capture data
+            currentMaskData = mctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+        }
+
+        // --- Standard Event & Game Logic (Single Instance) ---
+
+        function getMousePos(e) {
+            var rect = drawingCanvas.getBoundingClientRect();
+            var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            return {
+                x: (clientX - rect.left) * (drawingCanvas.width / rect.width),
+                y: (clientY - rect.top) * (drawingCanvas.height / rect.height)
+            };
+        }
+
+        function setupEvents() {
+            function start(e) { isDrawing = true; lastPos = getMousePos(e); }
+            function move(e) {
+                if (!isDrawing) return;
+                var pos = getMousePos(e);
+                dctx.beginPath();
+                dctx.moveTo(lastPos.x, lastPos.y);
+                dctx.lineTo(pos.x, pos.y);
+                dctx.lineCap = 'round';
+                dctx.lineJoin = 'round';
+
+                if (tool === 'pen') {
+                    dctx.strokeStyle = '#3b82f6';
+                    dctx.lineWidth = 25; // Thinner pen
+                } else {
+                    dctx.globalCompositeOperation = 'destination-out';
+                    dctx.lineWidth = 45;
+                }
+                dctx.stroke();
+                dctx.globalCompositeOperation = 'source-over';
+                lastPos = pos;
+            }
+            function stop() { isDrawing = false; }
+
+            drawingCanvas.addEventListener('mousedown', start);
+            drawingCanvas.addEventListener('mousemove', move);
+            drawingCanvas.addEventListener('mouseup', stop);
+            drawingCanvas.addEventListener('mouseout', stop);
+            drawingCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e) });
+            drawingCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e) });
+            drawingCanvas.addEventListener('touchend', stop);
+        }
+
+        function setTool(t) {
+            tool = t;
+            document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active'));
+            if (t === 'pen') document.getElementById('btn-pen').classList.add('active');
+            else document.getElementById('btn-eraser').classList.add('active');
+        }
+
+        function clearCanvas() {
+            dctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+
+
+
+
+
+
+
+    </script>
+    <!-- Combined Navigation Logic -->
+    <script>
+        const GAMES_ORDER_NAMES = [
+            'sesi_hissedelim',
+            'harfi_taniyalim',
+            'harfi_yazalim',
+            'karda_yazalim',
+            'hece_sozcuk_olusturalim',
+            'sozcuk_olusturalim',
+            'okuyalim',
+            'ritmik_okuma'
+        ];
+
+        function getCurrentGameIndex() {
+            const currentPath = window.location.pathname;
+            // Handle both / and \ separators
+            for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                if (currentPath.includes(GAMES_ORDER_NAMES[i])) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function navigateHome() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("homepage", true);
+                    console.log("Storyline variable 'homepage' set to true");
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            window.location.href = '../../index.html';
+        }
+
+        function navigateNext() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId + 1);
+                        console.log("Storyline variable 'game_id' incremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+            } else {
+                console.log("Last game or index not found.");
+            }
+        }
+
+        function navigatePrev() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId - 1);
+                        console.log("Storyline variable 'game_id' decremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx > 0) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+            } else {
+                console.log("First game or index not found.");
+            }
+        }
+    </script>
+
+
+    <!-- Fullscreen & Audio Logic -->
+    <script>
+        // Fullscreen Toggle
+        // Fullscreen Toggle (Storyline Variable)
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const isFull = player.GetVar("fullscreen");
+                        const newState = !isFull;
+                        player.SetVar("fullscreen", newState);
+
+                        if (newState) {
+                            btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                        } else {
+                            btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                        }
+                    }
+                } catch (e) { }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const savedVol = player.GetVar("bg_music");
+                        if (typeof savedVol === 'number') {
+                            range.value = savedVol;
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Toggle Icon
+                if (btn) {
+                    if (Number(val) === 0) {
+                        btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                    } else {
+                        btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                    }
+                }
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

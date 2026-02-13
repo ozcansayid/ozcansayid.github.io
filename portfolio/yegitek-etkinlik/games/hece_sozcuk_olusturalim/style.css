@@ -1,0 +1,204 @@
+/* Game Specific Styles */
+
+/* 
+ * IMPORTANT: Do NOT override .game-container-fixed or body overflow here.
+ * Rely on main.js to scale the 1920x1080 container to fit the window.
+ * This ensures the template design is respected.
+ */
+
+/* Game Board Background */
+.game-board {
+    background-image: url('../../assets/img/devre_bg.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Content Wrapper for the circuit board */
+.circuit-wrapper {
+    width: 100%;
+    /* We want it to fill the .game-board area provided by template */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* Semi-transparent dark background to let the bg image show through slightly */
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border-radius: 20px;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    margin-bottom: 20px;
+    backdrop-filter: blur(5px);
+    /* Optional: adds a nice glass effect */
+}
+
+.circuit-container {
+    position: relative;
+    width: 95%;
+    max-width: 1600px;
+    aspect-ratio: 8/3;
+    /* Height will be auto-calculated */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circuit-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.2));
+}
+
+/* Drop Zones Overlay */
+.drop-zones-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    /* Top and Height removed to allow inline 'bottom' positioning to work effectiveley */
+}
+
+.drop-zone {
+    position: relative;
+    /* Changed from absolute to flow in flex */
+    width: 140px;
+    height: 100px;
+    border: 3px dashed rgba(251, 191, 36, 0.8);
+    background: #e2e8f0;
+    /* Solid light gray, not transparent */
+    border-radius: 12px;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.drop-zone.drag-over {
+    background: #fef08a;
+    /* Solid yellow when dragging over */
+    border-color: #fbbf24;
+    transform: scale(1.05);
+}
+
+/* Positioning - Adjusted for Flex Layout */
+#slot-0,
+#slot-1 {
+    top: auto;
+    left: auto;
+}
+
+/* Draggable Options */
+/* Ensure Draggable items are solid (they were, but reinforcing) */
+.draggable-item {
+    background: linear-gradient(to bottom, #38bdf8, #0284c7);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    font-size: 2rem;
+    min-width: 120px;
+    font-weight: bold;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 6px 0 #0369a1, 0 8px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, opacity 0.2s;
+    font-family: var(--font-main);
+    z-index: 100;
+}
+
+.draggable-item:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+    box-shadow: 0 2px 0 #0369a1;
+}
+
+.draggable-item.dragging {
+    opacity: 0.5;
+}
+
+.draggable-item.wrong-shake {
+    animation: shake 0.5s;
+    background: linear-gradient(to bottom, #ef4444, #b91c1c);
+    box-shadow: 0 6px 0 #991b1b;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* Bulb Glow Animation */
+.bulb-lit .bulb-glass {
+    fill: #fef08a;
+    filter: drop-shadow(0 0 30px #facc15);
+    transition: all 0.5s ease;
+}
+
+.bulb-lit+.wire-out,
+.bulb-lit~.wire-return {
+    stroke: #fbbf24;
+    filter: drop-shadow(0 0 5px #facc15);
+    transition: stroke 0.5s ease 0.2s;
+}
+
+/* Target Word Display */
+/* Target Word Display - Reset styles as it is now static */
+#target-word-display {
+    transition: all 0.5s ease;
+    opacity: 0;
+
+    /* New Styling */
+    width: 500px;
+    /* Fixed Width */
+    background-color: #1e293b;
+    color: #fbbf24;
+    font-size: 3.5rem !important;
+    padding: 0;
+    /* Minimal vertical padding */
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 3px solid #334155;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    /* Ensure content is centered if width is fixed */
+    text-align: center;
+}
+
+#target-word-display:not(.hidden) {
+    opacity: 1;
+    transform: scale(1.1);
+    /* Slight pop effect */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.options-container {
+    min-height: 120px;
+    width: 100%;
+}

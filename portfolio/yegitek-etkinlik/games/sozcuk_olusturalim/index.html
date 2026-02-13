@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sözcük Oluşturalım</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .game-board {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: url('../../assets/img/sozcuk_olusturalim_bg.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* Full Width Canvas Wrapper */
+
+
+        /* Main Game Wrapper - Unified Container */
+        .game-main-wrapper {
+            position: relative;
+            width: 95%;
+            height: 92%;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-wrapper {
+            position: absolute;
+            top: 100px;
+            bottom: 30px;
+            left: 30px;
+            right: 240px;
+            /* Space for D-Pad */
+            background-color: transparent;
+            /* Transparent to show wrapper bg */
+            border: 3px solid #2ec4b6;
+            border-radius: 12px;
+            /* Slight radius */
+            box-shadow: none;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+
+
+        .sentence-container {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            z-index: 50;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        /* Make words slightly see-through or distinct since they are over canvas */
+        .sentence-word {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ccc;
+            /* box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
+        }
+
+
+        .sentence-word {
+            padding: 10px 20px;
+            background-color: #f1f3f5;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #adb5bd;
+            border: 3px dashed #ced4da;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .sentence-word.filled {
+            background-color: #4CC9F0;
+            color: white;
+            border: 3px solid #48cae4;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 0 #0096c7;
+        }
+
+        /* D-PAD Styles */
+        .d-pad-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 180px;
+            height: 180px;
+            z-index: 100;
+            opacity: 1;
+        }
+
+        .d-pad-container:hover {
+            opacity: 0.9;
+        }
+
+        .d-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #ffd166;
+            border: 2px solid #ffd166;
+            border-radius: 15px;
+            /* Rounded block */
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            backdrop-filter: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .d-btn:active {
+            background: #ffd166;
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .d-up {
+            top: 0;
+            left: 60px;
+        }
+
+        .d-down {
+            bottom: 0;
+            left: 60px;
+        }
+
+        .d-left {
+            top: 60px;
+            left: 0;
+        }
+
+        .d-right {
+            top: 60px;
+            right: 0;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+
+            <!-- Level Info - Full Width & Small Top Margin -->
+            <div class="sidebar-box w-100"
+                style="background-color: #f8f9fa; border-radius: 15px; padding: 10px; margin-top: 5px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #6c757d; text-align: center;">SEVİYE</div>
+                <div style="font-size: 2.5rem; color: var(--primary-color); font-weight: 700; text-align: center;"
+                    id="levelDisplay">1/4</div>
+            </div>
+
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <button onclick="location.reload()" class="btn btn-kid btn-primary-kid btn-icon-only"
+                    title="Yeniden Başlat">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="SozcukInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content-kid">
+            <div class="game-header" style="margin-bottom: 0; padding: 5px 20px;">
+                <h2 class="game-title" style="margin:0; font-size: 1.8rem;">Sözcük Oluşturalım</h2>
+                <div class="game-nav">
+
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="game-board">
+                <div class="game-main-wrapper">
+                    <!-- Sentence Builder Area (Top, Outside Canvas) -->
+                    <div class="sentence-container" id="sentenceContainer"></div>
+
+                    <!-- Game Canvas (Restricted Loop Area) -->
+                    <div class="canvas-wrapper">
+                        <canvas id="game-canvas"></canvas>
+                    </div>
+
+                    <!-- D-PAD (Bottom Right, Outside Canvas) -->
+                    <div class="d-pad-container">
+                        <div class="d-btn d-up" onpointerdown="setDir(0, -1)"><i class="bi bi-caret-up-fill"></i></div>
+                        <div class="d-btn d-left" onpointerdown="setDir(-1, 0)"><i class="bi bi-caret-left-fill"></i>
+                        </div>
+                        <div class="d-btn d-right" onpointerdown="setDir(1, 0)"><i class="bi bi-caret-right-fill"></i>
+                        </div>
+                        <div class="d-btn d-down" onpointerdown="setDir(0, 1)"><i class="bi bi-caret-down-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- Custom Modal Structure (Hidden by default) -->
+            <!-- Custom Modal Structure (Hidden by default) -->
+
+            <!-- Custom Modal Structure (Hidden by default) -->
+            <div id="custom-modal-template" style="display: none;">
+                <div class="custom-modal-overlay"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+                    <div class="custom-modal-content"
+                        style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                        <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                        <div class="modal-body-content mb-5"
+                            style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                        <div class="mt-4">
+                            <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                                onclick="closeCustomModal()">TAMAM</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script>window.ASSETS_PATH = '../../assets/';</script>
+            <script src="../../assets/js/main.js"></script>
+            <script src="intro.js"></script>
+            <script src="instruction.js"></script>
+
+            <script>
+                // --- Level Data ---
+                const levels = [
+                    { text: "a na", audio: "so_1_ana.mp3" },
+                    { text: "an ne", audio: "so_2_anne.mp3" },
+                    { text: "na ne", audio: "so_3_nane.mp3" },
+                    { text: "Ne ne", audio: "so_4_nene.mp3" }
+                ];
+
+                // --- Game Config ---
+                let config = {
+                    gridSize: 50,
+                    baseSpeed: 250,
+                    rows: 20,
+                    cols: 30
+                };
+
+                // --- State ---
+                let currentLevelIndex = 0;
+                let currentSentenceWords = [];
+                let collectedWords = [];
+                let snake = [];
+                let direction = { x: 1, y: 0 };
+                let nextDirection = { x: 1, y: 0 };
+                let activeWordsOnBoard = [];
+                let gameLoopId;
+                let isPaused = false;
+                let canSwitchDir = true;
+                let runningAudio = null;
+
+                const canvas = document.getElementById('game-canvas');
+                const ctx = canvas.getContext('2d');
+                const container = document.getElementById('sentenceContainer');
+                const levelDisplay = document.getElementById('levelDisplay');
+
+                const wordColors = ["#EF476F", "#FFD166", "#06D6A0", "#118AB2", "#9D4EDD"];
+
+                window.addEventListener('load', () => {
+                    document.fonts.ready.then(() => {
+                        initCanvas();
+                    });
+                    window.addEventListener('resize', initCanvas);
+                });
+
+
+
+                function initCanvas() {
+                    const wrapper = document.querySelector('.canvas-wrapper');
+                    canvas.width = wrapper.clientWidth;
+                    canvas.height = wrapper.clientHeight;
+
+                    config.gridSize = 50;
+                    config.cols = Math.floor(canvas.width / config.gridSize);
+                    config.rows = Math.floor(canvas.height / config.gridSize);
+                }
+
+                window.setDir = function (dx, dy) {
+                    handleDirInput(dx, dy);
+                }
+
+                function handleDirInput(dx, dy) {
+                    if (isPaused) return;
+                    if (!canSwitchDir) return;
+                    if (dx !== 0 && direction.x !== 0) return;
+                    if (dy !== 0 && direction.y !== 0) return;
+
+                    nextDirection = { x: dx, y: dy };
+                    canSwitchDir = false;
+                }
+
+                document.addEventListener('keydown', (e) => {
+                    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+                        e.preventDefault();
+                    }
+
+                    switch (e.key) {
+                        case 'ArrowUp': handleDirInput(0, -1); break;
+                        case 'ArrowDown': handleDirInput(0, 1); break;
+                        case 'ArrowLeft': handleDirInput(-1, 0); break;
+                        case 'ArrowRight': handleDirInput(1, 0); break;
+                    }
+                });
+
+                function startGame() {
+                    currentLevelIndex = 0;
+                    startLevel(0);
+                }
+
+
+                function playAudioFile(filename, onEndedCallback) {
+                    // Stop previous if exists
+                    if (runningAudio) {
+                        runningAudio.pause();
+                        runningAudio.currentTime = 0;
+                        runningAudio.onended = null;
+                    }
+                    const assetPath = window.ASSETS_PATH || '../../assets/';
+                    runningAudio = new Audio(`${assetPath}audio/sozcuk_olusturalim/${filename}`);
+
+                    if (onEndedCallback) {
+                        runningAudio.onended = onEndedCallback;
+                    }
+
+                    runningAudio.play().catch(e => {
+                        console.warn(e);
+                        // Fallback
+                        if (onEndedCallback) onEndedCallback();
+                    });
+                }
+
+
+
+
+                function startLevel(index) {
+                    if (index >= levels.length) {
+                        victory();
+                        return;
+                    }
+
+                    currentLevelIndex = index;
+                    levelDisplay.innerText = `${currentLevelIndex + 1}/${levels.length}`;
+
+                    let levelData = levels[index];
+                    let rawSentence = levelData.text; // "A na"
+
+                    // Play Start Audio
+                    playAudioFile(levelData.audio);
+
+                    currentSentenceWords = rawSentence.split(' ');
+                    collectedWords = [];
+
+                    updateSentenceUI();
+                    resetSnake();
+                    spawnWords();
+
+                    isPaused = false;
+                    clearInterval(gameLoopId);
+                    gameLoopId = setInterval(gameTick, config.baseSpeed);
+                }
+
+                function resetSnake() {
+                    let startY = Math.floor(config.rows / 2);
+                    let startX = Math.floor(config.cols / 4);
+                    snake = [
+                        { x: startX + 4, y: startY },
+                        { x: startX + 3, y: startY },
+                        { x: startX + 2, y: startY }
+                    ];
+                    direction = { x: 1, y: 0 };
+                    nextDirection = { x: 1, y: 0 };
+                }
+
+                function updateSentenceUI() {
+                    container.innerHTML = '';
+
+                    // Single Container for the whole word
+                    const div = document.createElement('div');
+                    div.className = 'sentence-word w-50 mx-auto'; // Make it wider
+                    div.style.minWidth = '200px';
+
+                    const text = collectedWords.join('');
+                    if (text.length > 0) {
+                        div.innerText = text;
+                        div.classList.add('filled');
+                    } else {
+                        div.innerText = '...';
+                        // Or leave empty, but ... implies waiting
+                    }
+                    container.appendChild(div);
+                }
+
+                function spawnWords() {
+                    activeWordsOnBoard = [];
+                    ctx.font = "bold 32px Quicksand";
+
+                    for (let i = collectedWords.length; i < currentSentenceWords.length; i++) {
+                        let w = currentSentenceWords[i];
+                        // Calculate how many grid cells this word needs
+                        let widthPx = ctx.measureText(w).width + 30; // Padding included
+                        let widthCells = Math.ceil(widthPx / config.gridSize);
+
+                        let pos = getRandomEmptyPos(widthCells);
+                        if (pos) {
+                            activeWordsOnBoard.push({
+                                word: w,
+                                originalIndex: i,
+                                x: pos.x,
+                                y: pos.y,
+                                widthCells: widthCells,
+                                color: wordColors[i % wordColors.length]
+                            });
+                        }
+                    }
+                }
+
+                function getRandomEmptyPos(widthCells) {
+                    let safe = false;
+                    let attempts = 0;
+                    let x, y;
+                    while (!safe && attempts < 100) {
+                        x = 1 + Math.floor(Math.random() * (config.cols - 2 - widthCells));
+                        y = 1 + Math.floor(Math.random() * (config.rows - 2));
+
+                        // Collision with Snake
+                        let hitsSnake = snake.some(s => s.y === y && s.x >= x - 2 && s.x <= x + widthCells + 1);
+
+                        // Collision with Words
+                        let hitsWord = activeWordsOnBoard.some(w =>
+                            w.y === y &&
+                            !((x + widthCells + 1 < w.x - 1) || (x - 1 > w.x + w.widthCells + 1))
+                        );
+
+                        if (!hitsSnake && !hitsWord) safe = true;
+                        attempts++;
+                    }
+                    return safe ? { x, y } : null;
+                }
+
+                function gameTick() {
+                    if (isPaused) return;
+
+                    direction = nextDirection;
+                    canSwitchDir = true;
+
+                    let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+                    // Wall Collision
+                    if (head.x < 0 || head.x >= config.cols || head.y < 0 || head.y >= config.rows) {
+                        hitError();
+                        return;
+                    }
+
+                    // Self Collision
+                    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                        hitError();
+                        return;
+                    }
+
+                    snake.unshift(head);
+
+                    // Word Collision
+                    let ateWordIndex = -1;
+                    for (let i = 0; i < activeWordsOnBoard.length; i++) {
+                        let w = activeWordsOnBoard[i];
+                        // Hitbox check: Head inside the range [w.x ... w.x + widthCells)
+                        if (head.y === w.y && head.x >= w.x && head.x < w.x + w.widthCells) {
+                            ateWordIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (ateWordIndex !== -1) {
+                        let eatenObj = activeWordsOnBoard[ateWordIndex];
+                        let nextNeededIndex = collectedWords.length;
+
+                        if (eatenObj.originalIndex === nextNeededIndex) {
+                            playSound(true); // Short 'correct' ping
+
+                            collectedWords.push(eatenObj.word);
+                            snake.push({}, {});
+                            activeWordsOnBoard.splice(ateWordIndex, 1);
+                            updateSentenceUI();
+
+                            if (collectedWords.length === currentSentenceWords.length) {
+                                isPaused = true;
+                                if (window.confetti) confetti();
+
+                                // Wait for 'correct' sound (played above) to finish
+                                setTimeout(() => {
+                                    // Play full word audio again
+                                    let levelData = levels[currentLevelIndex];
+                                    playAudioFile(levelData.audio, () => {
+                                        startLevel(currentLevelIndex + 1);
+                                    });
+                                }, 1500);
+                            }
+                        } else {
+                            hitError();
+                            return;
+                        }
+                    } else {
+                        snake.pop();
+                    }
+
+                    render();
+                }
+
+                function hitError() {
+                    playSound(false);
+                    resetSnake();
+                }
+
+                function render() {
+                    // Clear canvas to let CSS background show
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Draw Snake
+                    snake.forEach((seg, i) => {
+                        ctx.fillStyle = (i === 0) ? '#ffffff' : '#4CC9F0';
+
+                        let px = seg.x * config.gridSize;
+                        let py = seg.y * config.gridSize;
+                        let size = config.gridSize - 2;
+
+                        ctx.beginPath();
+                        ctx.roundRect(px, py, size, size, 8);
+                        ctx.fill();
+
+                        if (i === 0) {
+                            ctx.fillStyle = '#2b2d42';
+                            ctx.beginPath();
+                            ctx.arc(px + size * 0.3, py + size * 0.3, size * 0.15, 0, Math.PI * 2);
+                            ctx.arc(px + size * 0.7, py + size * 0.3, size * 0.15, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    });
+
+                    // Draw Words (Left Aligned for correct hitbox visualization)
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "middle";
+                    ctx.font = "bold 32px Quicksand";
+
+                    activeWordsOnBoard.forEach(w => {
+                        let px = w.x * config.gridSize;
+                        let py = w.y * config.gridSize;
+
+                        let boxWidth = w.widthCells * config.gridSize - 4; // leave slight gap
+                        let boxHeight = config.gridSize - 4;
+                        let drawY = py + 2;
+
+                        // Pill Body
+                        ctx.fillStyle = w.color;
+                        ctx.beginPath();
+                        ctx.roundRect(px + 2, drawY, boxWidth, boxHeight, 15);
+                        ctx.fill();
+
+                        // Text Centered in Pill
+                        ctx.fillStyle = "#fff";
+                        ctx.shadowColor = "rgba(0,0,0,0.5)";
+                        ctx.shadowBlur = 4;
+
+                        const textMetrics = ctx.measureText(w.word);
+                        let textX = px + 2 + (boxWidth / 2) - (textMetrics.width / 2);
+                        let textY = py + (config.gridSize / 2);
+
+                        ctx.fillText(w.word, textX, textY);
+                        ctx.shadowBlur = 0;
+                    });
+                }
+
+                function playSound(isCorrect) {
+                    try {
+                        if (isCorrect && GameEngine.sounds.correct) {
+                            GameEngine.sounds.correct.currentTime = 0;
+                            GameEngine.sounds.correct.play().catch(e => { });
+                        } else if (!isCorrect && GameEngine.sounds.wrong) {
+                            GameEngine.sounds.wrong.currentTime = 0;
+                            GameEngine.sounds.wrong.play().catch(e => { });
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                function gameOver() {
+                    isPaused = true;
+                    clearInterval(gameLoopId);
+                    showCustomModal("Oyun Bitti", "Maalesef canın bitti. Tekrar denemek ister misin?");
+                }
+
+                function victory() {
+                    isPaused = true;
+                    clearInterval(gameLoopId);
+
+                    // Stop previous audio if any
+                    if (typeof runningAudio !== 'undefined' && runningAudio) {
+                        runningAudio.pause();
+                        runningAudio.currentTime = 0;
+                    }
+
+                    // Play common victory sound
+                    const assetPath = window.ASSETS_PATH || '../../assets/';
+                    // Use common audio folder, not the subfolder
+                    const victoryAudio = new Audio(`${assetPath}audio/harikasin.mp3`);
+                    victoryAudio.play().catch(e => console.warn(e));
+
+                    // Suppress default correct sound from GameEngine
+                    let originalVol = 1;
+                    if (GameEngine.sounds && GameEngine.sounds.correct) {
+                        originalVol = GameEngine.sounds.correct.volume;
+                        GameEngine.sounds.correct.volume = 0;
+                    }
+
+                    // GameEngine.showCorrect("Harikasın! Tüm cümleleri tamamladın!");
+                    showCustomModal("Harikasın!", "Tüm cümleleri başarıyla tamamladın!");
+
+                    // Restore volume later (optional)
+                    setTimeout(() => {
+                        if (GameEngine.sounds && GameEngine.sounds.correct) {
+                            GameEngine.sounds.correct.volume = originalVol;
+                        }
+                    }, 2000);
+                }
+
+            </script>
+
+            <!-- Combined Navigation Logic -->
+            <script>
+                const GAMES_ORDER_NAMES = [
+                    'sesi_hissedelim',
+                    'harfi_taniyalim',
+                    'harfi_yazalim',
+                    'karda_yazalim',
+                    'hece_sozcuk_olusturalim',
+                    'sozcuk_olusturalim',
+                    'okuyalim',
+                    'ritmik_okuma'
+                ];
+
+                function getCurrentGameIndex() {
+                    const currentPath = window.location.pathname;
+                    // Handle both / and \ separators
+                    for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                        if (currentPath.includes(GAMES_ORDER_NAMES[i])) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+
+                function navigateHome() {
+                    // Storyline Logic
+                    try {
+                        var player = null;
+                        if (window.GetPlayer) player = window.GetPlayer();
+                        else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                        if (player) {
+                            player.SetVar("homepage", true);
+                            console.log("Storyline variable 'homepage' set to true");
+                        }
+                    } catch (e) { console.error(e); }
+
+                    // Local Logic
+                    window.location.href = '../../index.html';
+                }
+
+                function navigateNext() {
+                    // Storyline Logic
+                    try {
+                        var player = null;
+                        if (window.GetPlayer) player = window.GetPlayer();
+                        else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                        if (player) {
+                            var currentId = player.GetVar("game_id");
+                            if (typeof currentId === 'number') {
+                                player.SetVar("game_id", currentId + 1);
+                                console.log("Storyline variable 'game_id' incremented");
+                            }
+                        }
+                    } catch (e) { console.error(e); }
+
+                    // Local Logic
+                    const idx = getCurrentGameIndex();
+                    if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                        window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+                    } else {
+                        console.log("Last game or index not found.");
+                    }
+                }
+
+                function navigatePrev() {
+                    // Storyline Logic
+                    try {
+                        var player = null;
+                        if (window.GetPlayer) player = window.GetPlayer();
+                        else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                        if (player) {
+                            var currentId = player.GetVar("game_id");
+                            if (typeof currentId === 'number') {
+                                player.SetVar("game_id", currentId - 1);
+                                console.log("Storyline variable 'game_id' decremented");
+                            }
+                        }
+                    } catch (e) { console.error(e); }
+
+                    // Local Logic
+                    const idx = getCurrentGameIndex();
+                    if (idx > 0) {
+                        window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+                    } else {
+                        console.log("First game or index not found.");
+                    }
+                }
+            </script>
+
+
+            <script>
+                // Fullscreen Toggle
+                // Fullscreen Toggle (Storyline Variable)
+                const btnFullscreen = document.getElementById('btn-fullscreen');
+                if (btnFullscreen) {
+                    btnFullscreen.addEventListener('click', () => {
+                        try {
+                            const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                            if (player) {
+                                const isFull = player.GetVar("fullscreen");
+                                const newState = !isFull;
+                                player.SetVar("fullscreen", newState);
+
+                                if (newState) {
+                                    btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                                } else {
+                                    btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                                }
+                            }
+                        } catch (e) { }
+                    });
+                }
+
+                /* Audio Slider Logic */
+                (function () {
+                    const btn = document.getElementById('btn-audio-toggle');
+                    const popup = document.getElementById('audio-slider-container');
+                    const range = document.getElementById('volume-range');
+                    const valDisplay = document.getElementById('volume-val-display');
+                    let isOpen = false;
+
+                    if (btn) {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            isOpen = !isOpen;
+                            togglePopup(isOpen);
+                        });
+                        document.addEventListener('click', (e) => {
+                            if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                                isOpen = false;
+                                togglePopup(false);
+                            }
+                        });
+                        if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+                    }
+
+                    function togglePopup(show) {
+                        if (!popup) return;
+                        if (show) popup.classList.add('show');
+                        else popup.classList.remove('show');
+                    }
+
+                    if (range) {
+                        range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                        // Init from Storyline
+                        try {
+                            const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                            if (player) {
+                                const savedVol = player.GetVar("bg_music");
+                                if (typeof savedVol === 'number') {
+                                    range.value = savedVol;
+                                }
+                            }
+                        } catch (e) { }
+
+                        // Init UI
+                        updateVolume(range.value, false);
+                    }
+
+                    function updateVolume(val, syncToStoryline) {
+                        if (!range) return;
+                        const percent = val;
+                        range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                        if (valDisplay) valDisplay.innerText = val;
+
+                        // Toggle Icon based on value
+                        if (btn) {
+                            if (Number(val) === 0) {
+                                btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                            } else {
+                                btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+                            }
+                        }
+
+                        // Storyline
+                        if (syncToStoryline) {
+                            try {
+                                const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                                if (player) {
+                                    player.SetVar("bg_music", Number(val));
+                                }
+                            } catch (e) { }
+                        }
+                    }
+                })();
+            </script>
+
+</body>
+
+</html>

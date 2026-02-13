@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kar Üstüne Yazı Yaz</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Kid Theme -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Confetti Library for Rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Specific styles for this game */
+        body {
+            overflow: hidden;
+            /* Fix overflow issues */
+            /* Background color removed to match other activities */
+        }
+
+        .snow-canvas-container {
+            width: 100%;
+            height: 100%;
+            background-color: #fcfcfc;
+            /* Snow white */
+            background-image:
+                radial-gradient(circle at 10% 20%, rgb(255, 255, 255) 0%, rgb(240, 248, 255) 90%),
+                url('https://www.transparenttextures.com/patterns/snow.png');
+            /* Add texture */
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
+            cursor: none;
+            /* Hide default cursor */
+        }
+
+        #snowCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            position: relative;
+            z-index: 30;
+            /* Higher than guideOverlay (20) */
+        }
+
+        #guideCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Snowflake animation */
+        .snowflake {
+            position: absolute;
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Quicksand';
+            text-shadow: 0 0 1px #000;
+            top: -10%;
+            z-index: 5;
+            user-select: none;
+            pointer-events: none;
+            animation-name: snowflakes-fall, snowflakes-shake;
+            animation-duration: 10s, 3s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-play-state: running, running;
+        }
+
+        @keyframes snowflakes-fall {
+            0% {
+                top: -10%;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        @keyframes snowflakes-shake {
+            0% {
+                transform: translateX(0px);
+            }
+
+            50% {
+                transform: translateX(80px);
+            }
+
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        /* Tool Cursor */
+        #toolCursor {
+            position: absolute;
+            pointer-events: none;
+            z-index: 100;
+            transform: translate(-50%, -50%);
+            /* Center the tool on cursor */
+            font-size: 3rem;
+            filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Custom Modal Styles (Replacing Bootstrap Modals) */
+        .custom-modal-overlay {
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-content {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 4px solid #4CC9F0;
+            background: white;
+            padding: 2rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Update header title color to be bluish/cold for snow theme? Or stick to kid theme. */
+        /* Audio Slider Styles */
+        .nav-buttons-container {
+            overflow: visible !important;
+        }
+
+        .audio-slider-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: auto;
+            background-color: #343a40;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .audio-slider-popup.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 115%;
+        }
+
+        .audio-slider-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #343a40 transparent transparent transparent;
+        }
+
+        #volume-val-display {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .slider-track-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .horizontal-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container-fixed">
+
+        <!-- Sidebar (Left) -->
+        <div class="sidebar-kid">
+
+            <!-- Top: Tool Selection Container -->
+            <div class="tools-container d-flex flex-column gap-3 w-100 align-items-center"
+                style="background-color: transparent; padding: 15px 5px;">
+
+                <!-- Charcoal Selector -->
+                <button id="btnCharcoal" class="btn btn-kid active-tool p-0"
+                    style="width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                    onclick="setTool('charcoal')">
+                    <!-- Charcoal Image -->
+                    <img src="../../assets/img/kar_komur.svg" alt="Kömür"
+                        style="width: 48px; height: 48px; margin-bottom: 2px;">
+                    <span style="font-size: 0.8rem; font-weight: bold; color: #333;">Yaz</span>
+                </button>
+
+                <!-- Hand Selector (Eraser) -->
+                <button id="btnEraser" class="btn btn-kid p-0"
+                    style="width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                    onclick="setTool('eraser')">
+                    <!-- Hand Image -->
+                    <img src="../../assets/img/kar_eldiven.svg" alt="El"
+                        style="width: 48px; height: 48px; margin-bottom: 2px;">
+                    <span style="font-size: 0.8rem; font-weight: bold; color: #333;">Sil</span>
+                </button>
+
+                <!-- Guide Selector (Letters) -->
+                <button id="btnGuide" class="btn btn-kid p-0"
+                    style="width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: #E0E0E0;"
+                    onclick="toggleGuide()">
+                    <!-- Letter 'E' SVG Icon -->
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="margin-bottom: 2px;">
+                        <path d="M5 4H19" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                        <path d="M5 12H17" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                        <path d="M5 20H19" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                        <path d="M5 4V20" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                    <span style="font-size: 0.8rem; font-weight: bold; color: #333;">Harfler</span>
+                </button>
+
+                <!-- Lines Selector (New) -->
+                <button id="btnLines" class="btn btn-kid p-0"
+                    style="width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: #E0E0E0;"
+                    onclick="toggleLines()">
+                    <!-- Lines SVG Icon -->
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="margin-bottom: 2px;">
+                        <path d="M3 7H21" stroke="#333" stroke-width="2" stroke-linecap="round" />
+                        <path d="M3 12H21" stroke="#333" stroke-width="2" stroke-linecap="round"
+                            stroke-dasharray="4 4" />
+                        <path d="M3 17H21" stroke="#333" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <span style="font-size: 0.8rem; font-weight: bold; color: #333;">Çizgiler</span>
+                </button>
+            </div>
+
+            <!-- Bottom: Navigation Buttons -->
+            <div class="nav-buttons-container" style="position: relative; overflow: visible !important;">
+
+                <!-- Audio Control (TOP) -->
+                <div class="position-relative mb-2 d-flex justify-content-center">
+
+                    <!-- Slider Popup (Horizontal) -->
+                    <div id="audio-slider-container" class="audio-slider-popup">
+                        <div id="volume-val-display">30</div>
+                        <div class="slider-track-wrapper">
+                            <input type="range" id="volume-range" class="horizontal-range" min="0" max="100" value="30">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Button (Always Green, White Icon) -->
+                    <button id="btn-audio-toggle" class="btn btn-kid btn-icon-only" title="Ses Ayarı"
+                        style="background-color: #2ecc71 !important; color: white !important; border: none !important;">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+
+                </div>
+
+                <!-- Reload/Retry Button -->
+                <button onclick="clearCanvas()" class="btn btn-kid btn-primary-kid btn-icon-only" title="Hepsini Sil">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+
+                <!-- Instructions Button -->
+                <button class="btn btn-kid btn-info-kid btn-icon-only" title="Yönerge"
+                    onclick="KardaYazalimInstruction.init()">
+                    <i class="bi bi-question-lg"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button id="btn-fullscreen" class="btn btn-kid btn-icon-only"
+                    style="background-color: #6f42c1; color: white; border: none;" title="Tam Ekran">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Main Content (Right) -->
+        <div class="main-content-kid">
+
+            <!-- New Top Header -->
+            <div class="game-header">
+                <h2 class="game-title">Kar Üstüne Yazı Yaz</h2>
+                <div class="game-nav">
+
+                    <a href="#" class="btn-nav-flat btn-nav-home" title="Anasayfa"
+                        onclick="navigateHome(); return false;">
+                        <i class="bi bi-house-fill"></i>
+                    </a>
+                    <button class="btn-nav-flat" title="Önceki" onclick="navigatePrev()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn-nav-flat" title="Sonraki" onclick="navigateNext()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inner Game Board -->
+            <div class="game-board p-0" style="overflow: hidden; position: relative;">
+                <div class="snow-canvas-container" id="canvasContainer">
+                    <div id="snowBgLayer"
+                        style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none; opacity: 0.2; background: url('../../assets/img/karda_yazi_bg.jpg') no-repeat center; background-size: cover;">
+                    </div>
+                    <canvas id="guideCanvas"></canvas>
+                    <canvas id="snowCanvas"></canvas>
+                    <div id="snowflakesContainer"></div>
+                    <!-- Custom Cursor Element -->
+                    <div id="toolCursor">🪨</div>
+                    <!-- Guide Overlay -->
+                    <div id="guideOverlay"
+                        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; pointer-events: none;">
+                        <!-- Images positioned via JS in drawGuideLines -->
+                        <img id="imgBigE" src="../../assets/img/e_buyuk.png" alt="Büyük E"
+                            style="position: absolute; width: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,0,0,0.1)); opacity: 0.6;">
+                        <img id="imgSmallE" src="../../assets/img/e_kucuk.png" alt="Küçük e"
+                            style="position: absolute; width: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0,0,0,0.1)); opacity: 0.6;">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <!-- Custom Modal Structure (Hidden by default) -->
+
+    <!-- Custom Modal Structure (Hidden by default) -->
+    <div id="custom-modal-template" style="display: none;">
+        <div class="custom-modal-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px) !important; z-index: 2000; display: flex; align-items: center; justify-content: center;">
+            <div class="custom-modal-content"
+                style="background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 80%; border: 5px solid #2ec4b6;">
+                <h2 class="modal-title display-6 fw-bold mb-4" style="color: #2c3e50;"></h2>
+                <div class="modal-body-content mb-5" style="font-size: 1.5rem; color: #4a4a4a; line-height: 1.6;"></div>
+                <div class="mt-4">
+                    <button class="btn btn-primary-kid btn-lg px-5 py-3 rounded-pill shadow-sm fw-bold"
+                        onclick="closeCustomModal()">TAMAM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="../../assets/js/main.js"></script> <!-- ADDED MAIN.JS FOR SCALING -->
+    <script src="intro.js"></script>
+    <script src="instruction.js"></script>
+
+    <script>
+        // Start Overlay Logic
+        window.addEventListener('load', function () {
+            // Intro.js handles the overlay
+
+            // Resize internal resolution
+            const container = document.getElementById('canvasContainer');
+            if (container) {
+                resizeCanvas();
+            }
+        });
+
+
+        // --- Custom Modal Helpers ---
+        function showCustomModal(title, content) {
+            const wrapper = document.querySelector('.game-board') || document.querySelector('.game-board-wrapper') || document.body;
+            if (!wrapper) return;
+
+            // Remove existing if any
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+
+            // Template Handling
+            const templateEl = document.getElementById('custom-modal-template');
+            if (!templateEl) { console.warn('Modal template missing'); return; }
+
+            const template = templateEl.firstElementChild.cloneNode(true);
+            template.id = 'active-custom-modal';
+            template.querySelector('.modal-title').innerText = title;
+            template.querySelector('.modal-body-content').innerHTML = content;
+
+            const modalBox = template.querySelector('.custom-modal-content');
+
+            // STANDARD SIZE LOGIC
+            if (title === "Nasıl Oynanır?") {
+                // Large Rectangle
+                modalBox.style.width = '900px';
+                modalBox.style.maxWidth = '95%';
+                modalBox.style.minHeight = '550px';
+                modalBox.style.height = 'auto';
+                modalBox.style.display = 'block'; // Default block for text flow
+                modalBox.style.padding = '3rem';
+            } else {
+                // Feedback / Success / Fail (Square-ish)
+                modalBox.style.width = '500px';
+                modalBox.style.maxWidth = '90%';
+                modalBox.style.height = '500px';
+                modalBox.style.display = 'flex';
+                modalBox.style.flexDirection = 'column';
+                modalBox.style.justifyContent = 'center';
+                modalBox.style.alignItems = 'center';
+                modalBox.style.padding = '2rem';
+            }
+
+            wrapper.appendChild(template);
+            if (typeof isPaused !== 'undefined') isPaused = true;
+        }
+
+        function closeCustomModal() {
+            const existing = document.getElementById('active-custom-modal');
+            if (existing) existing.remove();
+            if (typeof stopInstruction === 'function') stopInstruction();
+            if (typeof isPaused !== 'undefined') isPaused = false;
+        }
+
+
+
+        // Drawing Logic
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        const guideCanvas = document.getElementById('guideCanvas');
+        const gctx = guideCanvas.getContext('2d');
+        const container = document.getElementById('canvasContainer');
+        const toolCursor = document.getElementById('toolCursor');
+        const btnCharcoal = document.getElementById('btnCharcoal');
+        const btnEraser = document.getElementById('btnEraser');
+        const btnGuide = document.getElementById('btnGuide');
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentTool = 'charcoal'; // 'charcoal' or 'eraser'
+        let isGuideActive = false;
+        const guideImage = new Image();
+        guideImage.crossOrigin = "anonymous";
+        guideImage.src = '../../assets/img/karda_yazalim_A.png';
+        guideImage.onload = function () {
+            // Helper: Analyze content bounds
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = guideImage.width;
+            tempCanvas.height = guideImage.height;
+            const tctx = tempCanvas.getContext('2d');
+            tctx.drawImage(guideImage, 0, 0);
+
+            try {
+                const idata = tctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                const data = idata.data;
+                let minY = tempCanvas.height, maxY = 0, found = false;
+
+                for (let y = 0; y < tempCanvas.height; y += 2) {
+                    for (let x = 0; x < tempCanvas.width; x += 2) {
+                        if (data[(y * tempCanvas.width + x) * 4 + 3] > 20) {
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                            found = true;
+                        }
+                    }
+                }
+
+                if (found) {
+                    window.guideContentBounds = { minY, maxY, height: maxY - minY };
+                } else {
+                    window.guideContentBounds = { minY: 0, maxY: guideImage.height, height: guideImage.height };
+                }
+            } catch (e) {
+                console.warn("Analysis failed", e);
+                window.guideContentBounds = { minY: 0, maxY: guideImage.height, height: guideImage.height };
+            }
+
+            if (isGuideActive) drawGuideLines();
+        };
+
+        // Snowflakes
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakesContainer');
+            const numberOfSnowflakes = 50;
+            const snowflakes = [];
+
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.textContent = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                snowflake.style.animationDelay = (Math.random() * 5) + 's';
+                snowflake.style.opacity = Math.random();
+                snowflakesContainer.appendChild(snowflake);
+            }
+        }
+        createSnowflakes();
+
+        function resizeCanvas() {
+            if (!container.clientWidth || !container.clientHeight) return;
+
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            guideCanvas.width = container.clientWidth;
+            guideCanvas.height = container.clientHeight;
+
+            if (typeof drawGuideLines === 'function') {
+                drawGuideLines();
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        // Call immediately
+        setTimeout(resizeCanvas, 100);
+
+        let isLinesActive = false;
+
+        function drawGuideLines() {
+            if (!gctx) return;
+            gctx.clearRect(0, 0, guideCanvas.width, guideCanvas.height);
+
+            // Guide Lines Configuration
+            // We want 3 lines: Top, Middle, Bottom for the writing area.
+
+            // MANUEL AYARLAMA: Buradaki değerleri değiştirerek çizgilerin konumunu ayarlayabilirsiniz.
+            // Örnek: var guideTop = 150; (Piksel cinsinden üstten mesafe)
+            // Örnek: var guideBot = 450; (Piksel cinsinden üstten mesafe)
+
+            var totalHeight = guideCanvas.height;
+
+            // Otomatik hesaplama (Şu anki): %29 üst boşluk, %29 alt boşluk (User supplied)
+            var margin = totalHeight * 0.29;
+
+            var guideTop = margin; // Üst çizgi Y kordinatı
+            var guideBot = totalHeight - margin; // Alt çizgi Y kordinatı
+            var guideMid = (guideTop + guideBot) / 2; // Orta çizgi (Otomatik ortalar)
+
+            // 1. Draw Lines (Only if active)
+            if (isLinesActive) {
+                gctx.save();
+                gctx.beginPath();
+                gctx.strokeStyle = 'rgba(68, 68, 255, 0.6)'; // Blueish, slightly transparent
+                gctx.lineWidth = 4; // Thicker for visibility
+                gctx.setLineDash([15, 15]);
+
+                // Top Line
+                gctx.moveTo(0, guideTop);
+                gctx.lineTo(guideCanvas.width, guideTop);
+
+                // Middle Line
+                gctx.moveTo(0, guideMid);
+                gctx.lineTo(guideCanvas.width, guideMid);
+
+                // Bottom Line
+                gctx.moveTo(0, guideBot);
+                gctx.lineTo(guideCanvas.width, guideBot);
+
+                gctx.stroke();
+                gctx.restore();
+            }
+
+            // 2. Update Image Positions (Always, to ensure Guide Overlay is correct)
+            const imgBig = document.getElementById('imgBigE');
+            const imgSmall = document.getElementById('imgSmallE');
+
+            if (imgBig && imgSmall) {
+                // Big E: Fits between Top and Bottom lines
+                var hBig = guideBot - guideTop;
+                imgBig.style.height = hBig + 'px';
+                imgBig.style.top = guideTop + 'px';
+                imgBig.style.left = '35%'; // Left positioning
+                imgBig.style.transform = 'translate(-50%, 0)'; // Center on X only
+
+                // Small e: Fits between Middle and Bottom lines
+                // User Request: "kucuk_e gorselinin tabanı alt çizgiye değerken, üst tarafı da orta çizgiye teğet olmalı."
+                var hSmall = guideBot - guideMid;
+                imgSmall.style.height = hSmall + 'px';
+                imgSmall.style.top = guideMid + 'px';
+                imgSmall.style.left = '65%'; // Right positioning
+                imgSmall.style.transform = 'translate(-50%, 0)'; // Center on X only
+            }
+        }
+
+        function toggleLines() {
+            isLinesActive = !isLinesActive;
+            const btnLines = document.getElementById('btnLines');
+
+            const activeColor = '#FFD700'; // Gold
+            const inactiveColor = '#E0E0E0'; // Gray
+            const activeScale = 'scale(1.1)';
+            const inactiveScale = 'scale(1)';
+
+            if (btnLines) {
+                if (isLinesActive) {
+                    btnLines.style.backgroundColor = activeColor;
+                    btnLines.style.transform = activeScale;
+                    btnLines.style.border = '4px solid #fff';
+                } else {
+                    btnLines.style.backgroundColor = inactiveColor;
+                    btnLines.style.transform = inactiveScale;
+                    btnLines.style.border = 'none';
+                }
+            }
+            drawGuideLines();
+        }
+
+        function toggleGuide() {
+            isGuideActive = !isGuideActive;
+            const guideOverlay = document.getElementById('guideOverlay');
+            const btnGuide = document.getElementById('btnGuide');
+
+            const activeColor = '#FFD700';
+            const inactiveColor = '#E0E0E0';
+            const activeScale = 'scale(1.1)';
+            const inactiveScale = 'scale(1)';
+
+            if (btnGuide) {
+                if (isGuideActive) {
+                    btnGuide.style.backgroundColor = activeColor;
+                    btnGuide.style.transform = activeScale;
+                    btnGuide.style.border = '4px solid #fff';
+                    if (guideOverlay) guideOverlay.style.display = 'flex';
+                } else {
+                    btnGuide.style.backgroundColor = inactiveColor;
+                    btnGuide.style.transform = inactiveScale;
+                    btnGuide.style.border = 'none';
+                    if (guideOverlay) guideOverlay.style.display = 'none';
+                }
+            }
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+
+            // Define colors
+            const activeColor = '#FFD700'; // Gold/Yellow
+            const inactiveColor = '#E0E0E0'; // Light Gray
+            const activeScale = 'scale(1.1)';
+            const inactiveScale = 'scale(1)';
+
+            if (tool === 'charcoal') {
+                // Charcoal Cursor - using external SVG
+                // Pivot point adjustment might be needed via transform
+                toolCursor.innerHTML = `
+                <img src="../../assets/img/kar_komur.svg" alt="" 
+                    style="width: 48px; height: 48px; transform: translate(15px, -15px) rotate(-15deg); filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
+                `;
+
+                // Charcoal Active
+                btnCharcoal.style.backgroundColor = activeColor;
+                btnCharcoal.style.transform = activeScale;
+                btnCharcoal.style.border = '4px solid #fff'; // Add border pop
+
+                // Eraser Inactive
+                btnEraser.style.backgroundColor = inactiveColor;
+                btnEraser.style.transform = inactiveScale;
+                btnEraser.style.border = 'none';
+
+            } else {
+                // Hand Cursor - using external SVG
+                toolCursor.innerHTML = `
+                <img src="../../assets/img/kar_eldiven.svg" alt="" 
+                     style="width: 64px; height: 64px; transform: translate(10px, 10px) rotate(-10deg); filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
+                `;
+
+                // Eraser Active
+                btnEraser.style.backgroundColor = activeColor;
+                btnEraser.style.transform = activeScale;
+                btnEraser.style.border = '4px solid #fff';
+
+                // Charcoal Inactive
+                btnCharcoal.style.backgroundColor = inactiveColor;
+                btnCharcoal.style.transform = inactiveScale;
+                btnCharcoal.style.border = 'none';
+            }
+        }
+
+        // Initialize tool state
+        setTool('charcoal');
+
+        // FORCE CURSOR VISIBILITY INIT
+        window.addEventListener('load', () => {
+            // Center cursor initially
+            const rect = container.getBoundingClientRect();
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            toolCursor.style.left = cx + 'px';
+            toolCursor.style.top = cy + 'px';
+            toolCursor.style.display = 'block';
+        });
+
+        function updateCursorPosition(e) {
+            const coords = getCoordinates(e);
+            if (!coords) return;
+
+            const [x, y] = coords;
+            if (isFinite(x) && isFinite(y)) {
+                toolCursor.style.left = x + 'px';
+                toolCursor.style.top = y + 'px';
+            }
+        }
+
+        // Listen to container for mouse move even if not drawing
+        container.addEventListener('mousemove', (e) => updateCursorPosition(e));
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const coords = getCoordinates(e);
+            if (coords) {
+                [lastX, lastY] = coords;
+                updateCursorPosition(e);
+                draw(e);
+            }
+        }
+
+        function draw(e) {
+            updateCursorPosition(e);
+            if (!isDrawing) return;
+
+            e.preventDefault(); // Prevent scrolling
+
+            const coords = getCoordinates(e);
+            if (!coords) return;
+            const [x, y] = coords;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (currentTool === 'charcoal') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#333333';
+                ctx.lineWidth = 28;
+                ctx.shadowBlur = 2;
+                ctx.shadowColor = '#333333';
+            } else {
+                // Eraser
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 54;
+                ctx.shadowBlur = 0;
+            }
+
+            ctx.stroke();
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath(); // Reset path
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            // Calculate scale factors (internal pixels / visual pixels)
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            return [
+                (clientX - rect.left) * scaleX,
+                (clientY - rect.top) * scaleY
+            ];
+        }
+
+        function clearCanvas() {
+            ctx.globalCompositeOperation = 'destination-out'; // clear bits
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // clear all
+            ctx.globalCompositeOperation = 'source-over'; // reset
+        }
+
+        // Event Listeners
+        container.addEventListener('mousedown', startDrawing);
+        container.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing); // Catch mouse up outside
+
+        // Touch support
+        container.addEventListener('touchstart', startDrawing);
+        container.addEventListener('touchmove', draw);
+        window.addEventListener('touchend', stopDrawing);
+
+    </script>
+
+    <!-- Combined Navigation Logic -->
+    <script>
+        const GAMES_ORDER_NAMES = [
+            'sesi_hissedelim',
+            'harfi_taniyalim',
+            'harfi_yazalim',
+            'karda_yazalim',
+            'hece_sozcuk_olusturalim',
+            'sozcuk_olusturalim',
+            'okuyalim',
+            'ritmik_okuma'
+        ];
+
+        function getCurrentGameIndex() {
+            const currentPath = window.location.pathname;
+            // Handle both / and \ separators
+            for (let i = 0; i < GAMES_ORDER_NAMES.length; i++) {
+                if (currentPath.includes(GAMES_ORDER_NAMES[i])) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function navigateHome() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    player.SetVar("homepage", true);
+                    console.log("Storyline variable 'homepage' set to true");
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            window.location.href = '../../index.html';
+        }
+
+        function navigateNext() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId + 1);
+                        console.log("Storyline variable 'game_id' incremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx !== -1 && idx < GAMES_ORDER_NAMES.length - 1) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx + 1] + '/index.html';
+            } else {
+                console.log("Last game or index not found.");
+            }
+        }
+
+        function navigatePrev() {
+            // Storyline Logic
+            try {
+                var player = null;
+                if (window.GetPlayer) player = window.GetPlayer();
+                else if (window.parent && window.parent.GetPlayer) player = window.parent.GetPlayer();
+
+                if (player) {
+                    var currentId = player.GetVar("game_id");
+                    if (typeof currentId === 'number') {
+                        player.SetVar("game_id", currentId - 1);
+                        console.log("Storyline variable 'game_id' decremented");
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // Local Logic
+            const idx = getCurrentGameIndex();
+            if (idx > 0) {
+                window.location.href = '../' + GAMES_ORDER_NAMES[idx - 1] + '/index.html';
+            } else {
+                console.log("First game or index not found.");
+            }
+        }
+    </script>
+
+
+    <!-- Fullscreen & Audio Logic -->
+    <script>
+        // Fullscreen Toggle
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => console.log(e));
+                    btnFullscreen.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        btnFullscreen.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+                    }
+                }
+            });
+        }
+
+        /* Audio Slider Logic */
+        (function () {
+            const btn = document.getElementById('btn-audio-toggle');
+            const popup = document.getElementById('audio-slider-container');
+            const range = document.getElementById('volume-range');
+            const valDisplay = document.getElementById('volume-val-display');
+            let isOpen = false;
+
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    togglePopup(isOpen);
+                });
+                document.addEventListener('click', (e) => {
+                    if (isOpen && popup && !popup.contains(e.target) && !btn.contains(e.target)) {
+                        isOpen = false;
+                        togglePopup(false);
+                    }
+                });
+                if (popup) popup.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function togglePopup(show) {
+                if (!popup) return;
+                if (show) popup.classList.add('show');
+                else popup.classList.remove('show');
+            }
+
+            if (range) {
+                range.addEventListener('input', function () { updateVolume(this.value, true); });
+
+                // Init from Storyline
+                try {
+                    const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                    if (player) {
+                        const savedVol = player.GetVar("bg_music");
+                        if (typeof savedVol === 'number') {
+                            range.value = savedVol;
+                        }
+                    }
+                } catch (e) { }
+
+                // Init UI
+                updateVolume(range.value, false);
+            }
+
+            function updateVolume(val, syncToStoryline) {
+                if (!range) return;
+                const percent = val;
+                range.style.background = `linear-gradient(to right, #f1c40f ${percent}%, #555 ${percent}%)`;
+                if (valDisplay) valDisplay.innerText = val;
+
+                // Storyline
+                if (syncToStoryline) {
+                    try {
+                        const player = window.GetPlayer ? window.GetPlayer() : (window.parent && window.parent.GetPlayer ? window.parent.GetPlayer() : null);
+                        if (player) {
+                            player.SetVar("bg_music", Number(val));
+                        }
+                    } catch (e) { }
+                }
+            }
+        })();
+
+
+    </script>
+
+</body>
+
+</html>
