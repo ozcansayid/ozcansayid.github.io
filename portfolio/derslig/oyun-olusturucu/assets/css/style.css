@@ -1,21 +1,13 @@
 /* 
    Derslig Oyun Standart Stilleri 
-   Sürüm: 2.3 (Absolute Center Scale)
+   Sürüm: 2.0 (1920x1080 Fixed)
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
-
 :root {
-    --header-height: 100px;
-    /* Header Yükseltildi */
-    --primary-color: #0bb0b8;
-    /* Turkuaz */
-    --secondary-color: #e50069;
-    /* Pembe */
-    --accent-color: #fcd638;
-    /* Sarı */
-    --text-color: #2c3e50;
-    --bg-color: #ffffff;
+    --header-height: 80px;
+    --primary-color: #4CAF50;
+    --text-color: #333;
+    --bg-color: #f0f4f8;
 }
 
 * {
@@ -30,40 +22,38 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #2c3e50;
-    /* Koyu arka plan */
+    /* Oyun dışı kalan alanlar için koyu renk */
     overflow: hidden;
-    position: relative;
-    /* Absolute çocuk referansı için */
+    /* Scroll engelle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: 'Nunito', sans-serif;
 }
 
-/* OYUN KAPSAYICISI (Absolute Center) */
+/* 
+   OYUN KAPSAYICISI 
+   Bu alan JS tarafından otomatik scale edilecek.
+   İçerik geliştiriciler sadece 1920x1080'e göre çalışacak.
+*/
 #game-wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: relative;
     width: 1920px;
     height: 1080px;
     background-color: white;
     overflow: hidden;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    font-family: 'Nunito', sans-serif;
-    /* 
-       Transform işlemi JS tarafından yapılacak:
-       transform: translate(-50%, -50%) scale(X);
-    */
-    transform-origin: center center;
 }
 
-/* HEADER */
+/* OTOMATİK OLUŞTURULAN HEADER */
 #derslig-header {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: var(--header-height);
-    background: var(--primary-color);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: #0bafb7;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -71,7 +61,6 @@ body {
     z-index: 9999;
 }
 
-/* Sol taraf (Başlık) */
 .header-left {
     display: flex;
     align-items: center;
@@ -79,166 +68,102 @@ body {
 }
 
 .game-title {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 800;
     color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Sağ taraf (Butonlar) */
 .header-right {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 .ctrl-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 3px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 12px;
-    width: 64px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 28px;
+    font-size: 24px;
     color: white;
     transition: all 0.2s;
-    font-family: 'Nunito', sans-serif;
 }
 
 .ctrl-btn:hover {
     background: white;
     color: var(--primary-color);
     border-color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
-/* OYUN ALANI */
+/* OYUN ALANI (Game Area) */
 #game-area {
     position: absolute;
-    top: 0;
-    /* Header'ın başladığı yer (0) */
+    top: var(--header-height);
     left: 0;
     width: 100%;
-    height: 100%;
-    /* Tam ekran (1080px) */
+    height: calc(1080px - var(--header-height));
+    /* Gemini buranın içini dolduracak */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Dikey ortalama */
     align-items: center;
-    /* Yatay ortalama */
-    background-color: #f9f9f9;
-
-    /* GÜVENLİ ALAN */
-    /* Header (100px) + 40px boşluk = 140px üstten */
-    /* Alttan, sağdan, soldan 40px boşluk */
-    padding: 140px 40px 40px 40px;
-
-    overflow: hidden;
-    /* Taşmaları engelle */
-    z-index: 1;
-    /* Header'ın altında */
 }
 
-/* Oyun İçeriği Sınırlayıcı */
-#game-area>* {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    /* Eğer içerik çok büyükse otomatik %90'a çek */
-    flex-shrink: 1;
-}
-
-/* NEXT OVERLAY (Final Modalı) */
+/* BITIŞ EKRANI / NEXT BUTONU */
 #next-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Yarı saydam arka plan */
-    background: rgba(44, 62, 80, 0.85);
+    background: rgba(255, 255, 255, 0.9);
     display: none;
+    /* JS ile açılacak */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    backdrop-filter: blur(5px);
-    /* Arka planı bulanıklaştır */
-}
-
-/* Modal Kutusu */
-.final-modal-content {
-    background: white;
-    width: 800px;
-    padding: 60px;
-    border-radius: 30px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-    animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 5px solid var(--primary-color);
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.final-title {
-    font-size: 64px;
-    font-weight: 800;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 0px #eee;
-}
-
-.final-text {
-    font-size: 32px;
-    color: #555;
-    margin-bottom: 50px;
 }
 
 .next-btn {
     background: var(--primary-color);
     color: white;
-    font-size: 36px;
-    font-weight: 800;
-    padding: 20px 80px;
+    font-size: 48px;
+    padding: 20px 60px;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 10px 25px rgba(11, 176, 184, 0.4);
-    font-family: 'Nunito', sans-serif;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 15px;
+    box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+    animation: pulse 2s infinite;
 }
 
-.next-btn:hover {
-    transform: scale(1.05) translateY(-5px);
-    background-color: #099aa1;
-    box-shadow: 0 15px 30px rgba(11, 176, 184, 0.6);
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
-/* BILGI MODALI */
+/* Bilgi Modalı */
 .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(44, 62, 80, 0.8);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 10001;
     display: none;
     justify-content: center;
@@ -247,30 +172,13 @@ body {
 
 .info-content {
     background: white;
-    padding: 50px;
+    padding: 40px;
     border-radius: 20px;
-    max-width: 900px;
+    max-width: 800px;
     text-align: center;
     font-size: 24px;
-    border-top: 10px solid var(--accent-color);
 }
 
-.info-content h3 {
-    color: var(--primary-color);
-    font-weight: 800;
-    margin-bottom: 20px;
-    font-size: 36px;
-}
-
-.info-content button {
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    font-size: 24px;
-    border-radius: 50px;
-    margin-top: 30px;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
+#start-game-btn:hover {
+    transform: scale(1.05);
 }
