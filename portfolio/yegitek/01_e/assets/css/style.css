@@ -67,6 +67,7 @@ body {
 .game-container-fixed {
     width: 1920px;
     height: 1080px;
+    background-color: var(--bg-color);
     background-image: radial-gradient(#fff 20%, transparent 20%),
         radial-gradient(#fff 20%, transparent 20%);
     background-position: 0 0, 50px 50px;

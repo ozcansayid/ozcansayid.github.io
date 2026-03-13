@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etkinlik Başlangıç</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            width: 100%; height: 100%;
+        @font-face {
+            font-family: 'Quicksand';
+            font-weight: 400;
+            src: url('../../assets/fonts/Quicksand-Regular.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Quicksand';
+            font-weight: 700;
+            src: url('../../assets/fonts/Quicksand-Bold.ttf') format('truetype');
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
             background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Quicksand', sans-serif;
         }
 
         .video-container {
@@ -33,64 +51,84 @@
             background: #fff;
         }
 
-        /* Loading state */
-        .loading-overlay {
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Play overlay - shown initially */
+        .play-overlay {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #fff;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 200;
-            transition: opacity 0.5s ease;
+            z-index: 300;
+            cursor: pointer;
+            transition: opacity 0.4s ease;
         }
 
-        .loading-overlay.hidden {
+        .play-overlay.hidden {
             opacity: 0;
             pointer-events: none;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top: 4px solid #fff;
+        .play-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 40px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .btn-play {
+            width: 120px;
+            height: 120px;
+            border: none;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .loading-text {
-            color: rgba(255,255,255,0.7);
-            margin-top: 20px;
-            font-size: 1.1rem;
+        .btn-play:hover {
+            transform: scale(1.1);
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .btn-play:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
+
 <body>
 
     <div class="video-container">
-        <!-- Loading -->
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Video yükleniyor...</div>
-        </div>
-
         <!-- Video -->
         <video id="introVideo" playsinline preload="auto">
             <source src="../../assets/video/intro.mp4" type="video/mp4">
             Tarayıcınız video oynatmayı desteklemiyor.
         </video>
 
+        <!-- Play Overlay -->
+        <div class="play-overlay" id="playOverlay">
+            <div class="play-title" id="playTitle">ALFEBA Okuma-Yazma Oyunları</div>
+            <button class="btn-play" onclick="startVideo()" title="Başlat">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="24" height="24" rx="12" fill="white" fill-opacity="0.15" />
+                    <path d="M9.5 7.5v9l7-4.5-7-4.5z" fill="white" />
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -98,16 +136,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         const letter = urlParams.get('letter') || 'e';
 
+        // === Set dynamic title ===
+        document.getElementById('playTitle').innerText = 'ALFEBA Okuma-Yazma Oyunları - ' + letter.toUpperCase() + ' Sesi';
+
         // === Stop BGM during intro & reset volume to 20% ===
         localStorage.setItem('bg_music_volume', '20');
-        (function() {
+        (function () {
             var w = window;
             while (w.parent !== w) {
                 try {
                     w.parent.postMessage({ type: 'stopBGM' }, '*');
                     w.parent.postMessage({ type: 'setBGMVolume', volume: 20 }, '*');
                     w = w.parent;
-                } catch(e) { break; }
+                } catch (e) { break; }
             }
         })();
 
@@ -118,39 +159,28 @@
 
         // === Video Logic ===
         const video = document.getElementById('introVideo');
-        const loadingOverlay = document.getElementById('loadingOverlay');
+        const playOverlay = document.getElementById('playOverlay');
 
-        // When video can play
-        video.addEventListener('canplay', function() {
-            loadingOverlay.classList.add('hidden');
-        });
-
-        // Auto-play when ready
-        video.addEventListener('loadeddata', function() {
-            video.play().catch(function(e) {
-                console.warn('Auto-play prevented:', e);
-                // If autoplay fails, show a click-to-play overlay
-                loadingOverlay.innerHTML = `
-                    <div style="cursor:pointer; text-align:center;" onclick="document.getElementById('introVideo').play(); document.getElementById('loadingOverlay').classList.add('hidden');">
-                        <div style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin:0 auto;">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                        <div style="color:rgba(255,255,255,0.8); margin-top:15px; font-size:1.2rem;">Oynatmak için tıklayın</div>
-                    </div>
-                `;
+        // Start video from button click
+        function startVideo() {
+            video.play().then(function () {
+                playOverlay.classList.add('hidden');
+            }).catch(function (e) {
+                console.warn('Play failed:', e);
             });
-        });
+        }
 
         // When video ends, go to index
-        video.addEventListener('ended', function() {
+        video.addEventListener('ended', function () {
             goToIndex();
         });
 
         // Error handling - skip to index if video fails
-        video.addEventListener('error', function() {
+        video.addEventListener('error', function () {
             console.warn('Video yüklenemedi, index sayfasına yönlendiriliyor...');
             setTimeout(goToIndex, 1000);
         });
     </script>
 </body>
+
 </html>
