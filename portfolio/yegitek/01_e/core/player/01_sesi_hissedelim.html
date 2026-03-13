@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesi Hissedelim</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Kid Theme (Global) -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Core Engine Styles for this specific game -->
+    <link rel="stylesheet" id="engine-css" href="../games/sesi_hissedelim/style.css">
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <div id="game-mount-point">
+        <!-- Engine will inject HTML here -->
+        <div style="display:flex; justify-content:center; align-items:center; height:100vh;">
+            <h2>Oyun Yükleniyor...</h2>
+        </div>
+    </div>
+
+    <script>window.ASSETS_PATH = '../../assets/';</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/main.js"></script>
+
+    <!-- App Router Logic -->
+    <script>
+        // 1. Get the letter from URL parameter, e.g., ?letter=i
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentLetter = urlParams.get('letter');
+
+        // Fallback for testing if no parameter is provided
+        if (!currentLetter) currentLetter = 'i';
+
+        // 2. Dynamically load the correct data.js file
+        const script = document.createElement('script');
+        script.src = `../../data/01_sesi_hissedelim/${currentLetter}.js`;
+
+        script.onload = () => {
+            // Data is loaded, now load the engine
+            const engineScript = document.createElement('script');
+            engineScript.src = '../games/sesi_hissedelim/engine.js';
+            document.body.appendChild(engineScript);
+
+            // Load Intro/Instruction Manager
+            const introScript = document.createElement('script');
+            introScript.src = '../games/sesi_hissedelim/scripts/intro.js';
+            document.body.appendChild(introScript);
+        };
+
+        script.onerror = () => {
+            document.getElementById('game-mount-point').innerHTML =
+                `<h2 style="color:red; text-align:center; margin-top:50px;">Hata: '${currentLetter}' harfi için veri bulunamadı!</h2>`;
+        };
+
+        document.body.appendChild(script);
+    </script>
+</body>
+
+</html>

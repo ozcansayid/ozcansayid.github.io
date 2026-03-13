@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Oynatıcı</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Kid Theme (Global) -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Game-specific CSS will be injected here by the player -->
+    <link rel="stylesheet" id="game-engine-css" href="">
+
+    <style>
+        /* Player is invisible - no UI elements shown.
+           Just provides the infrastructure for loading games. */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Game Mount Point - engines inject their HTML here -->
+    <div id="game-mount-point"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Game Registry -->
+    <script src="game-registry.js"></script>
+
+    <!-- Player Core -->
+    <script>
+        /**
+         * Unified Player
+         * - Reads URL params to determine which game to load
+         * - Dynamically loads game CSS, data, intro, and engine scripts
+         * - Provides fullscreen, navigation, and audio management
+         * - NO visible UI - all control is done by game engines' own buttons
+         */
+        (function () {
+            // === URL Parameters ===
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameName = urlParams.get('game') || '01_sesi_hissedelim';
+            const letter = urlParams.get('letter') || 'e';
+            const isEmbedded = urlParams.get('embedded') === 'true';
+
+            // === Set Global Assets Path ===
+            window.ASSETS_PATH = '../../assets/';
+
+            // === Helper: Dynamic Script Loader ===
+            function loadScript(src) {
+                return new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    // Cache-busting: append timestamp to avoid stale cached scripts
+                    s.src = src + (src.includes('?') ? '&' : '?') + '_t=' + Date.now();
+                    s.onload = resolve;
+                    s.onerror = () => {
+                        console.warn(`Player: Script not found: ${src}`);
+                        resolve(); // Don't block on missing optional scripts
+                    };
+                    document.body.appendChild(s);
+                });
+            }
+
+            // === Helper: Dynamic CSS Loader ===
+            function loadCSS(href) {
+                const link = document.getElementById('game-engine-css');
+                if (link && href) {
+                    link.href = href;
+                }
+            }
+
+            // === Load Confetti if needed ===
+            function loadConfetti() {
+                return new Promise((resolve) => {
+                    if (window.confetti) { resolve(); return; }
+                    const s = document.createElement('script');
+                    s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+                    s.onload = resolve;
+                    s.onerror = resolve;
+                    document.head.appendChild(s);
+                });
+            }
+
+            // === Main Init ===
+            async function initPlayer() {
+                const registry = window.GAME_REGISTRY;
+                if (!registry) {
+                    console.error('Player: GAME_REGISTRY not found!');
+                    return;
+                }
+
+                const gameConfig = registry[gameName];
+                if (!gameConfig) {
+                    document.getElementById('game-mount-point').innerHTML =
+                        `<div style="display:flex; justify-content:center; align-items:center; height:100vh;">
+                            <h2 style="color:red;">Hata: '${gameName}' oyunu bulunamadı!</h2>
+                        </div>`;
+                    return;
+                }
+
+                // Update page title
+                document.title = gameConfig.title;
+
+                // 1. Load game-specific CSS
+                loadCSS(gameConfig.css);
+
+                // 2. Load confetti if this game needs it
+                if (gameConfig.needsConfetti) {
+                    await loadConfetti();
+                }
+
+                try {
+                    // 3. Load data file for this letter
+                    await loadScript(`../../data/${gameConfig.dataFolder}/${letter}.js`);
+
+                    // 4. Load main.js (GameEngine + GameNav)
+                    await loadScript('../../assets/js/main.js');
+
+                    // 5. Init GameEngine
+                    if (window.GameEngine) {
+                        window.GameEngine.init();
+                    }
+
+                    // 6. Load intro/instruction script
+                    if (gameConfig.scripts.intro) {
+                        await loadScript(gameConfig.scripts.intro);
+                    }
+
+                    // 7. Load game engine
+                    await loadScript(gameConfig.scripts.engine);
+
+                    console.log(`Player: '${gameConfig.title}' initialized for letter: ${letter}`);
+                } catch (error) {
+                    console.error('Player: Critical error during game initialization:', error);
+                    document.getElementById('game-mount-point').innerHTML =
+                        `<div style="display:flex; justify-content:center; align-items:center; height:100vh;">
+                            <h2 style="color:red;">Oyun yüklenirken hata oluştu!</h2>
+                        </div>`;
+                }
+            }
+
+            // === Store current game info for navigation ===
+            window.PLAYER_STATE = {
+                currentGame: gameName,
+                letter: letter,
+                isEmbedded: isEmbedded
+            };
+
+            // === Fullscreen Sync (for embedded mode in index iframe) ===
+            if (isEmbedded) {
+                // Listen for fullscreen state changes from parent
+                window.addEventListener('message', (e) => {
+                    if (e.data && e.data.type === 'fullscreenChanged') {
+                        // Propagate to any child listeners
+                        document.dispatchEvent(new CustomEvent('fullscreenSync', {
+                            detail: { isFullscreen: e.data.isFullscreen }
+                        }));
+                    }
+                });
+            }
+
+            // Update URL without reload on game change
+            function updateURL(newGame, newLetter) {
+                const params = new URLSearchParams();
+                params.set('game', newGame);
+                params.set('letter', newLetter);
+                if (isEmbedded) params.set('embedded', 'true');
+                history.replaceState(null, '', `player.html?${params.toString()}`);
+            }
+
+            // === Start ===
+            initPlayer();
+        })();
+    </script>
+</body>
+</html>

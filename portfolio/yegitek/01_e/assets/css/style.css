@@ -1,0 +1,455 @@
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/Quicksand-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Quicksand-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Quicksand-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Quicksand-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Quicksand-Bold.ttf') format('truetype');
+}
+
+:root {
+    --primary-color: #FF9F1C;
+    /* Turuncu */
+    --secondary-color: #2EC4B6;
+    /* Turkuaz */
+    --success-color: #a4d13a;
+    /* Yeşil */
+    --danger-color: #FF4D6D;
+    /* Kırmızı-Pembe */
+    --bg-color: #CBF3F0;
+    /* Açık Mavi Arkaplan CBF3F0*/
+    --card-bg: #ffffff;
+    --font-main: 'Quicksand', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: var(--font-main);
+    color: #333;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Prevent scrolling, let JS handle scaling */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container-fixed {
+    width: 1920px;
+    height: 1080px;
+    background-image: radial-gradient(#fff 20%, transparent 20%),
+        radial-gradient(#fff 20%, transparent 20%);
+    background-position: 0 0, 50px 50px;
+    background-size: 100px 100px;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    /* Prevent compression */
+
+    /* Layout Logic */
+    display: flex;
+    padding: 30px;
+    gap: 30px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-main);
+    font-weight: 700 !important;
+    /* Force bold headers */
+    color: #2b2b2b;
+}
+
+/* --- Layout Components --- */
+.sidebar-kid {
+    width: 140px;
+    /* Narrow sidebar */
+    background-color: var(--card-bg);
+    border-radius: 40px;
+    /* Oval corners */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 10px;
+    justify-content: space-between;
+    /* Top (Lives) and Bottom (Nav) split */
+    height: 100%;
+}
+
+.lives-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    background-color: #f1f3f5;
+    /* Light gray background */
+    border-radius: 20px;
+    padding: 15px 5px;
+    box-shadow: none;
+    /* Removed shadow for flatter look */
+    border: none;
+    /* Removed border */
+}
+
+.lives-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #6c757d;
+    /* Muted text color */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hearts-row {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    /* Tighter gap */
+    justify-content: center;
+    flex-wrap: nowrap;
+    /* Force single line */
+}
+
+.life-icon {
+    width: 28px;
+    /* Slightly smaller to ensure fit */
+    height: 28px;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
+    transition: transform 0.2s;
+}
+
+.life-lost {
+    opacity: 0.2;
+    /* Lighter ghost effect */
+    filter: grayscale(100%);
+    transform: scale(0.9);
+}
+
+.nav-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.main-content-kid {
+    flex-grow: 1;
+    background-color: var(--card-bg);
+    border-radius: 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    /* Removed padding: 20px - Padding will be handled by inner containers */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- Internal Layout --- */
+.game-header {
+    height: 80px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    border-bottom: 2px solid #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #343a40;
+    /* Dark gray, soft black */
+    margin: 0;
+}
+
+.game-nav {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-nav-flat {
+    background-color: var(--secondary-color);
+    /* Previously hover color */
+    border: none;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    /* Text white */
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+    /* Added depth */
+}
+
+.btn-nav-flat:hover {
+    background-color: var(--secondary-color);
+    filter: brightness(1.1);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-nav-flat:active {
+    transform: translateY(2px);
+    box-shadow: none;
+    filter: brightness(1.0);
+}
+
+.btn-nav-home {
+    background-color: #4CC9F0 !important;
+}
+
+.btn-nav-home:hover {
+    background-color: #4CC9F0 !important;
+    filter: brightness(1.1);
+}
+
+.game-board {
+    flex-grow: 1;
+    background-color: #fcfcfc;
+    /* Very subtle inner bg difference */
+    padding: 30px;
+    overflow: hidden;
+    /* Or auto if scrolling needed inside */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Inner shadow inset for "deep" feel */
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
+}
+
+/* --- Sidebar Extra --- */
+.btn-info-kid {
+    background-color: #4CC9F0;
+    color: white;
+}
+
+.btn-info-kid:hover,
+.btn-info-kid:active,
+.btn-info-kid:focus {
+    background-color: #4895ef !important;
+    color: white !important;
+    opacity: 1 !important;
+}
+
+/* --- Buttons --- */
+.btn-kid {
+    border-radius: 50px;
+    padding: 15px 40px;
+    /* Slightly larger for 1920x1080 scale */
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.1s;
+    /* Removed transform transition */
+    font-family: var(--font-main);
+}
+
+.btn-kid:active {
+    box-shadow: none;
+    transform: translateY(4px);
+    /* Keep click press effect */
+}
+
+/* Sidebar Specific Buttons */
+.btn-icon-only {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.btn-primary-kid {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary-kid:hover,
+.btn-primary-kid:active,
+.btn-primary-kid:focus {
+    background-color: #ff8c00 !important;
+    color: white !important;
+    opacity: 1 !important;
+}
+
+.btn-success-kid {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success-kid:hover,
+.btn-success-kid:active,
+.btn-success-kid:focus {
+    background-color: #a4d13a !important;
+    color: white !important;
+    opacity: 1 !important;
+}
+
+/* --- Cards --- */
+.card-kid {
+    border: none;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: var(--card-bg);
+    overflow: hidden;
+    /* transition: transform 0.3s; REMOVED */
+}
+
+/* .card-kid:hover { transform: translateY(-5px); } REMOVED */
+
+.card-header-kid {
+    background-color: var(--secondary-color);
+    color: white;
+    font-family: var(--font-main);
+    font-size: 1.8rem;
+    padding: 20px;
+    text-align: center;
+    border-bottom: none;
+    font-weight: 700 !important;
+}
+
+/* --- Grid Items (Dashboard) --- */
+.game-thumb {
+    height: 200px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #ccc;
+    border-radius: 15px;
+}
+
+/* --- Modals (Feedback) --- */
+.modal-content-kid {
+    border-radius: 30px;
+    border: 8px solid;
+    text-align: center;
+}
+
+.modal-success {
+    border-color: var(--success-color);
+}
+
+.modal-fail {
+    border-color: var(--danger-color);
+}
+
+.modal-header {
+    border-bottom: none;
+    justify-content: center;
+    padding-top: 30px;
+}
+
+.modal-footer {
+    border-top: none;
+    justify-content: center;
+    padding-bottom: 30px;
+}
+
+.feedback-icon {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.star-rating {
+    color: #FFD700;
+    font-size: 3rem;
+}
+
+/* --- Animations --- */
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-pop {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lead {
+    font-weight: 500 !important;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(46, 196, 182, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(46, 196, 182, 0);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
