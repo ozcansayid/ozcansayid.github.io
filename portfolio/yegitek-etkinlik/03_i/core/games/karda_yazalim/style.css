@@ -1,0 +1,69 @@
+/* Karda Yazalim - Core Styles */
+.snow-canvas-container {
+    width: 100%; height: 100%;
+    background-color: #fcfcfc;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgb(255,255,255) 0%, rgb(240,248,255) 90%);
+    position: relative; overflow: hidden;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
+    cursor: none;
+}
+#snowCanvas { display: block; width: 100%; height: 100%; touch-action: none; position: relative; z-index: 30; }
+#guideCanvas { display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5; pointer-events: none; }
+
+.snowflake {
+    position: absolute; color: #fff; font-size: 1em; font-family: 'Quicksand';
+    text-shadow: 0 0 1px #000; top: -10%; z-index: 5;
+    user-select: none; pointer-events: none;
+    animation-name: snowflakes-fall, snowflakes-shake;
+    animation-duration: 10s, 3s;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+}
+@keyframes snowflakes-fall { 0% { top: -10%; } 100% { top: 100%; } }
+@keyframes snowflakes-shake { 0% { transform: translateX(0); } 50% { transform: translateX(80px); } 100% { transform: translateX(0); } }
+
+#toolCursor {
+    position: absolute; pointer-events: none; z-index: 100;
+    transform: translate(-50%, -50%); font-size: 3rem;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+}
+
+.tools-container {
+    display: flex; flex-direction: column; gap: 12px; width: 100%;
+    align-items: center; padding: 10px 5px; background: transparent;
+}
+
+.tool-btn {
+    width: 90px; height: 90px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: none; background-color: #E0E0E0; cursor: pointer;
+}
+.tool-btn.active-tool { background-color: #FFD700; transform: scale(1.1); border: 4px solid #fff; }
+.tool-btn img { width: 42px; height: 42px; margin-bottom: 2px; }
+.tool-btn span { font-size: 0.75rem; font-weight: bold; color: #333; }
+
+/* Audio slider */
+.audio-slider-popup {
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    width: 110px; height: auto; background-color: #343a40; border-radius: 12px;
+    padding: 8px 10px; display: flex; flex-direction: column; justify-content: center;
+    align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    opacity: 0; visibility: hidden; margin-bottom: 12px; transition: all 0.2s ease; z-index: 999;
+}
+.audio-slider-popup.show { opacity: 1; visibility: visible; bottom: 115%; }
+.audio-slider-popup::after {
+    content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+    border-width: 6px 6px 0; border-style: solid; border-color: #343a40 transparent transparent transparent;
+}
+#volume-val-display { color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; }
+.horizontal-range {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 3px; background: #555; outline: none; cursor: pointer;
+}
+.horizontal-range::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; cursor: pointer; box-shadow: 0 0 5px rgba(0,0,0,0.5); border: 2px solid #ddd;
+}
