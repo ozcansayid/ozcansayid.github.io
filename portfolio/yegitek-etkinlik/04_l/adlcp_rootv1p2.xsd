@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  targetNamespace="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  elementFormDefault="unqualified" version="1.02">
+  <xsd:attribute name="scormtype">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="sco"/>
+        <xsd:enumeration value="asset"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:attribute>
+  <xsd:attributeGroup name="attr.scormtype">
+    <xsd:attribute ref="scormtype"/>
+  </xsd:attributeGroup>
+  <xsd:element name="location" type="xsd:string"/>
+  <xsd:element name="masteryscore" type="xsd:string"/>
+  <xsd:element name="maxtimeallowed" type="xsd:string"/>
+  <xsd:element name="datafromlms" type="xsd:string"/>
+  <xsd:element name="timelimitaction" type="xsd:string"/>
+  <xsd:element name="prerequisites" type="xsd:string"/>
+</xsd:schema>

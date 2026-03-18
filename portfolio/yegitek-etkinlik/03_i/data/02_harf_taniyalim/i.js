@@ -28,5 +28,5 @@ const HarfiTaniyalimData = {
     durationSeconds: 60,
 
     // Title 
-    title: "İ/i Harflerini Tanıyalım"
+    title: "İ/i Harfini Tanıyalım"
 };

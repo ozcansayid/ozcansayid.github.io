@@ -1,6 +1,7 @@
 const SozcukOlusturmaData = {
     folderPrefix: "03_i/03_i_06_sozcuk_olusturma",
     title: "Sözcük Oluşturalım",
+    demoSyllable: "in",
     audio: {
         instruction: "instruction.mp3",
         correct: "correct.mp3",
