@@ -9,7 +9,7 @@ const SozcukOlusturmaData = {
         congratulations: "congratulations.mp3"
     },
     levels: [
-        { text: "ni l", audio: "nil.mp3" },
+        { text: "Ni l", audio: "nil.mp3" },
         { text: "na l", audio: "nal.mp3" },
         { text: "E la", audio: "ela.mp3" },
         { text: "la le", audio: "lale.mp3" },
@@ -20,8 +20,8 @@ const SozcukOlusturmaData = {
         { text: "at let", audio: "atlet.mp3" },
         { text: "ta ne li", audio: "taneli.mp3" },
         { text: "a i le", audio: "aile.mp3" },
-        { text: "na il", audio: "nail.mp3" },
-        { text: "i nal", audio: "inal.mp3" }
+        { text: "Na il", audio: "nail.mp3" },
+        { text: "İ nal", audio: "inal.mp3" }
     ],
     config: {
         gridSize: 50,
