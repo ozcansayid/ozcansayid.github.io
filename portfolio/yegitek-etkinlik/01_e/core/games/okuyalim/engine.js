@@ -238,6 +238,27 @@ class OkuyalimEngine {
         document.getElementById('game-over-screen').classList.remove('hidden');
     }
 
+    /**
+     * Convert a display word to an ASCII-safe lowercase audio filename.
+     * e.g. "Ela" -> "ela", "Işık" -> "isik", "Çöp" -> "cop", "Nail" -> "nail"
+     */
+    toAudioFileName(word) {
+        const turkishMap = {
+            'ç': 'c', 'Ç': 'c',
+            'ğ': 'g', 'Ğ': 'g',
+            'ı': 'i', 'I': 'i',
+            'İ': 'i',
+            'ö': 'o', 'Ö': 'o',
+            'ş': 's', 'Ş': 's',
+            'ü': 'u', 'Ü': 'u'
+        };
+        return word
+            .split('')
+            .map(ch => turkishMap[ch] || ch)
+            .join('')
+            .toLowerCase();
+    }
+
     bindEvents() {
         this.spinBtn.addEventListener('click', () => this.spin());
 
@@ -251,7 +272,8 @@ class OkuyalimEngine {
             this.resultDisplay.addEventListener('click', () => {
                 if (this.resultDisplay.innerText && this.resultDisplay.classList.contains('show')) {
                     const word = this.resultDisplay.innerText.trim();
-                    new Audio(`${window.ASSETS_PATH}audio/${this.data.folderPrefix}/${word}.mp3`).play().catch(() => {});
+                    const audioName = this.toAudioFileName(word);
+                    new Audio(`${window.ASSETS_PATH}audio/${this.data.folderPrefix}/${audioName}.mp3`).play().catch(() => {});
                 }
             });
         }

@@ -135,6 +135,7 @@ window.HarfYazalimIntro = {
 window.HarfYazalimInstruction = {
     init: function () {
         window.HarfYazalimIntro.createOverlay();
+        window.HarfYazalimIntro.isHidden = false;
         const btn = document.getElementById('btn-start-intro');
         if (btn) {
             btn.innerHTML = 'DEVAM ET <i class="bi bi-play-fill"></i>';
@@ -144,13 +145,14 @@ window.HarfYazalimInstruction = {
         window.HarfYazalimIntro.setupAudio();
         window.HarfYazalimIntro.playAudio();
         const overlay = document.getElementById(window.HarfYazalimIntro.overlayId);
-        if (overlay) { overlay.style.visibility = 'visible'; overlay.style.opacity = '1'; }
+        if (overlay) { overlay.style.visibility = 'visible'; overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }
     },
     hide: function () {
         window.HarfYazalimIntro.stopAudio();
         const overlay = document.getElementById(window.HarfYazalimIntro.overlayId);
         if (overlay) {
             overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
             setTimeout(() => { overlay.style.visibility = 'hidden'; }, 500);
         }
     }

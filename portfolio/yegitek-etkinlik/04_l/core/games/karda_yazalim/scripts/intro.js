@@ -114,11 +114,11 @@ window.KardaYazalimInstruction = {
         window.KardaYazalimIntro.setupAudio();
         window.KardaYazalimIntro.playAudio();
         const overlay = document.getElementById(window.KardaYazalimIntro.overlayId);
-        if (overlay) { overlay.style.visibility = 'visible'; overlay.style.opacity = '1'; }
+        if (overlay) { overlay.style.visibility = 'visible'; overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }
     },
     hide: function () {
         window.KardaYazalimIntro.stopAudio();
         const overlay = document.getElementById(window.KardaYazalimIntro.overlayId);
-        if (overlay) { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.visibility = 'hidden'; }, 500); }
+        if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; setTimeout(() => { overlay.style.visibility = 'hidden'; }, 500); }
     }
 };
