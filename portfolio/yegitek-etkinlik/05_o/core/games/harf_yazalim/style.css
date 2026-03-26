@@ -1,0 +1,177 @@
+/* Harf Yazalim - Core Styles */
+:root {
+    --primary-color: #ff9f1c;
+    --primary-hover: #ffbf69;
+    --secondary-color: #2ec4b6;
+    --accent-color: #cbf3f0;
+    --success-color: #a4d13a;
+    --danger-color: #ff4d6d;
+    --text-color: #2c3e50;
+    --sidebar-width: 120px;
+}
+
+.game-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0 0 38px 38px;
+}
+
+.game-board {
+    padding: 0 !important;
+}
+
+.canvas-container-custom {
+    position: relative;
+    width: 96%;
+    height: 540px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 4px solid #f0f0f0;
+    overflow: hidden;
+    touch-action: none;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 26px;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+#mask-canvas {
+    z-index: 10;
+    opacity: 1;
+    pointer-events: none;
+}
+
+#drawing-canvas {
+    z-index: 20;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23000000"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>') 0 24, crosshair;
+}
+
+.controls-area {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.btn-tool {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    border: 2px solid #e0e0e0;
+    background: #fff;
+    color: #666;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-tool.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(255, 159, 28, 0.3);
+}
+
+.btn-action {
+    height: 60px;
+    padding: 0 30px;
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Audio Slider Integration */
+.audio-slider-popup {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: auto;
+    background-color: #343a40;
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    z-index: 999;
+}
+
+.audio-slider-popup.show {
+    opacity: 1;
+    visibility: visible;
+    bottom: 115%;
+}
+
+.audio-slider-popup::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: #343a40 transparent transparent transparent;
+}
+
+#volume-val-display {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.horizontal-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #555;
+    outline: none;
+    cursor: pointer;
+}
+
+.horizontal-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    border: 2px solid #ddd;
+}
