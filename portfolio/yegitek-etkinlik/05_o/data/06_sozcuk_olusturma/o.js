@@ -14,7 +14,7 @@ const SozcukOlusturmaData = {
         { text: "o l", audio: "ol.mp3" },
         { text: "n o", audio: "no.mp3" },
         { text: "no ta", audio: "nota.mp3" },
-        { text: "o nat", audio: "onat.mp3" },
+        { text: "O nat", audio: "onat.mp3" },
         { text: "o tel", audio: "otel.mp3" },
         { text: "ol ta", audio: "olta.mp3" }
     ],

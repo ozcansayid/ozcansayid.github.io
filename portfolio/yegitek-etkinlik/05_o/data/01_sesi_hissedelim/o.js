@@ -37,7 +37,7 @@ const SesiHissedelimData = {
         {
             text: "İsminde 'O' sesi olanları seçelim.",
             items: [
-                { name: "Kâğıt", image: "05_o/05_o_01_sesi_hissedelim/img_5_1.png", audio: "05_o/05_o_01_sesi_hissedelim/05_01.mp3", isCorrect: false },
+                { name: "Kalem", image: "05_o/05_o_01_sesi_hissedelim/img_5_1.png", audio: "05_o/05_o_01_sesi_hissedelim/05_01.mp3", isCorrect: false },
                 { name: "Yol", image: "05_o/05_o_01_sesi_hissedelim/img_5_2.png", audio: "05_o/05_o_01_sesi_hissedelim/05_02.mp3", isCorrect: true },
                 { name: "Araba", image: "05_o/05_o_01_sesi_hissedelim/img_5_3.png", audio: "05_o/05_o_01_sesi_hissedelim/05_03.mp3", isCorrect: false }
             ]
