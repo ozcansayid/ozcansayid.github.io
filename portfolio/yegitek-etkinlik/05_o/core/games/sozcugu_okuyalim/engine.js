@@ -1,8 +1,8 @@
 /**
- * Yumurtayı Kıralım - Core Engine
+ * Sözcüğü Okuyalım - Core Engine
  * Listen to the word/syllable, click the correct egg to crack it and reveal a chick.
  */
-class YumurtayiKiralimEngine {
+class SozcuguOkuyalimEngine {
     constructor(data) {
         this.data = data;
         this.mountPoint = document.getElementById('game-mount-point');
@@ -17,7 +17,7 @@ class YumurtayiKiralimEngine {
     }
 
     initUI() {
-        const GAME_ASSETS = '../games/yumurtayi_kiralim/assets/';
+        const GAME_ASSETS = '../games/sozcugu_okuyalim/assets/';
 
         this.mountPoint.innerHTML = `
         <div class="game-container-fixed" style="overflow:hidden;margin:0 auto;">
@@ -53,7 +53,7 @@ class YumurtayiKiralimEngine {
 
             <div class="main-content-kid" style="border-radius:40px !important;">
                 <div class="game-header">
-                    <h2 class="game-title">${this.data.title || 'Yumurtayı Kıralım'}</h2>
+                    <h2 class="game-title">${this.data.title || 'Sözcüğü Okuyalım'}</h2>
                     <div class="game-nav">
                         <button class="btn-nav-flat btn-nav-home" id="btn-home" title="Anasayfa"><i class="bi bi-house-fill"></i></button>
                         <button class="btn-nav-flat" id="btn-prev" title="Önceki"><i class="bi bi-chevron-left"></i></button>
@@ -84,8 +84,8 @@ class YumurtayiKiralimEngine {
         if (window.GameEngine) window.GameEngine.resize();
 
         // Init intro
-        if (typeof window.YumurtayiKiralimIntro !== 'undefined') {
-            window.YumurtayiKiralimIntro.init(this.data);
+        if (typeof window.SozcuguOkuyalimIntro !== 'undefined') {
+            window.SozcuguOkuyalimIntro.init(this.data);
         }
     }
 
@@ -245,7 +245,7 @@ class YumurtayiKiralimEngine {
             this.clearLoopAudio();
 
             // Play crack sound
-            this.playSound('crack');
+            const crackAudio = this.playSound('crack');
 
             // Step 1: Show crack lines
             setTimeout(() => {
@@ -263,19 +263,21 @@ class YumurtayiKiralimEngine {
                     // Start blink animation
                     this.startChickBlink(wrapper);
 
-                    // Play correct sound
-                    setTimeout(() => {
+                    // Play correct sound when crack finishes
+                    const playCorrectSequence = () => {
                         this.playSound('correct');
-
-                        // Update score (logic kept, display removed as requested)
                         this.score++;
-
-                        // Next level after delay
                         setTimeout(() => {
                             this.currentLevel++;
                             this.loadLevel();
-                        }, 2500);
-                    }, 500);
+                        }, 2000);
+                    };
+
+                    if (crackAudio) {
+                        crackAudio.onended = playCorrectSequence;
+                    } else {
+                        playCorrectSequence();
+                    }
                 }, 300);
             }, 150);
 
@@ -351,16 +353,18 @@ class YumurtayiKiralimEngine {
     }
 
     playSound(type) {
-        const GAME_ASSETS = '../games/yumurtayi_kiralim/assets/audio/';
+        const GAME_ASSETS = '../games/sozcugu_okuyalim/assets/audio/';
         let file;
         switch(type) {
             case 'correct': file = 'correct.mp3'; break;
             case 'wrong': file = 'wrong.mp3'; break;
             case 'crack': file = 'crack.mp3'; break;
             case 'congratulations': file = 'congratulations.mp3'; break;
-            default: return;
+            default: return null;
         }
-        new Audio(GAME_ASSETS + file).play().catch(() => {});
+        const audio = new Audio(GAME_ASSETS + file);
+        audio.play().catch(() => {});
+        return audio;
     }
 
     victory() {
@@ -377,8 +381,8 @@ class YumurtayiKiralimEngine {
         document.getElementById('btn-replay-game').onclick = () => location.reload();
         document.getElementById('btn-replay-sound').onclick = () => this.playTargetAudio();
         document.getElementById('btn-instruction').onclick = () => {
-            if (typeof window.YumurtayiKiralimInstruction !== 'undefined') {
-                window.YumurtayiKiralimInstruction.init();
+            if (typeof window.SozcuguOkuyalimInstruction !== 'undefined') {
+                window.SozcuguOkuyalimInstruction.init();
             }
         };
 
@@ -418,10 +422,10 @@ window.startGame = function() {
 };
 
 function initApp() {
-    if (typeof YumurtayiKiralimData !== 'undefined') {
-        window.activeYumurtaEngine = new YumurtayiKiralimEngine(YumurtayiKiralimData);
+    if (typeof SozcuguOkuyalimData !== 'undefined') {
+        window.activeYumurtaEngine = new SozcuguOkuyalimEngine(SozcuguOkuyalimData);
     } else {
-        console.error("YumurtayiKiralimData is not defined.");
+        console.error("SozcuguOkuyalimData is not defined.");
     }
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);

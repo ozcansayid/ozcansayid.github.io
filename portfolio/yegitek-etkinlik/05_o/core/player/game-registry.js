@@ -92,14 +92,14 @@ window.GAME_REGISTRY = {
         },
         needsConfetti: true
     },
-    '09_yumurtayi_kiralim': {
-        title: 'Yumurtayı Kıralım',
-        dataFolder: '09_yumurtayi_kiralim',
-        engineFolder: 'yumurtayi_kiralim',
-        css: '../games/yumurtayi_kiralim/style.css',
+    '09_sozcugu_okuyalim': {
+        title: 'Sözcüğü Okuyalım',
+        dataFolder: '09_sozcugu_okuyalim',
+        engineFolder: 'sozcugu_okuyalim',
+        css: '../games/sozcugu_okuyalim/style.css',
         scripts: {
-            intro: '../games/yumurtayi_kiralim/scripts/intro.js',
-            engine: '../games/yumurtayi_kiralim/engine.js'
+            intro: '../games/sozcugu_okuyalim/scripts/intro.js',
+            engine: '../games/sozcugu_okuyalim/engine.js'
         },
         needsConfetti: true
     },
@@ -126,7 +126,7 @@ window.GAME_ORDER = [
     '06_sozcuk_olusturma',
     '07_okuyalim',
     '08_ritmik_okuma',
-    '09_yumurtayi_kiralim',
+    '09_sozcugu_okuyalim',
     '10_cumle_okuyalim'
 ];
 
@@ -161,6 +161,6 @@ window.LETTER_GAME_ORDER = {
     'k': [
         '01_sesi_hissedelim', '02_harf_taniyalim', '03_harf_yazalim',
         '04_karda_yazalim', '05_hece_sozcuk', '06_sozcuk_olusturma',
-        '09_yumurtayi_kiralim', '10_cumle_okuyalim'
+        '09_sozcugu_okuyalim', '10_cumle_okuyalim'
     ]
 };

@@ -1,7 +1,7 @@
 /**
- * Yumurtayı Kıralım - Intro & Instruction Overlay
+ * Sözcüğü Okuyalım - Intro & Instruction Overlay
  */
-window.YumurtayiKiralimIntro = {
+window.SozcuguOkuyalimIntro = {
     overlayId: 'yumurta-intro-overlay',
     audio: null,
     isPlaying: false,
@@ -30,7 +30,7 @@ window.YumurtayiKiralimIntro = {
             <style>
                 .demo-egg-scene {
                     position: relative; width: 500px; height: 300px;
-                    background: url('../games/yumurtayi_kiralim/assets/img/bg.jpg') center/cover no-repeat;
+                    background: url('../games/sozcugu_okuyalim/assets/img/bg.jpg') center/cover no-repeat;
                     border: 4px solid #fff; border-radius: 20px;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                     overflow: hidden; display: flex; align-items: center;
@@ -60,8 +60,8 @@ window.YumurtayiKiralimIntro = {
                 .demo-chick.bounce { animation: demoBounce 0.6s ease infinite; }
             </style>
             <div class="intro-content text-center" style="max-width:800px;width:90%;">
-                <h1 class="text-white mb-2 fw-bold" style="text-shadow:0 4px 10px rgba(0,0,0,0.5);font-size:3rem;">Yumurtayı Kıralım</h1>
-                <p class="text-white mb-4" style="font-size:1.5rem;opacity:0.9;">Duyduğun sözcüğü yazılı olduğu yumurtayı bul ve kır!</p>
+                <h1 class="text-white mb-2 fw-bold" style="text-shadow:0 4px 10px rgba(0,0,0,0.5);font-size:3rem;">Sözcüğü Okuyalım</h1>
+                <p class="text-white mb-4" style="font-size:1.5rem;opacity:0.9;">Duyduğumuz sözcüğün yazılı olduğu yumurtaya tıklayalım.</p>
 
                 <div class="demo-egg-scene mx-auto mb-4">
                     <div class="demo-egg" id="demo-egg-1">
@@ -102,7 +102,7 @@ window.YumurtayiKiralimIntro = {
 
     setupAudio: function () {
         if (this.audio) return;
-        const audioPath = '../games/yumurtayi_kiralim/assets/audio/instruction.mp3';
+        const audioPath = '../games/sozcugu_okuyalim/assets/audio/instruction.mp3';
         this.audio = new Audio(audioPath);
 
         const btn = document.getElementById('btn-start-yumurta');
@@ -185,13 +185,13 @@ window.YumurtayiKiralimIntro = {
     }
 };
 
-window.YumurtayiKiralimInstruction = {
+window.SozcuguOkuyalimInstruction = {
     init: function () {
-        const existing = document.getElementById(window.YumurtayiKiralimIntro.overlayId);
+        const existing = document.getElementById(window.SozcuguOkuyalimIntro.overlayId);
         if (existing) existing.remove();
-        if (window.YumurtayiKiralimIntro._stopDemo) window.YumurtayiKiralimIntro._stopDemo();
+        if (window.SozcuguOkuyalimIntro._stopDemo) window.SozcuguOkuyalimIntro._stopDemo();
 
-        window.YumurtayiKiralimIntro.createOverlay();
+        window.SozcuguOkuyalimIntro.createOverlay();
 
         const btn = document.getElementById('btn-start-yumurta');
         if (btn) {
@@ -202,21 +202,21 @@ window.YumurtayiKiralimInstruction = {
         }
 
         // Play audio
-        if (!window.YumurtayiKiralimIntro.audio) {
-            window.YumurtayiKiralimIntro.audio = new Audio('../games/yumurtayi_kiralim/assets/audio/instruction.mp3');
+        if (!window.SozcuguOkuyalimIntro.audio) {
+            window.SozcuguOkuyalimIntro.audio = new Audio('../games/sozcugu_okuyalim/assets/audio/instruction.mp3');
         }
-        window.YumurtayiKiralimIntro.audio.currentTime = 0;
-        window.YumurtayiKiralimIntro.audio.play().catch(() => { });
+        window.SozcuguOkuyalimIntro.audio.currentTime = 0;
+        window.SozcuguOkuyalimIntro.audio.play().catch(() => { });
     },
 
     hide: function () {
-        if (window.YumurtayiKiralimIntro.audio) {
-            window.YumurtayiKiralimIntro.audio.pause();
-            window.YumurtayiKiralimIntro.audio.currentTime = 0;
+        if (window.SozcuguOkuyalimIntro.audio) {
+            window.SozcuguOkuyalimIntro.audio.pause();
+            window.SozcuguOkuyalimIntro.audio.currentTime = 0;
         }
-        if (window.YumurtayiKiralimIntro._stopDemo) window.YumurtayiKiralimIntro._stopDemo();
+        if (window.SozcuguOkuyalimIntro._stopDemo) window.SozcuguOkuyalimIntro._stopDemo();
 
-        const overlay = document.getElementById(window.YumurtayiKiralimIntro.overlayId);
+        const overlay = document.getElementById(window.SozcuguOkuyalimIntro.overlayId);
         if (overlay) {
             overlay.style.transition = 'opacity 0.5s ease';
             overlay.style.opacity = '0';

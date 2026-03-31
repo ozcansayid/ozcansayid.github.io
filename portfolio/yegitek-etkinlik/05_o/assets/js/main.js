@@ -233,7 +233,7 @@ window.GameNav = (function () {
         || [
             '01_sesi_hissedelim', '02_harf_taniyalim', '03_harf_yazalim',
             '04_karda_yazalim', '05_hece_sozcuk', '06_sozcuk_olusturma',
-            '07_okuyalim', '08_ritmik_okuma', '09_yumurtayi_kiralim', '10_cumle_okuyalim'
+            '07_okuyalim', '08_ritmik_okuma', '09_sozcugu_okuyalim', '10_cumle_okuyalim'
         ];
 
     function getGameIndex() {
