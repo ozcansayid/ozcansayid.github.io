@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik Oyun Merkezi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .item-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .popped { transform: scale(0); opacity: 0; }
+        .separated { transform: translate(20px, 80px) scale(0.9); opacity: 0.9; }
+    </style>
+</head>
+<body id="mainBody" class="bg-indigo-50 min-h-screen font-sans transition-colors duration-500">
+
+    <div id="app" class="flex flex-col items-center py-10 px-4">
+        <!-- İçerik JavaScript ile buraya yüklenecek -->
+    </div>
+
+    <script>
+        // --- ORTAK SES ÜRETİCİSİ ---
+        const playSound = (type) => {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                osc.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                    osc.start(); osc.stop(ctx.currentTime + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+                    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start(); osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'pop') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(900, ctx.currentTime);
+                    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                    osc.start(); osc.stop(ctx.currentTime + 0.1);
+                } else if (type === 'boxFull' || type === 'stageClear') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    osc.frequency.setValueAtTime(800, ctx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start(); osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'slide') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                    osc.start(); osc.stop(ctx.currentTime + 0.2);
+                }
+            } catch (e) { console.log("Ses hatası", e); }
+        };
+
+        // --- GLOBAL STATE ---
+        let activeGame = null; // 'toplama', 'cikarma', 'benzetme', null (menu)
+        let state = {};
+
+        const app = document.getElementById('app');
+        const body = document.getElementById('mainBody');
+
+        // --- MENÜ İŞLEMLERİ ---
+        function goToMenu() {
+            activeGame = null;
+            body.className = "bg-indigo-50 min-h-screen font-sans transition-colors duration-500";
+            render();
+        }
+
+        function loadGame(gameName) {
+            playSound('pop');
+            activeGame = gameName;
+            state = { score: 0, errorShake: false };
+            
+            if (gameName === 'toplama') {
+                body.className = "bg-sky-50 min-h-screen font-sans transition-colors duration-500";
+                generateToplamaQuestion();
+            } else if (gameName === 'cikarma') {
+                body.className = "bg-purple-50 min-h-screen font-sans transition-colors duration-500";
+                generateCikarmaQuestion();
+            } else if (gameName === 'benzetme') {
+                body.className = "bg-teal-50 min-h-screen font-sans transition-colors duration-500";
+                generateBenzetmeQuestion();
+            }
+        }
+
+        // ==========================================
+        // 1. OYUN: TOPLAMA (Sihirli Kutu Ustası)
+        // ==========================================
+        function generateToplamaQuestion() {
+            const n1 = Math.floor(Math.random() * 3) + 7;
+            const minN2 = 11 - n1;
+            const n2 = Math.floor(Math.random() * (9 - minN2 + 1)) + minN2;
+            state = { ...state, num1: n1, num2: n2, box: n1, outside: n2, stage: 'filling', userAnswer: '', errorShake: false };
+            render();
+        }
+
+        function handleToplamaDotClick() {
+            if (state.stage !== 'filling') return;
+            if (state.box < 10 && state.outside > 0) {
+                playSound('pop');
+                state.box++; state.outside--;
+                if (state.box === 10) {
+                    setTimeout(() => { playSound('boxFull'); state.stage = 'answering'; render(); }, 200);
+                }
+                render();
+            }
+        }
+
+        function checkToplamaAnswer() {
+            if (parseInt(state.userAnswer) === (state.num1 + state.num2)) {
+                playSound('correct'); state.stage = 'success'; state.score += 10;
+            } else {
+                playSound('wrong'); state.errorShake = true; state.userAnswer = '';
+                setTimeout(() => { state.errorShake = false; render(); }, 500);
+            }
+            render();
+        }
+
+        // ==========================================
+        // 2. OYUN: ÇIKARMA (Sihirli Çıkarma Ustası)
+        // ==========================================
+        function generateCikarmaQuestion() {
+            const n1 = Math.floor(Math.random() * 8) + 11;
+            const minN2 = Math.max(2, n1 - 9); 
+            const n2 = Math.floor(Math.random() * (9 - minN2 + 1)) + minN2;
+            state = { ...state, num1: n1, num2: n2, poppedBottom: 0, poppedTop: 0, stage: 'popBottom', userAnswer: '', errorShake: false };
+            render();
+        }
+
+        function handleCikarmaBottomClick() {
+            if (state.stage !== 'popBottom') return;
+            const totalBottom = state.num1 - 10;
+            if (state.poppedBottom < totalBottom) {
+                playSound('pop'); state.poppedBottom++;
+                if (state.poppedBottom === totalBottom) {
+                    setTimeout(() => { playSound('stageClear'); state.stage = 'popTop'; render(); }, 200);
+                }
+                render();
+            }
+        }
+
+        function handleCikarmaTopClick() {
+            if (state.stage !== 'popTop') return;
+            const toPopTop = state.num2 - (state.num1 - 10);
+            if (state.poppedTop < toPopTop) {
+                playSound('pop'); state.poppedTop++;
+                if (state.poppedTop === toPopTop) {
+                    setTimeout(() => { playSound('stageClear'); state.stage = 'answering'; render(); }, 200);
+                }
+                render();
+            }
+        }
+
+        function checkCikarmaAnswer() {
+            if (parseInt(state.userAnswer) === (state.num1 - state.num2)) {
+                playSound('correct'); state.stage = 'success'; state.score += 10;
+            } else {
+                playSound('wrong'); state.errorShake = true; state.userAnswer = '';
+                setTimeout(() => { state.errorShake = false; render(); }, 500);
+            }
+            render();
+        }
+
+        // ==========================================
+        // 3. OYUN: BENZETME (Sihirli Benzetme Ustası)
+        // ==========================================
+        function generateBenzetmeQuestion() {
+            const base = Math.floor(Math.random() * 5) + 4; 
+            state = { ...state, baseNum: base, extra: 1, stage: 'separate', inputDoubles: '', inputFinal: '', errorShake: false };
+            render();
+        }
+
+        function handleBenzetmeSeparate() {
+            if (state.stage !== 'separate') return;
+            playSound('slide'); state.stage = 'calc_doubles';
+            render();
+        }
+
+        function checkBenzetmeDoubles() {
+            if (parseInt(state.inputDoubles) === (state.baseNum * 2)) {
+                playSound('correct'); state.stage = 'calc_final';
+            } else {
+                playSound('wrong'); state.errorShake = true; state.inputDoubles = '';
+                setTimeout(() => { state.errorShake = false; render(); }, 500);
+            }
+            render();
+        }
+
+        function checkBenzetmeFinal() {
+            if (parseInt(state.inputFinal) === (state.baseNum * 2 + state.extra)) {
+                playSound('correct'); state.score += 15; state.stage = 'success';
+            } else {
+                playSound('wrong'); state.errorShake = true; state.inputFinal = '';
+                setTimeout(() => { state.errorShake = false; render(); }, 500);
+            }
+            render();
+        }
+
+
+        // --- ARAYÜZ ÇİZİMİ (RENDER) ---
+        function render() {
+            if (activeGame === null) {
+                // ANA MENÜ
+                app.innerHTML = `
+                    <div class="max-w-2xl w-full mt-10">
+                        <div class="text-center mb-10">
+                            <h1 class="text-4xl md:text-5xl font-black text-indigo-700 mb-4 drop-shadow-sm">🎮 Matematik Oyun Merkezi</h1>
+                            <p class="text-indigo-500 text-lg md:text-xl font-medium">Zihinden işlem yapmanın eğlenceli sırlarını keşfet!</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
+                            <!-- Toplama Kartı -->
+                            <div onclick="loadGame('toplama')" class="bg-white rounded-3xl p-6 shadow-lg border-b-8 border-sky-400 cursor-pointer transform hover:-translate-y-2 hover:shadow-2xl transition-all">
+                                <div class="text-5xl mb-4 text-center">🛑</div>
+                                <h2 class="text-2xl font-bold text-sky-600 text-center mb-2">10'a Tamamlama</h2>
+                                <p class="text-gray-500 text-sm text-center">Toplama yaparken kutuları 10'a tamamla.</p>
+                            </div>
+
+                            <!-- Çıkarma Kartı -->
+                            <div onclick="loadGame('cikarma')" class="bg-white rounded-3xl p-6 shadow-lg border-b-8 border-purple-400 cursor-pointer transform hover:-translate-y-2 hover:shadow-2xl transition-all">
+                                <div class="text-5xl mb-4 text-center">🎈</div>
+                                <h2 class="text-2xl font-bold text-purple-600 text-center mb-2">10'a İnme</h2>
+                                <p class="text-gray-500 text-sm text-center">Çıkarma yaparken önce 10'a kadar balon patlat.</p>
+                            </div>
+
+                            <!-- Benzetme Kartı -->
+                            <div onclick="loadGame('benzetme')" class="bg-white rounded-3xl p-6 shadow-lg border-b-8 border-teal-400 cursor-pointer transform hover:-translate-y-2 hover:shadow-2xl transition-all">
+                                <div class="text-5xl mb-4 text-center">👯‍♂️</div>
+                                <h2 class="text-2xl font-bold text-teal-600 text-center mb-2">Benzetme</h2>
+                                <p class="text-gray-500 text-sm text-center">Sayıları ikizlere benzeterek toplamayı hızlandır.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // OYUN ORTAK BAŞLIK
+            let headerColor = activeGame === 'toplama' ? 'sky' : (activeGame === 'cikarma' ? 'purple' : 'teal');
+            let headerIcon = activeGame === 'toplama' ? '🛑 Sihirli Kutu' : (activeGame === 'cikarma' ? '🎈 Sihirli Çıkarma' : '👯‍♂️ Sihirli Benzetme');
+            
+            let htmlStr = `
+                <div class="w-full max-w-2xl">
+                    <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-2xl shadow-sm border-2 border-${headerColor}-100">
+                        <button onclick="goToMenu()" class="flex items-center gap-2 text-${headerColor}-600 font-bold hover:bg-${headerColor}-50 px-3 py-2 rounded-lg transition-colors">
+                            <span>⬅️</span> Menü
+                        </button>
+                        <h2 class="text-xl font-bold text-${headerColor}-700 hidden md:block">${headerIcon}</h2>
+                        <div class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl font-bold border-2 border-yellow-200">
+                            🏆 Puan: ${state.score}
+                        </div>
+                    </div>
+            `;
+
+            // TOPLAMA EKRANI
+            if (activeGame === 'toplama') {
+                htmlStr += `
+                    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-t-8 border-sky-400">
+                        <div class="text-center mb-8">
+                            <h3 class="text-xl text-gray-500 mb-2">İşlemimiz:</h3>
+                            <div class="inline-block bg-sky-100 px-6 py-3 rounded-2xl border-4 border-sky-200">
+                                <span class="text-4xl font-black text-sky-700">${state.num1} + ${state.num2} = ?</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-6 h-12">
+                            ${state.stage === 'filling' ? '<p class="text-xl text-sky-600 font-bold animate-pulse">Kırmızı noktalara tıkla, kutuyu doldur!</p>' : ''}
+                            ${state.stage === 'answering' ? '<p class="text-xl text-green-600 font-bold">Harika! Şimdi sonucu yaz bakalım.</p>' : ''}
+                            ${state.stage === 'success' ? '<p class="text-2xl text-orange-500 font-black scale-110 transition-transform">Doğru Bildin! 🎉</p>' : ''}
+                        </div>
+
+                        <div class="bg-gray-100 p-6 rounded-2xl shadow-inner border-2 border-gray-200 mb-8 max-w-md mx-auto relative">
+                            <div class="absolute inset-0 bg-sky-500/10 border-4 border-sky-400 rounded-2xl transition-opacity duration-500 ${state.box === 10 ? 'opacity-100' : 'opacity-0'} pointer-events-none"></div>
+                            <div class="grid grid-cols-5 gap-3 relative z-10">
+                                ${Array(10).fill(0).map((_, i) => `
+                                    <div class="aspect-square rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-white">
+                                        ${i < state.box ? `<div class="w-4/5 h-4/5 rounded-full shadow-md item-transition ${i < state.num1 ? 'bg-sky-500' : 'bg-red-500'}"></div>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center gap-3 h-20 mb-8">
+                            ${Array(state.outside).fill(0).map(() => `
+                                <div onclick="handleToplamaDotClick()" class="w-14 h-14 rounded-full bg-red-500 shadow-lg cursor-pointer hover:scale-110 active:scale-90 transition-transform ${state.stage === 'filling' ? 'animate-bounce' : 'opacity-50 pointer-events-none'}"></div>
+                            `).join('')}
+                        </div>
+
+                        ${state.stage === 'answering' ? `
+                            <div class="flex flex-col items-center ${state.errorShake ? 'animate-shake' : ''}">
+                                <div class="flex items-center gap-4 text-3xl font-bold text-gray-700 mb-4 bg-green-50 px-6 py-3 rounded-2xl border-2 border-green-200">
+                                    <span class="text-sky-600">10</span><span>+</span><span class="text-red-500">${state.outside}</span><span>=</span>
+                                    <input id="ansInput" type="number" value="${state.userAnswer}" oninput="state.userAnswer = this.value"
+                                        class="w-24 text-center border-4 border-sky-300 rounded-xl p-2 focus:outline-none focus:border-sky-500 text-3xl"
+                                        onkeydown="if(event.key==='Enter') checkToplamaAnswer()" />
+                                </div>
+                                <button onclick="checkToplamaAnswer()" class="bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-md transform active:scale-95 transition-transform">Kontrol Et!</button>
+                            </div>
+                        ` : ''}
+                        ${state.stage === 'success' ? `<div class="flex justify-center mt-4"><button onclick="generateToplamaQuestion()" class="bg-sky-500 hover:bg-sky-600 text-white text-2xl font-bold py-4 px-10 rounded-2xl shadow-lg transform active:scale-95 transition-transform">Sıradaki Soru ➡️</button></div>` : ''}
+                    </div>
+                `;
+            } 
+            // ÇIKARMA EKRANI
+            else if (activeGame === 'cikarma') {
+                const bottomTotal = state.num1 - 10; 
+                const toPopTop = state.num2 - bottomTotal;
+
+                htmlStr += `
+                    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-t-8 border-purple-400">
+                        <div class="text-center mb-8">
+                            <h3 class="text-xl text-gray-500 mb-2">İşlemimiz:</h3>
+                            <div class="inline-block bg-purple-100 px-6 py-3 rounded-2xl border-4 border-purple-200">
+                                <span class="text-4xl font-black text-purple-700">${state.num1} - ${state.num2} = ?</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-6 h-16 flex items-center justify-center">
+                            ${state.stage === 'popBottom' ? `<p class="text-lg md:text-xl text-purple-600 font-bold animate-pulse">Önce 10'a inmek için alttaki <span class="text-2xl">${bottomTotal}</span> balonu patlat!</p>` : ''}
+                            ${state.stage === 'popTop' ? `<p class="text-lg md:text-xl text-pink-600 font-bold animate-pulse">Harika! Şimdi üstten <span class="text-2xl">${toPopTop}</span> balon daha patlat!</p>` : ''}
+                            ${state.stage === 'answering' ? '<p class="text-xl text-green-600 font-bold">Kalan balonları say ve sonucu yaz!</p>' : ''}
+                            ${state.stage === 'success' ? '<p class="text-2xl text-orange-500 font-black scale-110 transition-transform">Harika Çıkarma! 🎉</p>' : ''}
+                        </div>
+
+                        <div class="flex flex-col gap-4 mb-8 max-w-md mx-auto">
+                            <!-- ÜST KUTU -->
+                            <div class="bg-gray-50 p-4 rounded-2xl shadow-inner border-2 ${state.stage === 'popTop' ? 'border-pink-400 bg-pink-50' : 'border-gray-200'}">
+                                <div class="grid grid-cols-5 gap-2 relative z-10">
+                                    ${Array(10).fill(0).map((_, i) => {
+                                        const isVisible = i < (10 - state.poppedTop);
+                                        return `<div class="aspect-square rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-white" ${state.stage === 'popTop' && isVisible ? 'onclick="handleCikarmaTopClick()"' : ''}>
+                                            <div class="w-[85%] h-[85%] rounded-[40%_40%_50%_50%] shadow-md item-transition origin-bottom ${isVisible ? 'bg-gradient-to-br from-pink-400 to-pink-600' : 'popped'} ${state.stage === 'popTop' && isVisible ? 'cursor-pointer hover:scale-110' : ''}"></div>
+                                        </div>`
+                                    }).join('')}
+                                </div>
+                            </div>
+                            <!-- ALT KUTU -->
+                            <div class="bg-gray-50 p-4 rounded-2xl shadow-inner border-2 ${state.stage === 'popBottom' ? 'border-purple-400 bg-purple-50' : 'border-gray-200'}">
+                                <div class="grid grid-cols-5 gap-2 relative z-10">
+                                    ${Array(10).fill(0).map((_, i) => {
+                                        const isOriginallyFilled = i < bottomTotal;
+                                        const isVisible = isOriginallyFilled && i < (bottomTotal - state.poppedBottom);
+                                        return `<div class="aspect-square rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center ${isOriginallyFilled ? 'bg-white' : 'bg-gray-100/50'}" ${state.stage === 'popBottom' && isVisible ? 'onclick="handleCikarmaBottomClick()"' : ''}>
+                                            ${isOriginallyFilled ? `<div class="w-[85%] h-[85%] rounded-[40%_40%_50%_50%] shadow-md item-transition origin-bottom ${isVisible ? 'bg-gradient-to-br from-purple-400 to-purple-600' : 'popped'} ${state.stage === 'popBottom' && isVisible ? 'cursor-pointer hover:scale-110' : ''}"></div>` : ''}
+                                        </div>`
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        ${state.stage === 'answering' ? `
+                            <div class="flex flex-col items-center ${state.errorShake ? 'animate-shake' : ''}">
+                                <div class="flex items-center gap-4 text-3xl font-bold text-gray-700 mb-4 bg-green-50 px-6 py-3 rounded-2xl border-2 border-green-200">
+                                    <span class="text-purple-600">${state.num1}</span><span>-</span><span class="text-pink-500">${state.num2}</span><span>=</span>
+                                    <input id="cikarInput" type="number" value="${state.userAnswer}" oninput="state.userAnswer = this.value"
+                                        class="w-24 text-center border-4 border-purple-300 rounded-xl p-2 focus:outline-none focus:border-purple-500 text-3xl text-purple-700"
+                                        onkeydown="if(event.key==='Enter') checkCikarmaAnswer()" />
+                                </div>
+                                <button onclick="checkCikarmaAnswer()" class="bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-md transform active:scale-95 transition-transform">Kontrol Et!</button>
+                            </div>
+                        ` : ''}
+                        ${state.stage === 'success' ? `<div class="flex justify-center mt-4"><button onclick="generateCikarmaQuestion()" class="bg-purple-500 hover:bg-purple-600 text-white text-2xl font-bold py-4 px-10 rounded-2xl shadow-lg transform active:scale-95 transition-transform">Sıradaki Soru ➡️</button></div>` : ''}
+                    </div>
+                `;
+            }
+            // BENZETME EKRANI
+            else if (activeGame === 'benzetme') {
+                const isSeparated = state.stage !== 'separate';
+                htmlStr += `
+                    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-t-8 border-teal-400">
+                        <div class="text-center mb-8">
+                            <h3 class="text-xl text-gray-500 mb-2">Çözeceğimiz İşlem:</h3>
+                            <div class="inline-block bg-teal-100 px-6 py-3 rounded-2xl border-4 border-teal-200">
+                                <span class="text-4xl font-black text-teal-700">${state.baseNum} + ${state.baseNum + state.extra} = ?</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-6 h-16 flex items-center justify-center">
+                            ${state.stage === 'separate' ? `<p class="text-lg md:text-xl text-teal-600 font-bold animate-pulse">Sayıları eşitlemek için <span class="text-orange-500">turuncu fazlalığa</span> tıkla!</p>` : ''}
+                            ${state.stage === 'calc_doubles' ? `<p class="text-lg md:text-xl text-blue-600 font-bold">Harika! Şimdi ikizleri topla!</p>` : ''}
+                            ${state.stage === 'calc_final' ? `<p class="text-lg md:text-xl text-green-600 font-bold">Süper! Kenara ayırdığımızı sonuca ekle!</p>` : ''}
+                            ${state.stage === 'success' ? '<p class="text-2xl text-orange-500 font-black scale-110 transition-transform">Harika Benzetme! 🎉</p>' : ''}
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-2xl shadow-inner border-2 border-gray-200 mb-8 max-w-lg mx-auto relative min-h-[250px]">
+                            <!-- Üst Sıra -->
+                            <div class="flex justify-center gap-2 mb-4">
+                                ${Array(state.baseNum).fill(0).map(() => `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-400 shadow-md border-b-4 border-blue-500"></div>`).join('')}
+                            </div>
+                            <!-- Alt Sıra -->
+                            <div class="flex justify-center gap-2">
+                                ${Array(state.baseNum).fill(0).map(() => `<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-400 shadow-md border-b-4 border-blue-500"></div>`).join('')}
+                                <!-- Fazlalık -->
+                                <div onclick="handleBenzetmeSeparate()" 
+                                     class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-orange-400 shadow-md border-b-4 border-orange-500 flex items-center justify-center text-white font-black text-2xl item-transition z-20 
+                                     ${!isSeparated ? 'animate-bounce cursor-pointer hover:scale-110' : 'separated absolute right-4 bottom-4 cursor-default'}">
+                                    +1
+                                </div>
+                            </div>
+                            <div class="absolute right-2 bottom-2 w-20 h-20 border-2 border-dashed border-orange-300 rounded-2xl bg-orange-50/50 item-transition ${isSeparated ? 'opacity-100' : 'opacity-0'}"></div>
+                        </div>
+
+                        <div class="min-h-[100px] flex justify-center items-center">
+                            ${state.stage === 'calc_doubles' ? `
+                                <div class="flex flex-col items-center ${state.errorShake ? 'animate-shake' : ''}">
+                                    <div class="flex items-center gap-4 text-3xl font-bold text-gray-700 mb-4 bg-blue-50 px-6 py-3 rounded-2xl border-2 border-blue-200">
+                                        <span class="text-blue-500">${state.baseNum}</span><span>+</span><span class="text-blue-500">${state.baseNum}</span><span>=</span>
+                                        <input id="doublesInput" type="number" value="${state.inputDoubles}" oninput="state.inputDoubles = this.value"
+                                            class="w-24 text-center border-4 border-blue-300 rounded-xl p-2 focus:outline-none focus:border-blue-500 text-3xl text-blue-700"
+                                            onkeydown="if(event.key==='Enter') checkBenzetmeDoubles()" />
+                                    </div>
+                                    <button onclick="checkBenzetmeDoubles()" class="bg-blue-500 hover:bg-blue-600 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-md transform active:scale-95 transition-transform">İkizleri Topla!</button>
+                                </div>
+                            ` : ''}
+
+                            ${state.stage === 'calc_final' ? `
+                                <div class="flex flex-col items-center ${state.errorShake ? 'animate-shake' : ''}">
+                                    <div class="flex items-center gap-4 text-3xl font-bold text-gray-700 mb-4 bg-green-50 px-6 py-3 rounded-2xl border-2 border-green-200">
+                                        <span class="text-blue-600">${state.baseNum * 2}</span><span>+</span><span class="text-orange-500">${state.extra}</span><span>=</span>
+                                        <input id="finalInput" type="number" value="${state.inputFinal}" oninput="state.inputFinal = this.value"
+                                            class="w-24 text-center border-4 border-green-300 rounded-xl p-2 focus:outline-none focus:border-green-500 text-3xl text-green-700"
+                                            onkeydown="if(event.key==='Enter') checkBenzetmeFinal()" />
+                                    </div>
+                                    <button onclick="checkBenzetmeFinal()" class="bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-md transform active:scale-95 transition-transform">Sonucu Bul!</button>
+                                </div>
+                            ` : ''}
+
+                            ${state.stage === 'success' ? `<button onclick="generateBenzetmeQuestion()" class="bg-teal-500 hover:bg-teal-600 text-white text-2xl font-bold py-4 px-10 rounded-2xl shadow-lg transform active:scale-95 transition-transform">Yenisi Gelsin ➡️</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            htmlStr += `</div>`;
+            app.innerHTML = htmlStr;
+
+            // Input varsa ona odaklan (Kullanıcı deneyimi için önemli)
+            setTimeout(() => {
+                let activeInput = document.getElementById('ansInput') || document.getElementById('cikarInput') || document.getElementById('doublesInput') || document.getElementById('finalInput');
+                if (activeInput) activeInput.focus();
+            }, 50);
+        }
+
+        // Başlangıçta menüyü çiz
+        render();
+    </script>
+</body>
+</html>
