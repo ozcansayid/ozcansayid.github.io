@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Kart Eşleştirme ve Mini Sınav Portalı</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        deep: {
+                            900: '#1a0b2e',
+                            800: '#2d1b4e',
+                            700: '#432c7a',
+                        },
+                        lilac: {
+                            400: '#a78bfa',
+                            300: '#c4b5fd',
+                        }
+                    },
+                    animation: {
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'pop-in': 'popIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Flashcard 3D Effects */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Drag and Drop states */
+        .drag-over {
+            border-color: #a78bfa !important;
+            background: rgba(167, 139, 250, 0.2) !important;
+            transform: scale(1.02);
+        }
+        .matched {
+            background: rgba(34, 197, 94, 0.2) !important;
+            border-color: #22c55e !important;
+            color: #4ade80;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        .wrong-match {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: #ef4444 !important;
+            color: #f87171;
+        }
+
+        /* Confetti Animation */
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti-piece {
+            position: fixed;
+            top: -20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(167, 139, 250, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(167, 139, 250, 0.8); }
+    </style>
+</head>
+<body class="bg-deep-900 text-slate-200 min-h-screen font-sans overflow-x-hidden selection:bg-lilac-400 selection:text-deep-900">
+
+    <!-- Background Decoration -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] bg-indigo-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 container mx-auto px-4 py-8 max-w-6xl h-screen flex flex-col">
+        
+        <!-- Header / HUD -->
+        <header class="glass rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center mb-8 shadow-2xl gap-4 transition-all" id="mainHeader">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg">
+                    <i data-lucide="brain-circuit" class="w-8 h-8 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-lilac-300 to-fuchsia-400">Akıllı Portal</h1>
+                    <p class="text-xs text-slate-400" id="currentModeText">İçerik Hazırlama Modu</p>
+                </div>
+            </div>
+
+            <!-- Stats & Controls (Hidden in Setup) -->
+            <div id="headerControls" class="hidden flex gap-4 sm:gap-6 items-center">
+                <div id="statsPanel" class="flex gap-4 sm:gap-6 items-center">
+                    <div class="text-center">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider">Süre</p>
+                        <p class="text-xl sm:text-2xl font-mono font-bold text-lilac-300" id="timerDisplay">00:00</p>
+                    </div>
+                    <div class="w-px h-8 bg-white/20"></div>
+                    <div class="text-center">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider">Skor</p>
+                        <p class="text-xl sm:text-2xl font-mono font-bold text-green-400" id="scoreDisplay">0</p>
+                    </div>
+                </div>
+                <button onclick="app.resetToSetup()" class="ml-2 px-3 py-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2 group shadow-sm" title="Kuruluma Dön">
+                    <i data-lucide="log-out" class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors"></i>
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white hidden sm:block transition-colors">Geri Dön</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- VIEW 1: Setup Panel -->
+        <main id="view-setup" class="flex-1 animate-pop-in flex flex-col gap-6">
+            
+            <div class="glass-card rounded-3xl p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-white mb-2">Kendi Setini Oluştur</h2>
+                        <p class="text-sm text-slate-400">Öğrenmek istediğin terimleri ve tanımlarını gir. En az 4 çift gereklidir.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <button onclick="app.clearAll()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 rounded-xl transition-all text-red-300">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> Temizle
+                        </button>
+                        <button onclick="app.openExcelModal()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-green-500/20 hover:bg-green-500/40 border border-green-500/50 rounded-xl transition-all text-green-300">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Excel'den Aktar
+                        </button>
+                        <button onclick="app.loadTemplate('en-tr')" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-indigo-500/20 hover:bg-indigo-500/40 border border-indigo-500/50 rounded-xl transition-all text-indigo-300">
+                            <i data-lucide="languages" class="w-4 h-4"></i> İng-Tür
+                        </button>
+                        <button onclick="app.loadTemplate('geo')" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-fuchsia-500/20 hover:bg-fuchsia-500/40 border border-fuchsia-500/50 rounded-xl transition-all text-fuchsia-300">
+                            <i data-lucide="globe-2" class="w-4 h-4"></i> Coğrafya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input Rows Container -->
+                <div id="pairInputsContainer" class="space-y-3 mb-6 max-h-[40vh] overflow-y-auto pr-2">
+                    <!-- Dynamic rows will be injected here -->
+                </div>
+
+                <button onclick="app.addInputRow()" class="w-full py-3 border-2 border-dashed border-white/20 rounded-xl text-slate-400 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Yeni Çift Ekle
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-auto">
+                <button onclick="app.startMode('match')" class="flex-1 glass-card p-6 rounded-2xl flex items-center gap-4 hover:bg-white/10 transition-all group">
+                    <div class="p-3 bg-blue-500/20 rounded-xl group-hover:scale-110 transition-transform">
+                        <i data-lucide="mouse-pointer-click" class="w-8 h-8 text-blue-400"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">Eşleştirme Modu</h3>
+                        <p class="text-sm text-slate-400">Sürükle & Bırak ile test et</p>
+                    </div>
+                </button>
+                
+                <button onclick="app.startMode('flashcard')" class="flex-1 glass-card p-6 rounded-2xl flex items-center gap-4 hover:bg-white/10 transition-all group">
+                    <div class="p-3 bg-purple-500/20 rounded-xl group-hover:scale-110 transition-transform">
+                        <i data-lucide="credit-card" class="w-8 h-8 text-purple-400"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">Flashcard Modu</h3>
+                        <p class="text-sm text-slate-400">Klasik çevirmeli kartlarla ezberle</p>
+                    </div>
+                </button>
+            </div>
+        </main>
+
+        <!-- VIEW 2: Match Mode -->
+        <main id="view-match" class="hidden flex-1 animate-pop-in flex flex-col sm:flex-row gap-8 pb-8 h-full">
+            <!-- Draggable Terms -->
+            <div class="flex-1 flex flex-col gap-3 overflow-y-auto pr-2" id="matchTermsContainer">
+                <!-- Terms injected here -->
+            </div>
+            
+            <!-- Drop Target Definitions -->
+            <div class="flex-1 flex flex-col gap-3 overflow-y-auto pr-2" id="matchDefsContainer">
+                <!-- Defs injected here -->
+            </div>
+        </main>
+
+        <!-- VIEW 3: Flashcard Mode -->
+        <main id="view-flashcard" class="hidden flex-1 animate-pop-in flex flex-col items-center justify-center pb-8 h-full">
+            
+            <div class="flip-card relative w-full max-w-2xl aspect-[3/2] perspective-1000 group cursor-pointer" onclick="app.flipCard()" id="flashcardElement">
+                <div class="flip-card-inner w-full h-full relative transform-style-3d shadow-2xl rounded-3xl" id="flashcardInner">
+                    
+                    <!-- Front (Term) -->
+                    <div class="absolute inset-0 backface-hidden glass-card rounded-3xl flex flex-col items-center justify-center p-8 bg-gradient-to-br from-indigo-900/80 to-deep-900/90 border-2 border-indigo-500/30">
+                        <span class="text-xs uppercase tracking-[0.2em] text-indigo-300 absolute top-6">Terim</span>
+                        <h2 class="text-4xl md:text-5xl font-bold text-center" id="flashcardTerm">Terim Adı</h2>
+                        <div class="absolute bottom-6 flex items-center gap-2 text-slate-400 text-sm animate-pulse">
+                            <i data-lucide="rotate-3d" class="w-4 h-4"></i> Çevirmek için tıkla
+                        </div>
+                    </div>
+                    
+                    <!-- Back (Definition) -->
+                    <div class="absolute inset-0 backface-hidden flip-card-back glass-card rounded-3xl flex flex-col items-center justify-center p-8 bg-gradient-to-br from-purple-900/80 to-deep-900/90 border-2 border-purple-500/30">
+                        <span class="text-xs uppercase tracking-[0.2em] text-purple-300 absolute top-6">Tanım</span>
+                        <p class="text-2xl md:text-3xl text-center leading-relaxed text-slate-200" id="flashcardDef">Açıklama metni burada yer alacak.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Flashcard Controls -->
+            <div class="flex items-center gap-6 mt-12 glass rounded-full p-2 px-6">
+                <button onclick="app.prevCard()" class="p-3 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-white">
+                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                </button>
+                <span class="text-lg font-mono font-semibold" id="flashcardCounter">1 / 5</span>
+                <button onclick="app.nextCard()" class="p-3 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-white">
+                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="glass-card p-10 rounded-3xl max-w-md w-full text-center transform scale-90 opacity-0 transition-all duration-300" id="successModalContent">
+            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-green-400">
+                <i data-lucide="trophy" class="w-10 h-10"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2">Tebrikler!</h2>
+            <p class="text-slate-300 mb-6">Tüm eşleştirmeleri başarıyla tamamladın.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="glass rounded-xl p-4">
+                    <p class="text-xs text-slate-400 uppercase">Süre</p>
+                    <p class="text-xl font-bold text-lilac-300" id="finalTime">00:00</p>
+                </div>
+                <div class="glass rounded-xl p-4">
+                    <p class="text-xs text-slate-400 uppercase">Skor</p>
+                    <p class="text-xl font-bold text-green-400" id="finalScore">0</p>
+                </div>
+            </div>
+
+            <button onclick="app.resetToSetup()" class="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 rounded-xl font-bold text-white shadow-lg shadow-purple-500/25 transition-all">
+                Yeni Set Oluştur
+            </button>
+        </div>
+    </div>
+
+    <!-- Excel Modal -->
+    <div id="excelModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="glass-card p-6 sm:p-8 rounded-3xl max-w-2xl w-full mx-4 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <div class="p-2 bg-green-500/20 rounded-lg">
+                        <i data-lucide="file-spreadsheet" class="w-6 h-6 text-green-400"></i>
+                    </div>
+                    Excel'den İçe Aktar
+                </h2>
+                <button onclick="app.closeExcelModal()" class="text-slate-400 hover:text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <p class="text-sm text-slate-300 mb-4">
+                Excel veya Google Sheets'ten kopyaladığınız <span class="font-bold text-lilac-300">iki sütunlu (Terim ve Tanım)</span> veriyi aşağıdaki alana yapıştırın.
+            </p>
+            
+            <textarea id="excelPasteArea" class="w-full h-48 bg-black/30 border border-white/20 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:border-green-400 transition-colors mb-6" placeholder="Örnek:&#10;Elma&#9;Apple&#10;Kitap&#9;Book"></textarea>
+            
+            <div class="flex gap-4 justify-end">
+                <button onclick="app.closeExcelModal()" class="px-6 py-2 rounded-xl border border-white/20 text-slate-300 hover:bg-white/10 transition-colors">
+                    İptal
+                </button>
+                <button onclick="app.importExcelData()" class="px-6 py-2 rounded-xl bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/40 transition-colors font-semibold flex items-center gap-2">
+                    <i data-lucide="download" class="w-5 h-5"></i> İçe Aktar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Core Application Logic
+        const app = {
+            state: {
+                pairs: [], // {id, term, def}
+                currentMode: 'setup', // setup, match, flashcard
+                timer: 0,
+                timerInterval: null,
+                score: 0,
+                matchedCount: 0,
+                draggedId: null,
+                flashcardIndex: 0,
+            },
+
+            templates: {
+                'en-tr': [
+                    { t: 'Ubiquitous', d: 'Her yerde bulunan, yaygın' },
+                    { t: 'Ephemeral', d: 'Kısa ömürlü, geçici' },
+                    { t: 'Mellifluous', d: 'Kulağa hoş gelen, tatlı sesli' },
+                    { t: 'Serendipity', d: 'Mutlu tesadüf' },
+                    { t: 'Ineffable', d: 'Kelimelerle ifade edilemez' }
+                ],
+                'geo': [
+                    { t: 'Litosfer', d: 'Dünyanın taş küresi, yer kabuğu' },
+                    { t: 'İzohips', d: 'Eş yükselti eğrisi' },
+                    { t: 'Alüvyon', d: 'Akarsuların taşıyıp biriktirdiği verimli toprak' },
+                    { t: 'Menderes', d: 'Akarsuyun yatağında çizdiği S harfi şeklindeki büklümler' },
+                    { t: 'Falez', d: 'Dalga aşındırması sonucu oluşan dik kıyı uçurumu' }
+                ]
+            },
+
+            init() {
+                this.clearAll();
+                lucide.createIcons();
+            },
+
+            // --- AUDIO LOGIC ---
+            playFlipSound() {
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!this.audioCtx) this.audioCtx = new AudioContext();
+                    
+                    if (this.audioCtx.state === 'suspended') {
+                        this.audioCtx.resume();
+                    }
+                    
+                    const osc = this.audioCtx.createOscillator();
+                    const gainNode = this.audioCtx.createGain();
+                    
+                    // Creates a quick "swoosh" tick sound
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(150, this.audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(40, this.audioCtx.currentTime + 0.15);
+                    
+                    gainNode.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.15);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(this.audioCtx.destination);
+                    
+                    osc.start();
+                    osc.stop(this.audioCtx.currentTime + 0.15);
+                } catch(e) {
+                    console.log('Ses desteklenmiyor', e);
+                }
+            },
+
+            // --- SETUP PANEL LOGIC ---
+
+            clearAll() {
+                const container = document.getElementById('pairInputsContainer');
+                container.innerHTML = '';
+                for (let i = 0; i < 4; i++) {
+                    this.addInputRow();
+                }
+            },
+
+            addInputRow(term = '', def = '') {
+                const container = document.getElementById('pairInputsContainer');
+                const id = Date.now() + Math.random();
+                const row = document.createElement('div');
+                row.className = 'flex gap-3 items-center group animate-pop-in';
+                row.innerHTML = `
+                    <div class="flex-1 flex flex-col sm:flex-row gap-3">
+                        <input type="text" placeholder="Terim..." value="${term}" class="pair-term flex-1 bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-lilac-400 focus:bg-black/40 transition-all">
+                        <input type="text" placeholder="Tanım..." value="${def}" class="pair-def flex-[2] bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-lilac-400 focus:bg-black/40 transition-all">
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="p-3 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Sil">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+                lucide.createIcons();
+                
+                // Scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            },
+
+            loadTemplate(type) {
+                const container = document.getElementById('pairInputsContainer');
+                container.innerHTML = ''; // clear
+                this.templates[type].forEach(item => {
+                    this.addInputRow(item.t, item.d);
+                });
+            },
+
+            gatherPairs() {
+                const rows = document.querySelectorAll('#pairInputsContainer > div');
+                this.state.pairs = [];
+                let hasEmpty = false;
+
+                rows.forEach((row, index) => {
+                    const term = row.querySelector('.pair-term').value.trim();
+                    const def = row.querySelector('.pair-def').value.trim();
+                    if (term && def) {
+                        this.state.pairs.push({ id: `p_${index}`, term, def });
+                    } else {
+                        hasEmpty = true;
+                    }
+                });
+
+                if (this.state.pairs.length < 4) {
+                    alert("Lütfen en az 4 dolu terim-tanım çifti girin.");
+                    return false;
+                }
+                return true;
+            },
+
+            // --- EXCEL IMPORT LOGIC ---
+            openExcelModal() {
+                document.getElementById('excelPasteArea').value = '';
+                const modal = document.getElementById('excelModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => document.getElementById('excelPasteArea').focus(), 100);
+            },
+
+            closeExcelModal() {
+                const modal = document.getElementById('excelModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            },
+
+            importExcelData() {
+                const text = document.getElementById('excelPasteArea').value;
+                if (!text.trim()) {
+                    alert("Lütfen kopyaladığınız veriyi yapıştırın.");
+                    return;
+                }
+                
+                const rows = text.split('\n');
+                let validPairs = 0;
+                
+                const container = document.getElementById('pairInputsContainer');
+                container.innerHTML = '';
+                
+                rows.forEach(row => {
+                    const cols = row.split('\t');
+                    if (cols.length >= 2) {
+                        const term = cols[0].trim();
+                        const def = cols[1].trim();
+                        if (term && def) {
+                            this.addInputRow(term, def);
+                            validPairs++;
+                        }
+                    }
+                });
+                
+                if (validPairs === 0) {
+                    alert("Geçerli formatta veri bulunamadı. Lütfen Excel'de iki sütun seçip kopyaladığınızdan emin olun.");
+                    this.clearAll();
+                } else if (validPairs < 4) {
+                    for(let i = validPairs; i < 4; i++) {
+                        this.addInputRow();
+                    }
+                }
+                
+                this.closeExcelModal();
+            },
+
+            // --- MODE SWITCHING ---
+
+            startMode(mode) {
+                if (!this.gatherPairs()) return;
+
+                this.state.currentMode = mode;
+                
+                // UI Toggle
+                document.getElementById('view-setup').classList.add('hidden');
+                document.getElementById('headerControls').classList.remove('hidden');
+                
+                if (mode === 'match') {
+                    document.getElementById('view-match').classList.remove('hidden');
+                    document.getElementById('currentModeText').innerText = "Eşleştirme Modu";
+                    document.getElementById('statsPanel').classList.remove('hidden');
+                    this.initMatchMode();
+                } else if (mode === 'flashcard') {
+                    document.getElementById('view-flashcard').classList.remove('hidden');
+                    document.getElementById('currentModeText').innerText = "Flashcard Modu";
+                    document.getElementById('statsPanel').classList.add('hidden'); 
+                    this.initFlashcardMode();
+                }
+            },
+
+            resetToSetup() {
+                this.stopTimer();
+                this.hideSuccessModal();
+                
+                document.getElementById('view-match').classList.add('hidden');
+                document.getElementById('view-flashcard').classList.add('hidden');
+                document.getElementById('headerControls').classList.add('hidden');
+                document.getElementById('view-setup').classList.remove('hidden');
+                document.getElementById('currentModeText').innerText = "İçerik Hazırlama Modu";
+                
+                this.state.currentMode = 'setup';
+                this.state.matchedCount = 0;
+                this.state.score = 0;
+                this.state.timer = 0;
+            },
+
+            // --- MATCH MODE (DRAG & DROP) ---
+
+            initMatchMode() {
+                this.state.matchedCount = 0;
+                this.state.score = 0;
+                this.state.timer = 0;
+                this.updateScore();
+                this.updateTimerDisplay();
+                this.startTimer();
+
+                const termsContainer = document.getElementById('matchTermsContainer');
+                const defsContainer = document.getElementById('matchDefsContainer');
+                
+                termsContainer.innerHTML = '';
+                defsContainer.innerHTML = '';
+
+                // Create shuffled arrays
+                let terms = [...this.state.pairs].sort(() => Math.random() - 0.5);
+                let defs = [...this.state.pairs].sort(() => Math.random() - 0.5);
+
+                // Render Terms (Draggable)
+                terms.forEach(pair => {
+                    const el = document.createElement('div');
+                    el.className = 'glass p-4 rounded-xl cursor-grab active:cursor-grabbing hover:bg-white/10 transition-all font-semibold text-lg border-l-4 border-l-indigo-500 shadow-sm flex items-center justify-between group';
+                    el.draggable = true;
+                    el.id = `term_${pair.id}`;
+                    el.dataset.id = pair.id;
+                    el.innerHTML = `
+                        <span>${pair.term}</span>
+                        <i data-lucide="grip-vertical" class="w-5 h-5 text-slate-500 group-hover:text-white transition-colors opacity-50"></i>
+                    `;
+                    
+                    el.addEventListener('dragstart', (e) => this.handleDragStart(e, pair.id));
+                    el.addEventListener('dragend', (e) => this.handleDragEnd(e));
+                    
+                    termsContainer.appendChild(el);
+                });
+
+                // Render Definitions (Drop Targets)
+                defs.forEach(pair => {
+                    const el = document.createElement('div');
+                    el.className = 'glass p-4 rounded-xl transition-all border border-white/10 min-h-[4rem] flex items-center shadow-sm relative overflow-hidden text-slate-200';
+                    el.id = `def_${pair.id}`;
+                    el.dataset.id = pair.id;
+                    el.innerHTML = `<span>${pair.def}</span>`;
+                    
+                    el.addEventListener('dragover', (e) => this.handleDragOver(e));
+                    el.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+                    el.addEventListener('drop', (e) => this.handleDrop(e, pair.id));
+                    
+                    defsContainer.appendChild(el);
+                });
+
+                lucide.createIcons();
+            },
+
+            handleDragStart(e, id) {
+                this.state.draggedId = id;
+                e.target.classList.add('opacity-50', 'scale-95');
+                e.dataTransfer.effectAllowed = 'move';
+                // Required for Firefox
+                e.dataTransfer.setData('text/plain', id);
+            },
+
+            handleDragEnd(e) {
+                e.target.classList.remove('opacity-50', 'scale-95');
+                this.state.draggedId = null;
+            },
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                const target = e.currentTarget;
+                if (!target.classList.contains('matched')) {
+                    target.classList.add('drag-over');
+                }
+            },
+
+            handleDragLeave(e) {
+                e.currentTarget.classList.remove('drag-over');
+            },
+
+            handleDrop(e, dropId) {
+                e.preventDefault();
+                const target = e.currentTarget;
+                target.classList.remove('drag-over');
+                
+                if (target.classList.contains('matched')) return;
+
+                const draggedId = this.state.draggedId;
+                
+                if (draggedId === dropId) {
+                    // Success Match
+                    this.handleCorrectMatch(draggedId, target);
+                } else {
+                    // Wrong Match
+                    this.handleWrongMatch(target);
+                }
+            },
+
+            handleCorrectMatch(id, targetEl) {
+                // Update target UI
+                targetEl.classList.add('matched');
+                targetEl.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 mr-2 inline"></i> ` + targetEl.innerHTML;
+                
+                // Hide Dragged Term with animation
+                const termEl = document.getElementById(`term_${id}`);
+                termEl.style.transform = 'scale(0)';
+                termEl.style.opacity = '0';
+                setTimeout(() => termEl.style.display = 'none', 300);
+
+                // Update Score
+                this.state.score += 100;
+                this.updateScore();
+                
+                // Check Win condition
+                this.state.matchedCount++;
+                if (this.state.matchedCount === this.state.pairs.length) {
+                    this.gameComplete();
+                }
+                lucide.createIcons();
+            },
+
+            handleWrongMatch(targetEl) {
+                targetEl.classList.add('wrong-match', 'animate-shake');
+                this.state.score = Math.max(0, this.state.score - 20); // Penalty
+                this.updateScore();
+                
+                setTimeout(() => {
+                    targetEl.classList.remove('wrong-match', 'animate-shake');
+                }, 500);
+            },
+
+            // --- FLASHCARD MODE ---
+
+            initFlashcardMode() {
+                this.state.flashcardIndex = 0;
+                const container = document.getElementById('flashcardElement');
+                container.classList.remove('flipped'); // Reset flip state
+                this.renderFlashcard();
+            },
+
+            renderFlashcard() {
+                const pair = this.state.pairs[this.state.flashcardIndex];
+                document.getElementById('flashcardTerm').innerText = pair.term;
+                document.getElementById('flashcardDef').innerText = pair.def;
+                document.getElementById('flashcardCounter').innerText = `${this.state.flashcardIndex + 1} / ${this.state.pairs.length}`;
+            },
+
+            flipCard() {
+                const el = document.getElementById('flashcardElement');
+                el.classList.toggle('flipped');
+                this.playFlipSound();
+            },
+
+            nextCard() {
+                const el = document.getElementById('flashcardElement');
+                el.classList.remove('flipped');
+                setTimeout(() => {
+                    this.state.flashcardIndex = (this.state.flashcardIndex + 1) % this.state.pairs.length;
+                    this.renderFlashcard();
+                }, 150); // wait for flip back animation start
+            },
+
+            prevCard() {
+                const el = document.getElementById('flashcardElement');
+                el.classList.remove('flipped');
+                setTimeout(() => {
+                    this.state.flashcardIndex = (this.state.flashcardIndex - 1 + this.state.pairs.length) % this.state.pairs.length;
+                    this.renderFlashcard();
+                }, 150);
+            },
+
+            // --- GAMIFICATION & UTILS ---
+
+            startTimer() {
+                this.stopTimer();
+                this.state.timerInterval = setInterval(() => {
+                    this.state.timer++;
+                    this.updateTimerDisplay();
+                }, 1000);
+            },
+
+            stopTimer() {
+                if (this.state.timerInterval) clearInterval(this.state.timerInterval);
+            },
+
+            updateTimerDisplay() {
+                const m = Math.floor(this.state.timer / 60).toString().padStart(2, '0');
+                const s = (this.state.timer % 60).toString().padStart(2, '0');
+                document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+            },
+
+            updateScore() {
+                const scoreEl = document.getElementById('scoreDisplay');
+                scoreEl.innerText = this.state.score;
+                // Pop animation
+                scoreEl.classList.remove('animate-pop-in');
+                void scoreEl.offsetWidth; // trigger reflow
+                scoreEl.classList.add('animate-pop-in');
+            },
+
+            gameComplete() {
+                this.stopTimer();
+                
+                // Add time bonus (faster = more points)
+                const expectedTime = this.state.pairs.length * 5; // 5 secs per pair expected
+                if (this.state.timer < expectedTime) {
+                    const bonus = (expectedTime - this.state.timer) * 10;
+                    this.state.score += bonus;
+                    this.updateScore();
+                }
+
+                setTimeout(() => {
+                    this.triggerConfetti();
+                    this.showSuccessModal();
+                }, 500);
+            },
+
+            showSuccessModal() {
+                const modal = document.getElementById('successModal');
+                const content = document.getElementById('successModalContent');
+                
+                document.getElementById('finalScore').innerText = this.state.score;
+                document.getElementById('finalTime').innerText = document.getElementById('timerDisplay').innerText;
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                // Animate in
+                setTimeout(() => {
+                    content.classList.remove('scale-90', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            },
+
+            hideSuccessModal() {
+                const modal = document.getElementById('successModal');
+                const content = document.getElementById('successModalContent');
+                
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-90', 'opacity-0');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            },
+
+            triggerConfetti() {
+                const colors = ['#a78bfa', '#c084fc', '#e879f9', '#22d3ee', '#4ade80', '#fbbf24'];
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    
+                    // Random styles
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                    confetti.style.height = (Math.random() * 16 + 8) + 'px';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                    
+                    // Random shapes
+                    if (Math.random() > 0.5) {
+                        confetti.style.borderRadius = '50%';
+                    }
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Cleanup
+                    setTimeout(() => confetti.remove(), 5000);
+                }
+            }
+        };
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>
